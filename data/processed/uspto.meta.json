@@ -1,0 +1,26 @@
+{
+  "as_of": "2026-11-01",
+  "candidates": 724,
+  "endpoint": "https://api.uspto.gov/api/v1/patent/applications/{application number} and /continuity; /search for patent numbers",
+  "found": 631,
+  "legal_state_counts": {
+    "abandoned": 25,
+    "in_force": 170,
+    "lapsed": 377,
+    "not_granted": 2,
+    "term_ended": 57
+  },
+  "lookup_counts": {
+    "application_sn": 577,
+    "none": 93,
+    "patent_number_search": 54
+  },
+  "nasa_application_now_granted": 208,
+  "nasa_in_force_and_uspto_in_force": 72,
+  "nasa_in_force_but_uspto_lapsed": 181,
+  "not_found": 93,
+  "reinstated_after_lapse": 5,
+  "source": "uspto",
+  "with_co_assignee": 96,
+  "with_terminal_disclaimer": 53
+}

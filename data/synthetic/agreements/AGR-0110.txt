@@ -1,0 +1,21 @@
+PATENT LICENSE AGREEMENT AGR-0110
+
+SYNTHETIC DOCUMENT. GoNoGo generated this agreement for evaluation. It is not a real NASA license.
+
+This Patent License Agreement ("Agreement") is entered into on June 24, 2018 by the National Aeronautics and Space Administration ("NASA"), an agency of the United States, and Silver Pine Software ("Licensee"), having its principal place of business at 410 Pine Street, Seattle, WA 98101.
+
+Article 1. Grant. Subject to the terms of this Agreement, NASA grants Licensee a partially exclusive license under the Licensed Patents to make, use, and sell Licensed Products within the Field of Use and the Licensed Territory. The Licensed Patents are U.S. Patent No. 9,620,025 (NASA Case No. LAR-18483-1).
+
+Article 2. Field of Use. The Field of Use is limited to structural health sensors.
+
+Article 3. Licensed Territory. The Licensed Territory is Europe.
+
+Article 4. Term. This Agreement takes effect on July 1, 2018 and remains in force until June 28, 2028, unless terminated earlier under its terms.
+
+Article 5. Royalties. Licensee shall pay NASA a running royalty of 4.8 percent of Net Sales and a minimum annual royalty of 10,000 U.S. dollars. This Article is confidential.
+
+Article 6. Sublicensing. Licensee may not grant sublicenses under this Agreement.
+
+Article 7. Export Control. Licensee shall comply with all United States export control laws and regulations that apply to the Licensed Products and related technical data.
+
+Article 8. Signatures. Signed for NASA by the Licensing Officer, NASA Langley Research Center, and for Licensee by its authorized officer.

@@ -1,0 +1,21 @@
+PATENT LICENSE AGREEMENT AGR-0086
+
+SYNTHETIC DOCUMENT. GoNoGo generated this agreement for evaluation. It is not a real NASA license.
+
+This Patent License Agreement ("Agreement") is entered into on August 25, 2022 by the National Aeronautics and Space Administration ("NASA"), an agency of the United States, and L.L.C. ("Licensee"), having its principal place of business at 88 Foundry Street, Worcester, MA 01608.
+
+Article 1. Grant. Subject to the terms of this Agreement, NASA grants Licensee a non-exclusive license under the Licensed Patents to make, use, and sell Licensed Products within the Field of Use and the Licensed Territory. The Licensed Patents are U.S. Patent No. 7,595,112 (NASA Case No. LAR-17165-1).
+
+Article 2. Field of Use. The Field of Use is limited to polymers and composites.
+
+Article 3. Licensed Territory. The Licensed Territory is North America.
+
+Article 4. Term. This Agreement takes effect on September 1, 2022 and remains in force until August 29, 2032, unless terminated earlier under its terms.
+
+Article 5. Royalties. Licensee shall pay NASA a running royalty of 1.7 percent of Net Sales and a minimum annual royalty of 50,000 U.S. dollars. This Article is confidential.
+
+Article 6. Sublicensing. Licensee may grant sublicenses within the Field of Use with the prior written consent of NASA.
+
+Article 7. Export Control. Licensee shall comply with all United States export control laws and regulations that apply to the Licensed Products and related technical data.
+
+Article 8. Signatures. Signed for NASA by the Licensing Officer, NASA Langley Research Center, and for Licensee by its authorized officer.

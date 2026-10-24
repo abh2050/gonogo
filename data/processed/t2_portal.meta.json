@@ -1,0 +1,41 @@
+{
+  "categories": {
+    "Aerospace": 18,
+    "Communications": 13,
+    "Electrical and Electronics": 12,
+    "Environment": 10,
+    "Health Medicine and Biotechnology": 10,
+    "Information Technology and Software": 10,
+    "Instrumentation": 20,
+    "Manufacturing": 18,
+    "Materials and Coatings": 70,
+    "Mechanical and Fluid Systems": 27,
+    "Optics": 10,
+    "Power Generation and Storage": 24,
+    "Propulsion": 8,
+    "Robotics Automation and Control": 11,
+    "Sensors": 28
+  },
+  "center_prefixes": [
+    "KSC",
+    "LAR",
+    "LEW"
+  ],
+  "endpoint_used": "https://technology.nasa.gov/api/api/patent/{q} plus https://technology.nasa.gov/patent/{tops_id}",
+  "in_scope_patents_joined": {
+    "case_family": 7,
+    "case_number": 119,
+    "none": 142,
+    "patent_number": 32
+  },
+  "source": "t2_portal",
+  "spec_endpoint": "https://technology.nasa.gov/api/1.0/patent/search/{q}",
+  "spec_endpoint_status": 404,
+  "spec_endpoint_worked": false,
+  "technologies": 289,
+  "with_abstract": 289,
+  "with_case_numbers": 289,
+  "with_category": 289,
+  "with_patent_numbers": 226,
+  "with_trl": 119
+}

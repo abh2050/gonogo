@@ -1,0 +1,16 @@
+{
+  "catalog_metadata_modified": "2025-05-29T21:08:32.472497",
+  "csv_retrieved_at": "2026-10-24T17:48:38+00:00",
+  "csv_rows": 1393,
+  "csv_url": "https://data.nasa.gov/docs/legacy/NASA_Patents/NASA_Patents_rows.csv",
+  "duplicate_case_numbers_dropped": 0,
+  "json_retrieved_at": "2026-10-24T17:48:37+00:00",
+  "json_rows": 1000,
+  "json_truncated": true,
+  "json_url": "https://data.nasa.gov/docs/legacy/NASA_Patents/gquh-watm.json",
+  "records": 1393,
+  "source": "nasa_patents",
+  "with_application_sn": 1382,
+  "with_expiration_date": 1043,
+  "with_patent_number": 936
+}

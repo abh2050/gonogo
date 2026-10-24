@@ -1,0 +1,21 @@
+PATENT LICENSE AGREEMENT AGR-0105
+
+SYNTHETIC DOCUMENT. GoNoGo generated this agreement for evaluation. It is not a real NASA license.
+
+This Patent License Agreement ("Agreement") is entered into on August 25, 2021 by the National Aeronautics and Space Administration ("NASA"), an agency of the United States, and Granite Peak Robotics LLC ("Licensee"), having its principal place of business at 17 Summit Road, Boulder, CO 80302.
+
+Article 1. Grant. Subject to the terms of this Agreement, NASA grants Licensee an exclusive license under the Licensed Patents to make, use, and sell Licensed Products within the Field of Use and the Licensed Territory. The Licensed Patents are NASA Case No. LEW-18919-1.
+
+Article 2. Field of Use. The Field of Use is limited to rf antennas.
+
+Article 3. Licensed Territory. The Licensed Territory is Worldwide.
+
+Article 4. Term. This Agreement takes effect on September 1, 2021 and remains in force until August 30, 2031, unless terminated earlier under its terms.
+
+Article 5. Royalties. Licensee shall pay NASA a running royalty of 5.9 percent of Net Sales and a minimum annual royalty of 15,000 U.S. dollars. This Article is confidential.
+
+Article 6. Sublicensing. Licensee may not grant sublicenses under this Agreement.
+
+Article 7. Export Control. Licensee shall comply with all United States export control laws and regulations that apply to the Licensed Products and related technical data.
+
+Article 8. Signatures. Signed for NASA by the Licensing Officer, NASA Glenn Research Center, and for Licensee by its authorized officer.

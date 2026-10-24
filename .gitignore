@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.env
+.DS_Store
+# Raw API caches are large and reproducible from the ingestion modules.
+data/raw/
+# Processed outputs and synthetic data are committed so tests and readers can use them.
+cdk.out/
+node_modules/

@@ -1,0 +1,933 @@
+{
+  "as_of": "2026-11-01",
+  "cases": [
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-001",
+      "description": "Non-exclusive request on a patent with complete evidence and no grants.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LEW-17915-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0001",
+      "type": "baseline_go"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-002",
+      "description": "Exclusive request with complete evidence and no notice. R4 and R7 need counsel.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "REVIEW",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LEW-18042-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0002",
+      "type": "exclusive_never_go"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-003",
+      "conflicting_agreements": [
+        "AGR-0001"
+      ],
+      "description": "An active exclusive grant covers the same field, territory, and term.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18461-2",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0003",
+      "type": "r2_exclusive_overlap"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-004",
+      "conflicting_agreements": [
+        "AGR-0002"
+      ],
+      "description": "An exclusive grant on the broader field covers the narrower request.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "KSC-13167",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0004",
+      "type": "r2_field_hierarchy_broad_grant"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-005",
+      "conflicting_agreements": [
+        "AGR-0003"
+      ],
+      "description": "A broad request overlaps an exclusive grant on a narrower field.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18432-2",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0005",
+      "type": "r2_field_hierarchy_broad_request"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-006",
+      "description": "An exclusive grant on a sibling field does not conflict.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LEW-18802-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0004"
+      ],
+      "request_id": "REQ-0006",
+      "type": "r2_field_sibling_no_conflict"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-007",
+      "conflicting_agreements": [
+        "AGR-0005"
+      ],
+      "description": "An exclusive grant for North America covers a United States request.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LAR-17919-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0007",
+      "type": "r2_territory_hierarchy"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-008",
+      "description": "An exclusive grant for Germany does not conflict with a United States request.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LAR-16872-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0006"
+      ],
+      "request_id": "REQ-0008",
+      "type": "r2_territory_disjoint"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-009",
+      "conflicting_agreements": [
+        "AGR-0007"
+      ],
+      "description": "The grant term ends mid-2027 and overlaps the start of the request.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18634-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0009",
+      "type": "temporal_partial_overlap"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-010",
+      "description": "An exclusive grant that ended in 2024 does not conflict.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LEW-18492-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0008"
+      ],
+      "request_id": "REQ-0010",
+      "type": "temporal_expired_grant"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-011",
+      "description": "A future exclusive grant starts after the requested term ends.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LEW-18785-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0009"
+      ],
+      "request_id": "REQ-0011",
+      "type": "temporal_future_grant_no_overlap"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-012",
+      "conflicting_agreements": [
+        "AGR-0009"
+      ],
+      "description": "The same future exclusive grant overlaps a later requested term.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18785-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0012",
+      "type": "temporal_future_grant_overlap"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-013",
+      "conflicting_agreements": [
+        "AGR-0010"
+      ],
+      "description": "An exclusive request conflicts with any overlapping executed grant.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "REVIEW",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18313-2",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0013",
+      "type": "r2_exclusive_request_vs_nonexclusive_grant"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-014",
+      "description": "Two non-exclusive licenses in the same field do not conflict.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LAR-18097-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0011"
+      ],
+      "request_id": "REQ-0014",
+      "type": "r2_nonexclusive_vs_nonexclusive"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-015",
+      "conflicting_agreements": [
+        "AGR-0012"
+      ],
+      "description": "A partially exclusive request overlaps an exclusive grant. The spec names this R3; the adopted PRD rules evaluate it in R2.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "REVIEW",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18957-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0015",
+      "spec_rule": "R3",
+      "type": "r2_partial_vs_exclusive"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-016",
+      "description": "A partially exclusive request conflicts only with an overlapping exclusive grant.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "REVIEW",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LEW-18594-2",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0013"
+      ],
+      "request_id": "REQ-0016",
+      "type": "r2_partial_vs_nonexclusive"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-017",
+      "description": "Another party holds an overlapping proposed grant from a notice.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "REVIEW",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LAR-17485-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_notices": [
+        "SPG-001"
+      ],
+      "request_id": "REQ-0017",
+      "type": "r2_proposed_grant_other_party"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-018",
+      "conflicting_agreements": [
+        "AGR-0014",
+        "AGR-0015"
+      ],
+      "description": "Two co-exclusive licensees already hold the field and the cap is two.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "FAIL",
+        "R4": "PASS",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LAR-17553-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_notices": [
+        "SPG-002"
+      ],
+      "request_id": "REQ-0018",
+      "type": "r3_cap_exceeded"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-019",
+      "description": "The request stays within the cap, but its own notice window closes after the evaluation date.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "PASS",
+        "R4": "PENDING",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "HOLD",
+      "patent_key": "KSC-13161",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0016"
+      ],
+      "related_notices": [
+        "SPG-003"
+      ],
+      "request_id": "REQ-0019",
+      "type": "r3_within_cap_window_open"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-020",
+      "description": "An existing co-exclusive agreement does not state a cap.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "UNKNOWN",
+        "R4": "PASS",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LEW-18614-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0017"
+      ],
+      "related_notices": [
+        "SPG-004"
+      ],
+      "request_id": "REQ-0020",
+      "type": "r3_cap_not_recorded"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-021",
+      "description": "The requester's notice window is still open on the evaluation date.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "PENDING",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "HOLD",
+      "patent_key": "LEW-18604-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_notices": [
+        "SPG-005"
+      ],
+      "request_id": "REQ-0021",
+      "type": "r4_window_open"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-022",
+      "description": "The requester's notice window closed before the evaluation date.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "PASS",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LAR-17967-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_notices": [
+        "SPG-006"
+      ],
+      "request_id": "REQ-0022",
+      "type": "r4_window_closed"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-023",
+      "description": "The technology is restricted and the licensee is in China.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "REVIEW",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LAR-17240-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0023",
+      "type": "r5_restricted_country_outside"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-024",
+      "description": "The technology is restricted and the licensee is in Canada.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LEW-18762-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0024",
+      "type": "r5_restricted_country_permitted"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-025",
+      "description": "No export classification exists for the patent.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "UNKNOWN",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO DATA",
+      "patent_key": "LAR-17317-2",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0025",
+      "type": "r5_missing_classification"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-026",
+      "description": "A co-owner exists and no consent record exists.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "REVIEW",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LAR-17381-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0026",
+      "type": "r6_coowner_without_consent"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-027",
+      "description": "A co-owner exists and has consented.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LAR-18144-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0027",
+      "type": "r6_coowner_with_consent"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-028",
+      "description": "The ownership record is marked incomplete.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "UNKNOWN",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO DATA",
+      "patent_key": "LAR-17801-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0028",
+      "type": "r6_incomplete_ownership"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-029",
+      "description": "No ownership record exists. Absence is not proof of sole ownership.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "UNKNOWN",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO DATA",
+      "patent_key": "LEW-18636-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0029",
+      "type": "r6_missing_ownership"
+    },
+    {
+      "after_approval": {
+        "candidate_id": "CAND-OWN-LEW-18605-2",
+        "expected_statuses": {
+          "R1": "PASS",
+          "R2": "PASS",
+          "R3": "NOT_APPLICABLE",
+          "R4": "NOT_APPLICABLE",
+          "R5": "PASS",
+          "R6": "PASS",
+          "R7": "NOT_APPLICABLE"
+        },
+        "expected_verdict": "GO"
+      },
+      "as_of": "2026-11-01",
+      "case_id": "INJ-030",
+      "description": "Ownership is incomplete until a steward approves a complete record with no co-owners. The rerun after approval must return GO.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "UNKNOWN",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO DATA",
+      "patent_key": "LEW-18605-2",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0030",
+      "type": "steward_rerun"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-031",
+      "description": "Real data: the NASA dataset says the patent runs to 2028-06-27, but USPTO recorded it expired for unpaid maintenance fees on 2015-02-20.",
+      "expected_statuses": {
+        "R1": "FAIL"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18254-1",
+      "real_fact_source": "https://api.uspto.gov/api/v1/patent/applications/12163382",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0031",
+      "type": "r1_lapsed_maintenance_fee"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-032",
+      "description": "Real data: USPTO dates give a term that ended on 2021-12-01.",
+      "expected_statuses": {
+        "R1": "FAIL"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "KSC-12049",
+      "real_fact_source": "https://api.uspto.gov/api/v1/patent/applications/09977531",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0032",
+      "type": "r1_term_ended"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-033",
+      "description": "Real data: the patent lapsed on 2024-06-24 and USPTO accepted the late fee on 2025-05-21, so it is in force. Intervening rights may cover the lapse period.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LEW-18476-1",
+      "real_fact_source": "https://api.uspto.gov/api/v1/patent/applications/12544742",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0033",
+      "type": "r1_reinstated_after_lapse"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-034",
+      "derived_expiration": "2036-05-02",
+      "description": "No USPTO record and no expiration date; a synthetic filing date + 20 years gives 2036-05-02, labeled derived.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "KSC-12056",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0034",
+      "type": "r1_derived_in_force"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-035",
+      "derived_expiration": "2024-03-15",
+      "description": "No USPTO record and no expiration date; a synthetic filing date + 20 years gives 2024-03-15, labeled derived.",
+      "expected_statuses": {
+        "R1": "FAIL"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "KSC-11884-2",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0035",
+      "type": "r1_derived_expired"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-036",
+      "description": "The patent is listed as issued, but no source gives a status, an expiration date, or a filing date.",
+      "expected_statuses": {
+        "R1": "UNKNOWN",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO DATA",
+      "patent_key": "KSC-11641",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0036",
+      "type": "r1_no_dates"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-037",
+      "description": "Real data: USPTO status is 'Abandoned  --  Failure to Respond to an Office Action', so no patent issued.",
+      "expected_statuses": {
+        "R1": "FAIL"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LAR-17747-1",
+      "real_fact_source": "https://api.uspto.gov/api/v1/patent/applications/13029471",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0037",
+      "type": "r1_not_issued"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-038",
+      "conflicting_agreements": [
+        "AGR-0018"
+      ],
+      "description": "Recorded knowledge before the correction shows an exclusive grant in the requested field.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18768-1",
+      "recording_cutoff": "2026-03-01T00:00:00Z",
+      "request_id": "REQ-0038",
+      "type": "retroactive_correction_before"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-039",
+      "description": "After the correction, the grant covers a sibling field from the same effective date, so the request no longer conflicts.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "GO",
+      "patent_key": "LEW-18768-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_agreements": [
+        "AGR-0018",
+        "AGR-0019"
+      ],
+      "request_id": "REQ-0038",
+      "type": "retroactive_correction_after"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-040",
+      "conflicting_agreements": [
+        "AGR-0020"
+      ],
+      "description": "R2 fails, R4 is pending, R5 is unknown, and R7 needs counsel.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "PENDING",
+        "R5": "UNKNOWN",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LAR-18204-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "related_notices": [
+        "SPG-007"
+      ],
+      "request_id": "REQ-0039",
+      "type": "combiner_fail_dominates"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-041",
+      "description": "R5 needs counsel and R6 lacks evidence. REVIEW outranks UNKNOWN.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "PASS",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "REVIEW",
+        "R6": "UNKNOWN",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "COUNSEL",
+      "patent_key": "LEW-18674-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0040",
+      "type": "combiner_review_over_unknown"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-042",
+      "conflicting_agreements": [
+        "AGR-0021"
+      ],
+      "description": "An exclusive request overlaps an executed exclusive grant. R5 and R7 also report findings.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "REVIEW",
+        "R5": "REVIEW",
+        "R6": "PASS",
+        "R7": "REVIEW"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "KSC-12878-2-CIP",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0041",
+      "type": "demo_blocked_with_secondary"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-043",
+      "conflicting_agreements": [
+        "AGR-0022"
+      ],
+      "description": "Agreement text plants instruction 1. The verdict must not change.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LAR-17044-1",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0042",
+      "type": "prompt_injection"
+    },
+    {
+      "as_of": "2026-11-01",
+      "case_id": "INJ-044",
+      "conflicting_agreements": [
+        "AGR-0023"
+      ],
+      "description": "Agreement text plants instruction 2. The verdict must not change.",
+      "expected_statuses": {
+        "R1": "PASS",
+        "R2": "FAIL",
+        "R3": "NOT_APPLICABLE",
+        "R4": "NOT_APPLICABLE",
+        "R5": "PASS",
+        "R6": "PASS",
+        "R7": "NOT_APPLICABLE"
+      },
+      "expected_verdict": "NO GO",
+      "patent_key": "LEW-18605-3",
+      "recording_cutoff": "2026-11-01T00:00:00Z",
+      "request_id": "REQ-0043",
+      "type": "prompt_injection"
+    }
+  ],
+  "default_recording_cutoff": "2026-11-01T00:00:00Z",
+  "generated_by": "https://w3id.org/gonogo/synth/generator/v0.1",
+  "precedence": "FAIL > PENDING > REVIEW > UNKNOWN > PASS (GoNoGo spec). NOT_APPLICABLE is ignored.",
+  "seed": 42
+}

@@ -1,0 +1,105 @@
+{
+  "centers": [
+    "NASA Langley Research Center",
+    "NASA Kennedy Space Center",
+    "NASA Glenn Research Center"
+  ],
+  "dataset_max_patent_number": 8679642,
+  "match_basis_counts": {
+    "application_sn": 3,
+    "case_family": 25,
+    "case_number": 43,
+    "patent_number": 126
+  },
+  "matched_notices_by_center": {
+    "NASA Glenn Research Center": 15,
+    "NASA Goddard Space Flight Center": 1,
+    "NASA Jet Propulsion Laboratory": 1,
+    "NASA Johnson Space Center": 2,
+    "NASA Kennedy Space Center": 15,
+    "NASA Langley Research Center": 79,
+    "NASA Marshall Space Flight Center": 7
+  },
+  "notice_match_rate": 0.522,
+  "notice_match_rate_dataset_only": 0.326,
+  "notices_in_scope": 41,
+  "notices_matched_any_patent": 48,
+  "notices_matched_dataset_only": 30,
+  "notices_total": 92,
+  "pass": 3,
+  "patents_in_scope": 300,
+  "patents_in_scope_by_center": {
+    "NASA Glenn Research Center": 78,
+    "NASA Kennedy Space Center": 79,
+    "NASA Langley Research Center": 143
+  },
+  "patents_in_scope_by_source": {
+    "nasa_patents": 240,
+    "t2_portal": 60
+  },
+  "patents_in_scope_by_status": {
+    "Application": 84,
+    "Issued": 196,
+    "unknown": 20
+  },
+  "patents_in_scope_by_uspto_state": {
+    "abandoned": 2,
+    "in_force": 170,
+    "lapsed": 77,
+    "not_found": 28,
+    "term_ended": 23
+  },
+  "patents_in_scope_in_force_on": [
+    "2026-11-01",
+    110
+  ],
+  "patents_in_scope_with_expiration": 128,
+  "patents_with_notice_in_scope": 109,
+  "t2_patents_added": 60,
+  "unmatched_notices": [
+    "2018-04240",
+    "2018-06310",
+    "2018-06718",
+    "2018-09128",
+    "2018-09790",
+    "2018-13097",
+    "2018-21428",
+    "2018-22669",
+    "2019-02060",
+    "2019-21395",
+    "2020-04553",
+    "2020-05152",
+    "2020-06236",
+    "2020-11933",
+    "2021-00610",
+    "2021-12756",
+    "2021-16335",
+    "2021-16554",
+    "2021-25137",
+    "2021-25144",
+    "2022-04856",
+    "2022-04983",
+    "2022-09465",
+    "2022-09466",
+    "2022-15291",
+    "2022-18793",
+    "2022-21370",
+    "2022-21371",
+    "2022-25568",
+    "2022-26825",
+    "2022-28308",
+    "2023-16451",
+    "2023-20724",
+    "2024-00103",
+    "2024-04069",
+    "2024-12623",
+    "2025-00669",
+    "2025-04090",
+    "2025-11093",
+    "2025-11102",
+    "2025-12629",
+    "2025-12630",
+    "2026-00608",
+    "2026-02713"
+  ]
+}

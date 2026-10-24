@@ -1,0 +1,24 @@
+{
+  "downloads_url": "https://ntrs.nasa.gov/api/citations/{id}/downloads",
+  "patents_searched": 300,
+  "patents_with_reports": 121,
+  "pdf_cap": 300,
+  "pdfs_downloaded": 218,
+  "report_links": 230,
+  "search_url": "https://ntrs.nasa.gov/api/citations/search",
+  "source": "ntrs",
+  "sti_types": {
+    "ABSTRACT": 3,
+    "CONFERENCE_PAPER": 23,
+    "CONTRACTOR_REPORT": 1,
+    "EXTENDED_ABSTRACT": 3,
+    "OTHER": 163,
+    "POSTER": 2,
+    "PREPRINT": 5,
+    "PRESENTATION": 13,
+    "REPRINT": 6,
+    "TECHNICAL_MEMORANDUM": 7,
+    "TECHNICAL_PUBLICATION": 4
+  },
+  "unique_reports": 172
+}

@@ -1,0 +1,29 @@
+{
+  "corrections": 2,
+  "date_range": [
+    "2018-01-01",
+    "2026-10-24"
+  ],
+  "exclusivity_counts": {
+    "co-exclusive": 2,
+    "exclusive": 11,
+    "partially exclusive": 27,
+    "unspecified": 52
+  },
+  "field_of_use_status_counts": {
+    "limited_unspecified": 53,
+    "not_mentioned": 15,
+    "stated": 24
+  },
+  "jointly_owned": 2,
+  "records": 92,
+  "search_count": 92,
+  "search_url": "https://www.federalregister.gov/api/v1/documents.json",
+  "source": "federal_register",
+  "with_exclusivity": 92,
+  "with_field_of_use": 24,
+  "with_licensee": 91,
+  "with_objection_deadline": 91,
+  "with_patent_or_serial_or_case": 90,
+  "with_territory": 91
+}

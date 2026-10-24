@@ -1,0 +1,39 @@
+# Local graph services. Neptune stays behind a deploy flag, so local work costs nothing.
+services:
+  fuseki:
+    image: stain/jena-fuseki:5.1.0
+    container_name: gonogo-fuseki
+    environment:
+      ADMIN_PASSWORD: ${FUSEKI_ADMIN_PASSWORD:-gonogo-local}
+      FUSEKI_DATASET_1: gonogo
+      JVM_ARGS: -Xmx2g
+    ports:
+      - "3030:3030"
+    volumes:
+      - fuseki-data:/fuseki
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3030/$$/ping || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+
+  neo4j:
+    image: neo4j:5.26-community
+    container_name: gonogo-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-gonogo-local}
+      NEO4J_server_memory_heap_max__size: 1G
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+
+volumes:
+  fuseki-data:
+  neo4j-data:

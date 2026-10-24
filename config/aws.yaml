@@ -1,0 +1,11 @@
+# Every AWS call in GoNoGo reads this file through gonogo.aws.session().
+# The organization's SCP denies regional services in the two default US regions,
+# so the region below is the only one the code accepts.
+profile: awsnew
+region: us-east-2
+budget_usd: 50
+deploy_neptune: false
+deploy_fargate: false
+# Claude family for agent calls. gonogo.aws picks the newest us. (then global.) inference
+# profile in this family at run time; no model ID is hardcoded.
+claude_family: sonnet

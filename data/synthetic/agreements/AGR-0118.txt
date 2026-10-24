@@ -1,0 +1,21 @@
+PATENT LICENSE AGREEMENT AGR-0118
+
+SYNTHETIC DOCUMENT. GoNoGo generated this agreement for evaluation. It is not a real NASA license.
+
+This Patent License Agreement ("Agreement") is entered into on December 25, 2015 by the National Aeronautics and Space Administration ("NASA"), an agency of the United States, and Lumen Arc Photonics ("Licensee"), having its principal place of business at Storgatan 31, 722 12 Vasteras.
+
+Article 1. Grant. Subject to the terms of this Agreement, NASA grants Licensee an exclusive license under the Licensed Patents to make, use, and sell Licensed Products within the Field of Use and the Licensed Territory. The Licensed Patents are NASA Case No. LEW-18732-1.
+
+Article 2. Field of Use. The Field of Use is limited to spacecraft systems.
+
+Article 3. Licensed Territory. The Licensed Territory is United States (ISO 3166 code US).
+
+Article 4. Term. This Agreement takes effect on January 1, 2016 and remains in force until December 30, 2020, unless terminated earlier under its terms.
+
+Article 5. Royalties. Licensee shall pay NASA a running royalty of 4.7 percent of Net Sales and a minimum annual royalty of 25,000 U.S. dollars. This Article is confidential.
+
+Article 6. Sublicensing. Licensee may grant sublicenses within the Field of Use with the prior written consent of NASA.
+
+Article 7. Export Control. Licensee shall comply with all United States export control laws and regulations that apply to the Licensed Products and related technical data.
+
+Article 8. Signatures. Signed for NASA by the Licensing Officer, NASA Glenn Research Center, and for Licensee by its authorized officer.

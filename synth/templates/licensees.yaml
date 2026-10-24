@@ -1,0 +1,132 @@
+# Fictional licensees. None of these names refers to a real company. Each entry lists the
+# name variants that appear across agreements so the Gate 2 resolver has real work to do.
+- id: LIC-001
+  name: Orbital Lens Works, Inc.
+  variants: [Orbital Lens Works Inc, ORBITAL LENS WORKS INCORPORATED, Orbital Lensworks]
+  country: US
+  address: 410 Harbor Way, Norfolk, VA 23510
+- id: LIC-002
+  name: Cobalt Ridge Medical, LLC
+  variants: [Cobalt Ridge Medical LLC, Cobalt-Ridge Medical, L.L.C.]
+  country: US
+  address: 88 Foundry Street, Worcester, MA 01608
+- id: LIC-003
+  name: Tessellate Composites Corporation
+  variants: [Tessellate Composites Corp., Tessellate Composites]
+  country: US
+  address: 1200 Mill Road, Akron, OH 44308
+- id: LIC-004
+  name: Northwind Thermal Systems Ltd.
+  variants: [Northwind Thermal Systems Limited, North Wind Thermal Systems]
+  country: CA
+  address: 55 Bay Street, Toronto, ON M5J 2N8
+- id: LIC-005
+  name: Halcyon Sensorics GmbH
+  variants: [Halcyon Sensorics, Halcyon Sensorics G.m.b.H.]
+  country: DE
+  address: Lindenstrasse 14, 70173 Stuttgart
+- id: LIC-006
+  name: Bluefin Aerostructures, Inc.
+  variants: [Bluefin Aero Structures Inc., BlueFin Aerostructures]
+  country: US
+  address: 3 Runway Drive, Wichita, KS 67209
+- id: LIC-007
+  name: Kestrel Power Storage Co.
+  variants: [Kestrel Power Storage Company, Kestrel Power-Storage Co]
+  country: US
+  address: 940 Cedar Avenue, Austin, TX 78702
+- id: LIC-008
+  name: Meridian Bioprocess, Inc.
+  variants: [Meridian Bio-Process Inc, Meridian Bioprocess Incorporated]
+  country: US
+  address: 22 Lab Park, Durham, NC 27709
+- id: LIC-009
+  name: Sakura Precision Optics K.K.
+  variants: [Sakura Precision Optics, Sakura Precision Optics KK]
+  country: JP
+  address: 2-4-1 Marunouchi, Chiyoda-ku, Tokyo 100-0005
+- id: LIC-010
+  name: Granite Peak Robotics, LLC
+  variants: [Granite Peak Robotics LLC, GranitePeak Robotics]
+  country: US
+  address: 17 Summit Road, Boulder, CO 80302
+- id: LIC-011
+  name: Albion Coatings plc
+  variants: [Albion Coatings PLC, Albion Coatings Public Limited Company]
+  country: GB
+  address: 9 Canal Wharf, Leeds LS11 5PS
+- id: LIC-012
+  name: Pelican Flow Controls, Inc.
+  variants: [Pelican Flow Controls Inc., Pelican Flow-Controls]
+  country: US
+  address: 600 Gulf Boulevard, Mobile, AL 36602
+- id: LIC-013
+  name: Vantor Propulsion Systems, Inc.
+  variants: [Vantor Propulsion Systems Inc, Vantor Propulsion]
+  country: US
+  address: 7 Test Stand Road, Huntsville, AL 35806
+- id: LIC-014
+  name: Lumen Arc Photonics AB
+  variants: [Lumen Arc Photonics, LumenArc Photonics AB]
+  country: SE
+  address: Storgatan 31, 722 12 Vasteras
+- id: LIC-015
+  name: Prairie Grid Energy, Inc.
+  variants: [Prairie Grid Energy Inc., Prairie-Grid Energy]
+  country: US
+  address: 210 Main Street, Lincoln, NE 68508
+- id: LIC-016
+  name: Seastone Additive, LLC
+  variants: [Seastone Additive LLC, SeaStone Additive Manufacturing]
+  country: US
+  address: 45 Pier Road, Portland, ME 04101
+- id: LIC-017
+  name: Jade Harbor Electronics Co., Ltd.
+  variants: [Jade Harbor Electronics Co Ltd, Jade Harbor Electronics Company Limited]
+  country: CN
+  address: 88 Keyuan Road, Shenzhen 518057
+- id: LIC-018
+  name: Copperline Diagnostics, Inc.
+  variants: [Copperline Diagnostics Inc, Copper Line Diagnostics]
+  country: US
+  address: 1500 Research Parkway, Madison, WI 53719
+- id: LIC-019
+  name: Aurora Ground Systems Pty Ltd
+  variants: [Aurora Ground Systems Pty. Ltd., Aurora Ground Systems]
+  country: AU
+  address: 12 Collins Street, Melbourne VIC 3000
+- id: LIC-020
+  name: Redwater Environmental, LLC
+  variants: [Redwater Environmental LLC, Red Water Environmental]
+  country: US
+  address: 300 River Road, Baton Rouge, LA 70802
+- id: LIC-021
+  name: Hanover Instrument Labs, Inc.
+  variants: [Hanover Instrument Laboratories, Inc., Hanover Instrument Labs Inc]
+  country: US
+  address: 77 Elm Street, Hanover, NH 03755
+- id: LIC-022
+  name: Tidewater Tire Technologies, Inc.
+  variants: [Tidewater Tire Technologies Inc., Tidewater Tire Tech]
+  country: US
+  address: 5 Commerce Lane, Hampton, VA 23666
+- id: LIC-023
+  name: Silverpine Software, LLC
+  variants: [Silverpine Software LLC, Silver Pine Software]
+  country: US
+  address: 410 Pine Street, Seattle, WA 98101
+- id: LIC-024
+  name: Corvid Defense Analytics Ltd.
+  variants: [Corvid Defense Analytics Limited, Corvid Defence Analytics]
+  country: IL
+  address: 10 HaBarzel Street, Tel Aviv 6971005
+- id: LIC-025
+  name: Starboard Materials, Inc.
+  variants: [Starboard Materials Inc., Star Board Materials]
+  country: US
+  address: 2400 Industrial Way, Toledo, OH 43604
+- id: LIC-026
+  name: Gulfstream Cryogenics, LLC
+  variants: [Gulfstream Cryogenics LLC, Gulf Stream Cryogenics]
+  country: US
+  address: 19 Launch Complex Road, Titusville, FL 32780
