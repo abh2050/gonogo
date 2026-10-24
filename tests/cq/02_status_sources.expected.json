@@ -1,0 +1,90 @@
+{
+  "id": "CQ02",
+  "question": "What does each registry say about whether patent P is alive on a given day, as the system knew it at the recording cutoff?",
+  "rule": "R1",
+  "cases": [
+    {
+      "name": "P2: USPTO says lapsed, the NASA snapshot still shows a 2027 expiration",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P2"
+        },
+        "day": {
+          "date": "2027-01-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "source",
+        "state",
+        "expiration",
+        "derived"
+      ],
+      "rows": [
+        [
+          "<ex:regNASA>",
+          null,
+          "2027-07-06",
+          "false"
+        ],
+        [
+          "<ex:regUSPTO2>",
+          "lapsed",
+          "2030-09-10",
+          "true"
+        ]
+      ]
+    },
+    {
+      "name": "P1: one registry, in force, with a derived expiration",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "day": {
+          "date": "2027-01-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "source",
+        "state",
+        "expiration",
+        "derived"
+      ],
+      "rows": [
+        [
+          "<ex:regUSPTO1>",
+          "in force",
+          "2036-05-02",
+          "true"
+        ]
+      ]
+    },
+    {
+      "name": "P2 before the lapse began: no status is valid yet",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P2"
+        },
+        "day": {
+          "date": "2019-06-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "source",
+        "state",
+        "expiration",
+        "derived"
+      ],
+      "rows": []
+    }
+  ]
+}

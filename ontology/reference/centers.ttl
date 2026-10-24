@@ -1,0 +1,18 @@
+@prefix gng:    <https://w3id.org/gonogo/ontology#> .
+@prefix center: <https://w3id.org/gonogo/center/> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+
+# NASA centers named in the NASA Patents dataset. The label matches the dataset's spelling exactly,
+# so the load step joins on it.
+
+center:LaRC a gng:NASACenter ; rdfs:label "NASA Langley Research Center" ; gng:centerCode "LaRC" .
+center:GRC  a gng:NASACenter ; rdfs:label "NASA Glenn Research Center" ; gng:centerCode "GRC" .
+center:GSFC a gng:NASACenter ; rdfs:label "NASA Goddard Space Flight Center" ; gng:centerCode "GSFC" .
+center:JSC  a gng:NASACenter ; rdfs:label "NASA Johnson Space Center" ; gng:centerCode "JSC" .
+center:MSFC a gng:NASACenter ; rdfs:label "NASA Marshall Space Flight Center" ; gng:centerCode "MSFC" .
+center:ARC  a gng:NASACenter ; rdfs:label "NASA Ames Research Center" ; gng:centerCode "ARC" .
+center:KSC  a gng:NASACenter ; rdfs:label "NASA Kennedy Space Center" ; gng:centerCode "KSC" .
+center:JPL  a gng:NASACenter ; rdfs:label "NASA Jet Propulsion Laboratory" ; gng:centerCode "JPL" .
+center:AFRC a gng:NASACenter ; rdfs:label "NASA Armstrong Flight Research Center" ; gng:centerCode "AFRC" .
+center:SSC  a gng:NASACenter ; rdfs:label "NASA Stennis Space Center" ; gng:centerCode "SSC" .
+center:HQ   a gng:NASACenter ; rdfs:label "NASA Headquarters" ; gng:centerCode "HQ" .

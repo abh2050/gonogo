@@ -1,0 +1,86 @@
+{
+  "id": "CQ12",
+  "question": "Does patent P have an ownership record, does the record claim that its co-owner list is complete, and how many co-owners does it list?",
+  "rule": "R6",
+  "cases": [
+    {
+      "name": "P4: complete with no co-owners, which is an explicit negative fact",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P4"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "complete",
+        "coOwners"
+      ],
+      "rows": [
+        [
+          "true",
+          "0"
+        ]
+      ]
+    },
+    {
+      "name": "P5: complete with two co-owners",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P5"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "complete",
+        "coOwners"
+      ],
+      "rows": [
+        [
+          "true",
+          "2"
+        ]
+      ]
+    },
+    {
+      "name": "P6: incomplete, one known co-owner",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P6"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "complete",
+        "coOwners"
+      ],
+      "rows": [
+        [
+          "false",
+          "1"
+        ]
+      ]
+    },
+    {
+      "name": "P7: no record at all, which is unknown",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P7"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "complete",
+        "coOwners"
+      ],
+      "rows": []
+    }
+  ]
+}

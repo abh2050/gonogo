@@ -1,0 +1,5 @@
+@prefix gng: <https://w3id.org/gonogo/ontology#> .
+@prefix ex:  <https://example.org/test/> .
+
+# A notice of intent is not a license. One grant cannot be both proposed and executed.
+ex:grant a gng:ProposedGrant , gng:ExecutedGrant .

@@ -1,0 +1,87 @@
+{
+  "id": "CQ04",
+  "question": "Which executed grants on patent P overlap a requested field of use, in either direction on the field hierarchy?",
+  "rule": "R2",
+  "cases": [
+    {
+      "name": "a request for lenses-and-mirrors sits under the broad Optics grant G1, and beside the laser grants G3 and G4 (siblings do not overlap)",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "field": {
+          "iri": "https://w3id.org/gonogo/field/lenses-and-mirrors"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "direction"
+      ],
+      "rows": [
+        [
+          "<ex:G1>",
+          "grant covers request"
+        ]
+      ]
+    },
+    {
+      "name": "a request for Optics covers the narrower laser grants",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "field": {
+          "iri": "https://w3id.org/gonogo/field/optics"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "direction"
+      ],
+      "rows": [
+        [
+          "<ex:G1>",
+          "grant covers request"
+        ],
+        [
+          "<ex:G3>",
+          "request covers grant"
+        ],
+        [
+          "<ex:G4>",
+          "request covers grant"
+        ]
+      ]
+    },
+    {
+      "name": "a request for Aerospace covers the narrower spacecraft grant G2",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "field": {
+          "iri": "https://w3id.org/gonogo/field/aerospace"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "direction"
+      ],
+      "rows": [
+        [
+          "<ex:G2>",
+          "request covers grant"
+        ]
+      ]
+    }
+  ]
+}

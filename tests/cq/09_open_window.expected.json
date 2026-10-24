@@ -1,0 +1,69 @@
+{
+  "id": "CQ09",
+  "question": "Which notices for patent P still have an open objection window on a given day?",
+  "rule": "R4",
+  "cases": [
+    {
+      "name": "the window closes on 4 November, so it is open on 1 November",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "day": {
+          "date": "2026-11-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "notice",
+        "deadline"
+      ],
+      "rows": [
+        [
+          "<ex:N1>",
+          "2026-11-04"
+        ]
+      ]
+    },
+    {
+      "name": "the window has closed by 10 November",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "day": {
+          "date": "2026-11-10"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "notice",
+        "deadline"
+      ],
+      "rows": []
+    },
+    {
+      "name": "the notice does not exist yet on 1 October",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "day": {
+          "date": "2026-10-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "notice",
+        "deadline"
+      ],
+      "rows": []
+    }
+  ]
+}

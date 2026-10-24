@@ -31,7 +31,7 @@ from typing import Any
 
 import yaml
 
-from gonogo.paths import PROCESSED, SCOPE, SYNTHETIC
+from gonogo.paths import ONTOLOGY, PROCESSED, SCOPE, SYNTHETIC
 from synth import pdf
 
 GENERATOR_IRI = "https://w3id.org/gonogo/synth/generator/v0.1"
@@ -76,12 +76,58 @@ def label(record: dict[str, Any]) -> dict[str, Any]:
 
 @dataclass
 class Taxonomy:
+    """Field and territory hierarchies, read from the SKOS schemes in ontology/schemes/.
+
+    The ontology owns the hierarchy and the labels. The generator adds only the keywords that map a
+    patent title to a narrower field (synth/templates/field_keywords.yaml).
+    """
+
     fields: dict[str, dict[str, Any]]
     territories: dict[str, dict[str, Any]]
     field_labels: dict[str, str] = field(default_factory=dict)
     territory_labels: dict[str, str] = field(default_factory=dict)
     field_parent: dict[str, str] = field(default_factory=dict)
     category_to_top: dict[str, str] = field(default_factory=dict)
+
+    @classmethod
+    def load(cls) -> Taxonomy:
+        from rdflib import Graph, URIRef
+        from rdflib.namespace import SKOS
+
+        keywords = yaml.safe_load((TEMPLATES / "field_keywords.yaml").read_text())
+        fg = Graph().parse(ONTOLOGY / "schemes" / "fields.ttl")
+        tg = Graph().parse(ONTOLOGY / "schemes" / "territories.ttl")
+
+        def local(node: Any) -> str:
+            return str(node).rsplit("/", 1)[1]
+
+        def label(g: Graph, node: Any) -> str:
+            return str(g.value(node, SKOS.prefLabel))
+
+        def children(g: Graph, node: Any) -> list[Any]:
+            return sorted(g.subjects(SKOS.broader, node), key=lambda n: str(g.value(n, SKOS.notation)))
+
+        fields: dict[str, dict[str, Any]] = {}
+        scheme = URIRef("https://w3id.org/gonogo/scheme/field-of-use")
+        for top in sorted(fg.objects(scheme, SKOS.hasTopConcept), key=lambda n: str(fg.value(n, SKOS.notation))):
+            fields[local(top)] = {
+                "label": label(fg, top),
+                "narrower": {
+                    local(c): {"label": label(fg, c), "keywords": keywords[local(c)]} for c in children(fg, top)
+                },
+            }
+
+        def territory_tree(node: Any) -> Any:
+            kids = children(tg, node)
+            if not kids:
+                return label(tg, node)
+            return {"label": label(tg, node), "narrower": {local(k): territory_tree(k) for k in kids}}
+
+        territories = {
+            local(t): territory_tree(t)
+            for t in tg.objects(URIRef("https://w3id.org/gonogo/scheme/territory"), SKOS.hasTopConcept)
+        }
+        return cls(fields, territories)
 
     def __post_init__(self) -> None:
         for top, spec in self.fields.items():
@@ -940,11 +986,11 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
         "exclusive",
         sib,
         "US",
-        recorded_at="2026-06-01T00:00:00Z",
+        recorded_at="2026-10-26T00:00:00Z",
         executed_on="2026-05-20",
         supersedes=original["agreement_id"],
     )
-    original["superseded_at"] = "2026-06-01T00:00:00Z"
+    original["superseded_at"] = "2026-10-26T00:00:00Z"
     r = w.request(k, nx, f)
     w.case(
         "retroactive_correction_before",
@@ -952,7 +998,7 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
         r,
         expect(nx, R2=FAIL),
         NO_GO,
-        cutoff="2026-03-01T00:00:00Z",
+        cutoff="2026-10-25T00:00:00Z",
         conflicting_agreements=[original["agreement_id"]],
     )
     w.case(
@@ -1114,10 +1160,7 @@ def build_background(w: World, notices: list[dict[str, Any]], free: list[str]) -
 
 def load_world(seed: int) -> tuple[World, list[dict[str, Any]], dict[str, list[str]]]:
     rng = random.Random(seed)
-    tax = Taxonomy(
-        yaml.safe_load((TEMPLATES / "fields.yaml").read_text()),
-        yaml.safe_load((TEMPLATES / "territories.yaml").read_text()),
-    )
+    tax = Taxonomy.load()
     licensees = {r["id"]: r for r in yaml.safe_load((TEMPLATES / "licensees.yaml").read_text())}
     co_owners = yaml.safe_load((TEMPLATES / "co_owners.yaml").read_text())
     clauses = yaml.safe_load((TEMPLATES / "clauses.yaml").read_text())

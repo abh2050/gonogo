@@ -1,0 +1,12 @@
+# CQ09. Which notices for patent P still have an open objection window on a given day?
+# Rule: R4
+# Ontology constructs: gng:objectionDeadline, gng:publishedOn, gng:announcedIn
+SELECT ?notice ?deadline
+{{FROM}}
+WHERE {
+  ?grant a gng:ProposedGrant ; gng:aboutPatent {{patent}} ; gng:announcedIn ?notice ;
+         gng:publishedOn ?published ; gng:objectionDeadline ?deadline .
+  {{ASOF ?grant}}
+  FILTER(?published <= {{day}} && ?deadline >= {{day}})
+}
+ORDER BY ?notice

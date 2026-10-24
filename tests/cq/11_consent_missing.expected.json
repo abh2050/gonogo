@@ -1,0 +1,65 @@
+{
+  "id": "CQ11",
+  "question": "Which listed co-owners of patent P have not consented?",
+  "rule": "R6",
+  "cases": [
+    {
+      "name": "P5 lists two co-owners and only Beta University consented",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P5"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "coOwner",
+        "name"
+      ],
+      "rows": [
+        [
+          "<ex:CO1>",
+          "Alpha Institute"
+        ]
+      ]
+    },
+    {
+      "name": "P4 lists no co-owners, so nobody is missing consent",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P4"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "coOwner",
+        "name"
+      ],
+      "rows": []
+    },
+    {
+      "name": "P6's incomplete record still names a co-owner who has not consented",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P6"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "coOwner",
+        "name"
+      ],
+      "rows": [
+        [
+          "<ex:CO1>",
+          "Alpha Institute"
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+@prefix ex:        <https://example.org/cq/> .
+@prefix gng:       <https://w3id.org/gonogo/ontology#> .
+@prefix field:     <https://w3id.org/gonogo/field/> .
+@prefix territory: <https://w3id.org/gonogo/territory/> .
+@prefix excl:      <https://w3id.org/gonogo/exclusivity/> .
+@prefix state:     <https://w3id.org/gonogo/legal-state/> .
+@prefix policy:    <https://w3id.org/gonogo/policy/> .
+@prefix prov:      <http://www.w3.org/ns/prov#> .
+@prefix dct:       <http://purl.org/dc/terms/> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+
+# Sample world for the competency-question tests. Every fact has an answer that a person worked out by
+# hand; tests/cq/*.expected.json states it. The sample is deliberately small:
+#
+#   P1  in force at USPTO; four executed grants (one exclusive, one expired, two co-exclusive with cap 2);
+#       one open proposed grant from another party
+#   P2  USPTO says lapsed in 2019; the NASA dataset still shows a nominal expiration in 2027
+#   P3  no USPTO record, no expiration date, but a filing date
+#   P4  ownership complete with no co-owners (an explicit negative fact); export unrestricted
+#   P5  two co-owners, one has consented; export restricted to US and CA
+#   P6  ownership record is incomplete
+#   P7  no ownership record and no export classification (unknown, not "none")
+#   P8  an exclusive grant that a later correction supersedes
+
+ex:runBulk a gng:BulkLoad ; prov:startedAtTime "2026-10-24T18:00:00Z"^^xsd:dateTime .
+<https://w3id.org/gonogo/synth/generator/v0.1> a gng:SyntheticGeneration ;
+    gng:generatorSeed 42 ; prov:startedAtTime "2026-10-24T00:00:00Z"^^xsd:dateTime ;
+    prov:wasAssociatedWith <https://w3id.org/gonogo/synth/generator> .
+<https://w3id.org/gonogo/synth/generator> a gng:Generator .
+
+# ----- Patents --------------------------------------------------------------------------------------
+
+ex:P1 a gng:Patent ; gng:caseNumber "TST-10001-1" ; dct:title "Sample patent one" ; gng:center <https://w3id.org/gonogo/center/LaRC> .
+ex:P2 a gng:Patent ; gng:caseNumber "TST-10002-1" ; dct:title "Sample patent two" ; gng:center <https://w3id.org/gonogo/center/LaRC> .
+ex:P3 a gng:Patent ; gng:caseNumber "TST-10003-1" ; dct:title "Sample patent three" ; gng:center <https://w3id.org/gonogo/center/GRC> .
+ex:P4 a gng:Patent ; gng:caseNumber "TST-10004-1" ; dct:title "Sample patent four" ; gng:center <https://w3id.org/gonogo/center/GRC> .
+ex:P5 a gng:Patent ; gng:caseNumber "TST-10005-1" ; dct:title "Sample patent five" ; gng:center <https://w3id.org/gonogo/center/KSC> .
+ex:P6 a gng:Patent ; gng:caseNumber "TST-10006-1" ; dct:title "Sample patent six" ; gng:center <https://w3id.org/gonogo/center/KSC> .
+ex:P7 a gng:Patent ; gng:caseNumber "TST-10007-1" ; dct:title "Sample patent seven" ; gng:center <https://w3id.org/gonogo/center/KSC> .
+ex:P8 a gng:Patent ; gng:caseNumber "TST-10008-1" ; dct:title "Sample patent eight" ; gng:center <https://w3id.org/gonogo/center/LaRC> .
+
+# ----- Legal status ---------------------------------------------------------------------------------
+
+ex:regUSPTO1 a gng:RegistryRecord .
+ex:regUSPTO2 a gng:RegistryRecord .
+ex:regNASA a gng:RegistryRecord .
+
+ex:status-P1-uspto a gng:PatentLegalStatus ;
+    gng:aboutPatent ex:P1 ; gng:legalState state:in-force ; gng:statusText "Patented Case" ;
+    gng:expirationDate "2036-05-02"^^xsd:date ; gng:expirationBasis "earliest filing + 20 years + PTA" ;
+    gng:expirationIsDerived true ;
+    gng:validFrom "2011-12-13"^^xsd:date ; gng:recordedAt "2026-10-24T18:00:00Z"^^xsd:dateTime ;
+    prov:wasDerivedFrom ex:regUSPTO1 ; prov:wasGeneratedBy ex:runBulk ; gng:approvedBy policy:bulk-load-v1 .
+
+ex:status-P2-uspto a gng:PatentLegalStatus ;
+    gng:aboutPatent ex:P2 ; gng:legalState state:lapsed ; gng:statusText "Patent Expired Due to NonPayment of Maintenance Fees" ;
+    gng:lapseDate "2019-12-13"^^xsd:date ;
+    gng:expirationDate "2030-09-10"^^xsd:date ; gng:expirationBasis "earliest filing + 20 years + PTA" ;
+    gng:expirationIsDerived true ;
+    gng:validFrom "2019-12-13"^^xsd:date ; gng:recordedAt "2026-10-24T18:00:00Z"^^xsd:dateTime ;
+    prov:wasDerivedFrom ex:regUSPTO2 ; prov:wasGeneratedBy ex:runBulk ; gng:approvedBy policy:bulk-load-v1 .
+
+ex:status-P2-nasa a gng:PatentLegalStatus ;
+    gng:aboutPatent ex:P2 ; gng:statusText "Issued" ;
+    gng:expirationDate "2027-07-06"^^xsd:date ; gng:expirationBasis "NASA Patents dataset nominal expiration date" ;
+    gng:expirationIsDerived false ;
+    gng:validFrom "2025-05-29"^^xsd:date ; gng:recordedAt "2026-10-24T17:48:00Z"^^xsd:dateTime ;
+    prov:wasDerivedFrom ex:regNASA ; prov:wasGeneratedBy ex:runBulk ; gng:approvedBy policy:bulk-load-v1 .
+
+ex:status-P3-nasa a gng:PatentLegalStatus ;
+    gng:aboutPatent ex:P3 ; gng:statusText "Issued" ;
+    gng:validFrom "2025-05-29"^^xsd:date ; gng:recordedAt "2026-10-24T17:48:00Z"^^xsd:dateTime ;
+    prov:wasDerivedFrom ex:regNASA ; prov:wasGeneratedBy ex:runBulk ; gng:approvedBy policy:bulk-load-v1 .
+
+ex:filing-P3 a gng:FilingRecord ;
+    gng:aboutPatent ex:P3 ; gng:filingDate "2016-05-02"^^xsd:date ;
+    gng:validFrom "2016-05-02"^^xsd:date ; gng:recordedAt "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+# ----- Grants on P1 ---------------------------------------------------------------------------------
+
+ex:LicA a gng:Licensee ; <https://schema.org/legalName> "Alpha Optics, Inc." .
+ex:LicB a gng:Licensee ; <https://schema.org/legalName> "Beta Photonics, LLC" .
+ex:LicC a gng:Licensee ; <https://schema.org/legalName> "Gamma Lasers Ltd." .
+ex:LicD a gng:Licensee ; <https://schema.org/legalName> "Delta Welding Co." .
+
+ex:agreement-G1 a gng:LicenseAgreement ; dct:identifier "G1" .
+ex:clause-G1-grant a gng:Clause ; gng:inDocument ex:agreement-G1 ; gng:clauseKind "grant" ;
+    gng:spanStart 100 ; gng:spanEnd 190 ; gng:spanText "NASA grants Licensee an exclusive license under the Licensed Patents." ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> .
+ex:clause-G1-term a gng:Clause ; gng:inDocument ex:agreement-G1 ; gng:clauseKind "term" ;
+    gng:spanStart 300 ; gng:spanEnd 380 ; gng:spanText "This Agreement takes effect on January 1, 2025." ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> .
+
+ex:G1 a gng:ExecutedGrant ;
+    gng:aboutPatent ex:P1 ; gng:licensee ex:LicA ; gng:exclusivityType excl:exclusive ;
+    gng:fieldOfUse field:optics ; gng:territory territory:NORTH-AMERICA ;
+    gng:validFrom "2025-01-01"^^xsd:date ; gng:validTo "2034-12-31"^^xsd:date ;
+    gng:executedOn "2024-12-15"^^xsd:date ; gng:recordedAt "2025-01-10T00:00:00Z"^^xsd:dateTime ;
+    gng:executedUnder ex:agreement-G1 ; gng:sourceClause ex:clause-G1-grant , ex:clause-G1-term ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+ex:G2 a gng:ExecutedGrant ;
+    gng:aboutPatent ex:P1 ; gng:licensee ex:LicB ; gng:exclusivityType excl:non-exclusive ;
+    gng:fieldOfUse field:spacecraft-systems ; gng:territory territory:DE ;
+    gng:validFrom "2018-01-01"^^xsd:date ; gng:validTo "2024-12-31"^^xsd:date ;
+    gng:executedOn "2017-12-01"^^xsd:date ; gng:recordedAt "2018-01-05T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+ex:G3 a gng:ExecutedGrant ;
+    gng:aboutPatent ex:P1 ; gng:licensee ex:LicB ; gng:exclusivityType excl:co-exclusive ;
+    gng:fieldOfUse field:lasers ; gng:territory territory:US ; gng:coExclusiveCap 2 ;
+    gng:validFrom "2026-01-01"^^xsd:date ; gng:validTo "2035-12-31"^^xsd:date ;
+    gng:executedOn "2025-12-20"^^xsd:date ; gng:recordedAt "2026-01-10T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+ex:G4 a gng:ExecutedGrant ;
+    gng:aboutPatent ex:P1 ; gng:licensee ex:LicC ; gng:exclusivityType excl:co-exclusive ;
+    gng:fieldOfUse field:lasers ; gng:territory territory:US ; gng:coExclusiveCap 2 ;
+    gng:validFrom "2026-02-01"^^xsd:date ; gng:validTo "2035-12-31"^^xsd:date ;
+    gng:executedOn "2026-01-20"^^xsd:date ; gng:recordedAt "2026-02-10T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+# ----- A proposed grant from a notice ---------------------------------------------------------------
+
+ex:N1 a gng:LicenseNotice ; dct:identifier "2026-00001" ; gng:namesIdentifier "TST-10001-1" , "TST-10004-1" .
+ex:N2 a gng:LicenseNotice ; dct:identifier "2026-00002" .
+
+ex:PG1 a gng:ProposedGrant ;
+    gng:aboutPatent ex:P1 , ex:P4 ; gng:licensee ex:LicD ; gng:exclusivityType excl:exclusive ;
+    gng:fieldOfUseText "laser welding" ; gng:fieldOfUseStatus "stated" ; gng:territory territory:US ;
+    gng:publishedOn "2026-10-20"^^xsd:date ; gng:objectionDeadline "2026-11-04"^^xsd:date ;
+    gng:objectionDeadlineBasis "stated date" ; gng:announcedIn ex:N1 ;
+    gng:validFrom "2026-10-20"^^xsd:date ; gng:recordedAt "2026-10-24T18:30:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy ex:runBulk ; gng:approvedBy policy:bulk-load-v1 .
+
+# ----- Ownership, consent, export -------------------------------------------------------------------
+
+ex:CO1 a gng:CoOwner ; <https://schema.org/legalName> "Alpha Institute" .
+ex:CO2 a gng:CoOwner ; <https://schema.org/legalName> "Beta University" .
+
+ex:own-P4 a gng:OwnershipRecord ; gng:aboutPatent ex:P4 ; gng:coOwnerListIsComplete true ;
+    gng:validFrom "2000-01-01"^^xsd:date ; gng:recordedAt "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+ex:own-P5 a gng:OwnershipRecord ; gng:aboutPatent ex:P5 ; gng:coOwnerListIsComplete true ;
+    gng:coOwner ex:CO1 , ex:CO2 ;
+    gng:validFrom "2000-01-01"^^xsd:date ; gng:recordedAt "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+ex:own-P6 a gng:OwnershipRecord ; gng:aboutPatent ex:P6 ; gng:coOwnerListIsComplete false ;
+    gng:coOwner ex:CO1 ;
+    gng:validFrom "2000-01-01"^^xsd:date ; gng:recordedAt "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+ex:consent-P5-CO2 a gng:ConsentRecord ; gng:aboutPatent ex:P5 ; gng:consentBy ex:CO2 ;
+    gng:consentScope "any license in any field and territory" ;
+    gng:validFrom "2026-01-15"^^xsd:date ; gng:recordedAt "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+ex:export-P4 a gng:UnrestrictedExport ; gng:aboutPatent ex:P4 ;
+    gng:validFrom "2026-01-15"^^xsd:date ; gng:recordedAt "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+ex:export-P5 a gng:RestrictedExport ; gng:aboutPatent ex:P5 ;
+    gng:permittedTerritory territory:US , territory:CA ;
+    gng:validFrom "2026-01-15"^^xsd:date ; gng:recordedAt "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+
+# ----- A retroactive correction ---------------------------------------------------------------------
+
+ex:GA a gng:ExecutedGrant ;
+    gng:aboutPatent ex:P8 ; gng:licensee ex:LicA ; gng:exclusivityType excl:exclusive ;
+    gng:fieldOfUse field:optics ; gng:territory territory:US ;
+    gng:validFrom "2025-01-01"^^xsd:date ; gng:validTo "2034-12-31"^^xsd:date ;
+    gng:executedOn "2024-12-15"^^xsd:date ;
+    gng:recordedAt "2025-01-10T00:00:00Z"^^xsd:dateTime ; gng:supersededAt "2026-10-26T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .
+ex:GB a gng:ExecutedGrant ;
+    gng:aboutPatent ex:P8 ; gng:licensee ex:LicA ; gng:exclusivityType excl:exclusive ;
+    gng:fieldOfUse field:aerospace ; gng:territory territory:US ;
+    gng:validFrom "2025-01-01"^^xsd:date ; gng:validTo "2034-12-31"^^xsd:date ;
+    gng:executedOn "2026-05-20"^^xsd:date ; gng:supersedes ex:GA ;
+    gng:recordedAt "2026-10-26T00:00:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ; gng:approvedBy policy:synthetic-load-v1 .

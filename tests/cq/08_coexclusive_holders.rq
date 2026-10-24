@@ -1,0 +1,13 @@
+# CQ08. How many licensees already hold co-exclusive rights that reach a requested field and territory on a given day, and what cap do the agreements state?
+# Rule: R3
+# Ontology constructs: gng:coversField, gng:coversTerritory, gng:coExclusiveCap, aggregation, absence of a cap as unknown
+SELECT (COUNT(DISTINCT ?licensee) AS ?holders) (MIN(?cap) AS ?statedCap)
+{{FROM}}
+WHERE {
+  ?grant a gng:ExecutedGrant ; gng:aboutPatent {{patent}} ; gng:exclusivityType excl:co-exclusive ;
+         gng:licensee ?licensee ; gng:coversField {{field}} ; gng:coversTerritory {{territory}} ;
+         gng:validFrom ?from ; gng:validTo ?to .
+  OPTIONAL { ?grant gng:coExclusiveCap ?cap }
+  {{ASOF ?grant}}
+  FILTER(?from <= {{day}} && ?to >= {{day}})
+}

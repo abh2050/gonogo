@@ -1,5 +1,111 @@
 # Status
 
+## Gate 1: ontology, vocabularies, shapes, and the graph load
+
+**State:** complete and waiting for approval. Gate 2 has not started.
+**Date:** 2026-10-24
+
+### Deliverables
+
+| Deliverable | Where | State |
+|---|---|---|
+| OWL 2 ontology: 42 classes, 21 object properties, 48 data properties | [ontology/gonogo.ttl](../ontology/gonogo.ttl) | Done. Every term has a label and a definition, and a test enforces both. |
+| SKOS schemes: 15 field tops and 36 narrower fields, 22 territories (17 ISO 3166 countries), 4 exclusivity types, 6 legal states | [ontology/schemes/](../ontology/schemes/) | Done. The generator now reads its hierarchy from these files. |
+| SHACL shapes | [shapes/](../shapes/) | Done. 23 node shapes, 6 SHACL-SPARQL constraints. No shape decides a verdict. |
+| 15 competency questions, each with a SPARQL template and hand-worked answers | [ontology/competency_questions.md](../ontology/competency_questions.md), `tests/cq/` | Done. 42 cases, run on rdflib and on a real Fuseki server. |
+| SPARQL template engine (graph allowlist, bitemporal filter, typed parameters) | `kg/templates.py` | Done. The Gate 3 query service will use it unchanged. |
+| ROBOT and HermiT in CI | `scripts/robot.sh`, `tests/unit/test_robot.py`, `.github/workflows/ci.yml` | Done. Consistent, no unsatisfiable class, and three inconsistent datasets rejected. |
+| Inference materialized with owlrl before load | `kg/materialize.py` | Done, with a disjointness check on the closure. |
+| Knowledge graph build and load into local Fuseki | `kg/build.py`, `kg/load.py`, `python -m kg all` | Done. 4 named graphs, 46,029 triples, loaded in 3 seconds. |
+| pyLODE reference documentation | [docs/ontology/](ontology/index.html) | Generated for the ontology, the field scheme, and the shapes. CI regenerates it and fails on any difference. |
+| ADR 0001 on upper ontology alignment | [docs/adr/0001-upper-ontology-alignment.md](adr/0001-upper-ontology-alignment.md) | Done. |
+| Ontology guide and 13 modeling decisions | [docs/ontology-guide.md](ontology-guide.md), [docs/modeling-decisions.md](modeling-decisions.md) | Done. A test checks that every annotation in the ontology points at a decision that exists. |
+| Visualizations | `ui/` | Done. Five views: overview, ontology graph, vocabularies, data findings, time model. Built with D3 and Chart.js. |
+| Public demo plan | [docs/public-demo.md](public-demo.md) | Written. Nothing is deployed. |
+
+### Test results
+
+| Suite | Command | Result |
+|---|---|---|
+| Lint, format, types | `ruff check`, `ruff format --check`, `mypy` (strict, 30 files) | Pass |
+| Offline | `uv run pytest` | 286 passed |
+| Fuseki and Neo4j | `uv run pytest -m docker` | 44 passed (every competency question on Fuseki, plus Gate 0's checks) |
+| HermiT | `uv run pytest -m robot` | 6 passed |
+| Live sources | `uv run pytest -m network` | 6 passed. data.nasa.gov answered slowly (its redirect took 20 seconds on some attempts), so the check now retries. |
+| AWS preflight | `uv run pytest -m aws` | 1 passed |
+| UI | `npm run build` (type-check, then Vite build) | Pass |
+| Drift checks | `python -m kg.docs`, `python -m kg.export_viz` | The committed files match. CI repeats both. |
+
+**How the checks were made to fail.** A check that never fails proves nothing, so each layer has tests that
+break valid data on purpose. `tests/unit/test_shacl.py` breaks a valid graph 13 ways and checks that the shapes
+reject each one. Three more tests feed the build an inconsistent graph and expect a build failure. HermiT
+rejects three inconsistent datasets in `tests/ontology/inconsistent/`.
+
+### What the work found
+
+1. **A range axiom hides a mistake from SHACL.** A grant that used a territory as its field of use made the
+   closure type that territory as a field of use, so the SHACL class check passed. The disjointness axiom is
+   what catches it. The build now checks disjointness on every individual after the closure
+   (modeling decision MD13).
+2. **Running the questions on two engines caught a real error.** rdflib accepted a query that reused a bound
+   variable as an aggregate alias, and Fuseki rejected it, as the SPARQL specification requires.
+3. **Real data can find the generator's ground truth.** The test
+   `test_the_injected_conflicts_can_be_found_by_querying_the_graph` takes each of the 13 injected R2 conflicts
+   and finds its agreement through the field and territory hierarchies. All 13 are found.
+4. **Royalty text sits inside the agreements.** An agreement's full text contains its royalty article, so
+   the full text and the royalty clause live in the confidential graph, and a test checks that no royalty
+   wording reaches the approved graph (MD11).
+5. **The retroactive-correction cases needed new dates.** They used a cutoff of 2026-03-01, which predates
+   the moment the real data entered the system (2026-10-24). At that cutoff, the real USPTO facts would not
+   exist, so rule R1 would return UNKNOWN. The cases now use a cutoff of 2026-10-25 and a correction recorded
+   on 2026-10-26. A test checks that every real fact was recorded before the earlier cutoff.
+
+### Decisions and deviations
+
+| Topic | Decision | Made by |
+|---|---|---|
+| "SHACL 1.1" | The W3C has no SHACL 1.1. The shapes use SHACL Core and SHACL-SPARQL constraints, which pySHACL implements. | Me |
+| The term of a grant | A grant's term is its valid-time interval (`validFrom`, `validTo`), not a separate node. The spec lists "a term" among the six participants, and the interval is that participant. | Me |
+| Taxonomy source of truth | The SKOS files now hold the hierarchy and labels. The generator reads them, and a small YAML file holds only the title keywords. The generator's output stayed byte-identical. | Me |
+| Reused vocabularies | Declared by hand in `external-terms.ttl` instead of imported, so HermiT runs offline in about a second. | Me |
+| Licensee names | A synthetic agreement keeps both the canonical licensee and the spelling it was written with. Each real notice licensee is its own node, and entity resolution in Gate 2 links them. | Me |
+| Approval of bulk data | Two named standing policies approve public registry data and labeled synthetic data. The bulk-load policy never approves a fact that a language model extracted. | Me |
+| Dependency pin | `kurra==3.0.5`, because pyLODE 3.6.0 imports a function that later kurra versions removed. | Me |
+| UI libraries | D3 for graphs and hierarchies, Chart.js for charts, React and Vite for the app, hosted on Vercel in Gate 3. | You, with my choice of libraries |
+
+### Not done, and why
+
+- **The w3id.org persistent IRI.** Your spec asks for `https://w3id.org/gonogo/ontology#` to resolve to the
+  documentation. That needs a pull request to the public `perma-id/w3id.org` repository, which is an
+  outward-facing step. I did not open one. Until it exists, the namespace is an identifier and not a working
+  link, and the reference documentation is in the repository.
+- **A check of the whole graph by HermiT.** HermiT checks the ontology, the schemes, and the sample world. The
+  build checks every individual in the real graph for disjointness, and SHACL checks its shape. A full
+  description-logic check of 46,000 triples was not needed to find any of the errors above.
+- **Field-of-use mapping for real notices.** Only 24 of 92 notices state a field. The graph records the others
+  as unstated. Gate 2 adds the language-model proposal and the steward approval.
+
+### Open questions for you
+
+1. **The research from yesterday.** You mentioned research that should shape how the ontology work is
+   presented. That session is not in this conversation, and I have no notes of it. If you paste the key
+   points or give me a file path, I will check the guide and the visuals against them. Until then, the guide
+   follows the PRD's modeling decisions and the W3C specifications.
+2. **w3id.org and GitHub Pages.** Should I open the w3id.org pull request and enable GitHub Pages for the
+   reference documentation? Both are public changes outside this repository.
+3. **Vercel.** The public demo needs a Vercel account and a link between it and this repository. I plan to
+   deploy the static views after Gate 2, and the snapshot mode in Gate 3. Say if you want the Gate 1 views
+   deployed sooner.
+4. **Gate 2 approval.** Gate 2 builds rules R1 to R7, the combiner, entity resolution, the request screen,
+   the verdict card, the steward approval, and the rerun that explains what changed.
+
+### Gate 2 preview
+
+Gate 2 adds the seven rule functions as parameterized SPARQL templates plus Python, the decision combiner with
+its versioned precedence file, the deterministic entity resolver with a 100-pair labeled set, the request
+parser, and the local API. The UI gains the request screen, the verdict card with every finding and its source
+clause, the steward queue, and the rerun view. The 44 injected cases become the regression suite.
+
 ## Gate 0: scaffold, ingestion, and synthetic data
 
 **State:** complete and waiting for approval. Gate 1 has not started.

@@ -1,0 +1,11 @@
+# CQ13. Which executed grants on patent P did the system know about, and not yet consider replaced, at a recording cutoff?
+# Rule: Every rule (reproducing a past decision)
+# Ontology constructs: gng:recordedAt, gng:supersededAt, gng:supersedes, bitemporal reproducibility
+SELECT ?grant ?fieldLabel ?supersedes
+{{FROM}}
+WHERE {
+  ?grant a gng:ExecutedGrant ; gng:aboutPatent {{patent}} ; gng:fieldOfUse/skos:prefLabel ?fieldLabel .
+  {{ASOF ?grant}}
+  OPTIONAL { ?grant gng:supersedes ?supersedes }
+}
+ORDER BY ?grant

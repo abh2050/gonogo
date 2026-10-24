@@ -1,0 +1,142 @@
+{
+ "title": "GoNoGo territory scheme",
+ "tops": [
+  {
+   "children": [
+    {
+     "children": [
+      {
+       "id": "AU",
+       "iso": "AU",
+       "label": "Australia",
+       "notation": "AU"
+      },
+      {
+       "id": "CN",
+       "iso": "CN",
+       "label": "China",
+       "notation": "CN"
+      },
+      {
+       "id": "IN",
+       "iso": "IN",
+       "label": "India",
+       "notation": "IN"
+      },
+      {
+       "id": "JP",
+       "iso": "JP",
+       "label": "Japan",
+       "notation": "JP"
+      },
+      {
+       "id": "KR",
+       "iso": "KR",
+       "label": "Republic of Korea",
+       "notation": "KR"
+      },
+      {
+       "id": "SG",
+       "iso": "SG",
+       "label": "Singapore",
+       "notation": "SG"
+      }
+     ],
+     "id": "ASIA-PACIFIC",
+     "label": "Asia Pacific",
+     "notation": "ASIA-PACIFIC"
+    },
+    {
+     "children": [
+      {
+       "id": "DE",
+       "iso": "DE",
+       "label": "Germany",
+       "notation": "DE"
+      },
+      {
+       "id": "FR",
+       "iso": "FR",
+       "label": "France",
+       "notation": "FR"
+      },
+      {
+       "id": "GB",
+       "iso": "GB",
+       "label": "United Kingdom",
+       "notation": "GB"
+      },
+      {
+       "id": "IT",
+       "iso": "IT",
+       "label": "Italy",
+       "notation": "IT"
+      },
+      {
+       "id": "NL",
+       "iso": "NL",
+       "label": "Netherlands",
+       "notation": "NL"
+      },
+      {
+       "id": "SE",
+       "iso": "SE",
+       "label": "Sweden",
+       "notation": "SE"
+      }
+     ],
+     "id": "EUROPE",
+     "label": "Europe",
+     "notation": "EUROPE"
+    },
+    {
+     "children": [
+      {
+       "id": "AE",
+       "iso": "AE",
+       "label": "United Arab Emirates",
+       "notation": "AE"
+      },
+      {
+       "id": "IL",
+       "iso": "IL",
+       "label": "Israel",
+       "notation": "IL"
+      }
+     ],
+     "id": "MIDDLE-EAST",
+     "label": "Middle East",
+     "notation": "MIDDLE-EAST"
+    },
+    {
+     "children": [
+      {
+       "id": "CA",
+       "iso": "CA",
+       "label": "Canada",
+       "notation": "CA"
+      },
+      {
+       "id": "MX",
+       "iso": "MX",
+       "label": "Mexico",
+       "notation": "MX"
+      },
+      {
+       "id": "US",
+       "iso": "US",
+       "label": "United States",
+       "notation": "US"
+      }
+     ],
+     "id": "NORTH-AMERICA",
+     "label": "North America",
+     "notation": "NORTH-AMERICA"
+    }
+   ],
+   "id": "WORLD",
+   "label": "Worldwide",
+   "notation": "WORLD"
+  }
+ ]
+}

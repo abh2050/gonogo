@@ -1,0 +1,255 @@
+@prefix shp:    <https://w3id.org/gonogo/shapes#> .
+@prefix gng:    <https://w3id.org/gonogo/ontology#> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix schema: <https://schema.org/> .
+
+# =====================================================================================================
+# GoNoGo SHACL shapes: conformance only.
+#
+# These shapes check that required facts exist and have the right types, datatypes, cardinality, and
+# ranges. They never decide a verdict. A rule function decides what a fact means for a request, and the
+# combiner turns rule statuses into a verdict (docs/modeling-decisions.md, decision 12).
+#
+# Two checks go beyond cardinality, and both guard evidence integrity:
+#   * a clause's stored text must equal the characters at its span in the document;
+#   * a consent record must name a co-owner that an ownership record for the same patent lists.
+# The shapes assume that the pipeline materialized inference first (kg/materialize.py), so scheme
+# concepts already carry their defined-class types and facts already carry their superclass types.
+# Dataset-wide approval checks live in shapes/approved-shapes.ttl.
+# =====================================================================================================
+
+<https://w3id.org/gonogo/shapes> a owl:Ontology , sh:ShapesGraph ;
+    dct:title "GoNoGo SHACL shapes"@en ;
+    dct:description "Conformance checks for GoNoGo facts. The shapes never decide a verdict."@en ;
+    sh:declare
+        [ sh:prefix "gng" ; sh:namespace "https://w3id.org/gonogo/ontology#"^^xsd:anyURI ] ,
+        [ sh:prefix "skos" ; sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI ] ,
+        [ sh:prefix "prov" ; sh:namespace "http://www.w3.org/ns/prov#"^^xsd:anyURI ] ,
+        [ sh:prefix "xsd" ; sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ] .
+
+# ----- Patents, parties, and documents --------------------------------------------------------------
+
+shp:PatentShape a sh:NodeShape ;
+    sh:targetClass gng:Patent ;
+    sh:name "Patent" ;
+    sh:property [ sh:path gng:center ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:NASACenter ] ;
+    sh:property [ sh:path dct:title ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path gng:caseNumber ; sh:maxCount 1 ;
+                  sh:pattern "^[A-Z]{3,4}-[0-9]{4,6}(-[0-9A-Z]+)*$" ] ;
+    sh:property [ sh:path gng:patentNumber ; sh:maxCount 1 ; sh:pattern "^(RE)?[0-9]{5,8}$" ] ;
+    sh:property [ sh:path gng:applicationSerial ; sh:maxCount 1 ; sh:pattern "^[0-9]{6,8}$" ] ;
+    sh:property [ sh:path gng:technologyReadinessLevel ; sh:maxCount 1 ;
+                  sh:datatype xsd:integer ; sh:minInclusive 1 ; sh:maxInclusive 9 ] ;
+    sh:or ( [ sh:property [ sh:path gng:caseNumber ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path gng:patentNumber ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path gng:applicationSerial ; sh:minCount 1 ] ] ) ;
+    sh:message "A patent needs a center, a title, and at least one identifier." .
+
+shp:LicenseeShape a sh:NodeShape ;
+    sh:targetClass gng:Licensee ;
+    sh:property [ sh:path schema:legalName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path gng:countryCode ; sh:maxCount 1 ; sh:pattern "^[A-Z]{2}$" ] .
+
+shp:CoOwnerShape a sh:NodeShape ;
+    sh:targetClass gng:CoOwner ;
+    sh:property [ sh:path schema:legalName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+shp:LicenseNoticeShape a sh:NodeShape ;
+    sh:targetClass gng:LicenseNotice ;
+    sh:property [ sh:path dct:identifier ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:fullText ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+shp:LicenseAgreementShape a sh:NodeShape ;
+    sh:targetClass gng:LicenseAgreement ;
+    sh:property [ sh:path dct:identifier ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:storedAt ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:fullText ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+shp:RegistryRecordShape a sh:NodeShape ;
+    sh:targetClass gng:RegistryRecord ;
+    sh:property [ sh:path dct:title ; sh:minCount 1 ] ;
+    sh:property [ sh:path schema:url ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:retrievedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+shp:ClauseShape a sh:NodeShape ;
+    sh:targetClass gng:Clause ;
+    sh:property [ sh:path gng:inDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:SourceDocument ] ;
+    sh:property [ sh:path gng:clauseKind ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path gng:spanStart ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:datatype xsd:nonNegativeInteger ; sh:lessThanOrEquals gng:spanEnd ] ;
+    sh:property [ sh:path gng:spanEnd ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path gng:spanText ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:prefixes <https://w3id.org/gonogo/shapes> ;
+        sh:message "The clause text differs from the characters at its span in the document." ;
+        sh:select """
+            SELECT $this WHERE {
+              $this gng:inDocument ?doc ; gng:spanStart ?s ; gng:spanEnd ?e ; gng:spanText ?t .
+              ?doc gng:fullText ?full .
+              FILTER (SUBSTR(?full, xsd:integer(?s) + 1, xsd:integer(?e) - xsd:integer(?s)) != ?t)
+            }""" ] .
+
+# ----- Bitemporal facts -----------------------------------------------------------------------------
+
+shp:BitemporalFactShape a sh:NodeShape ;
+    sh:targetClass gng:BitemporalFact ;
+    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ; sh:class gng:Patent ] ;
+    sh:property [ sh:path gng:validFrom ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+                  sh:lessThanOrEquals gng:validTo ] ;
+    sh:property [ sh:path gng:validTo ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path gng:recordedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ;
+                  sh:lessThanOrEquals gng:supersededAt ] ;
+    sh:property [ sh:path gng:supersededAt ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [ sh:path prov:wasGeneratedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:FactGeneration ] ;
+    sh:property [ sh:path gng:supersedes ; sh:class gng:BitemporalFact ] .
+
+shp:GrantShape a sh:NodeShape ;
+    sh:targetClass gng:Grant ;
+    sh:property [ sh:path gng:licensee ; sh:maxCount 1 ; sh:class gng:Licensee ] ;
+    sh:property [ sh:path gng:exclusivityType ; sh:minCount 1 ; sh:class gng:ExclusivityType ] ;
+    sh:property [ sh:path gng:fieldOfUse ; sh:class gng:FieldOfUse ] ;
+    sh:property [ sh:path gng:territory ; sh:class gng:Territory ] ;
+    sh:property [ sh:path gng:sourceClause ; sh:minCount 1 ; sh:class gng:Clause ] .
+
+shp:ExecutedGrantShape a sh:NodeShape ;
+    sh:targetClass gng:ExecutedGrant ;
+    sh:property [ sh:path gng:licensee ; sh:minCount 1 ] ;
+    sh:property [ sh:path gng:fieldOfUse ; sh:minCount 1 ] ;
+    sh:property [ sh:path gng:territory ; sh:minCount 1 ] ;
+    sh:property [ sh:path gng:exclusivityType ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:validTo ; sh:minCount 1 ] ;
+    sh:property [ sh:path gng:executedOn ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path gng:executedUnder ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:LicenseAgreement ] ;
+    sh:property [ sh:path gng:licenseeNameAsWritten ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path gng:coExclusiveCap ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ] ;
+    sh:property [ sh:path gng:objectionDeadline ; sh:maxCount 0 ] .
+
+shp:ProposedGrantShape a sh:NodeShape ;
+    sh:targetClass gng:ProposedGrant ;
+    sh:property [ sh:path gng:announcedIn ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:LicenseNotice ] ;
+    sh:property [ sh:path gng:publishedOn ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path gng:fieldOfUseStatus ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:in ( "stated" "limited_unspecified" "not_mentioned" ) ] ;
+    sh:property [ sh:path gng:objectionDeadline ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path gng:executedOn ; sh:maxCount 0 ] ;
+    sh:property [ sh:path gng:coExclusiveCap ; sh:maxCount 0 ] ;
+    sh:property [ sh:path gng:sublicenseAllowed ; sh:maxCount 0 ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:prefixes <https://w3id.org/gonogo/shapes> ;
+        sh:message "A notice that states a deadline must also state how the deadline was found." ;
+        sh:select """
+            SELECT $this WHERE {
+              $this gng:objectionDeadline ?d .
+              FILTER NOT EXISTS { $this gng:objectionDeadlineBasis ?b }
+            }""" ] .
+
+shp:OwnershipRecordShape a sh:NodeShape ;
+    sh:targetClass gng:OwnershipRecord ;
+    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:coOwnerListIsComplete ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path gng:coOwner ; sh:class gng:CoOwner ] .
+
+shp:ConsentRecordShape a sh:NodeShape ;
+    sh:targetClass gng:ConsentRecord ;
+    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:consentBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:CoOwner ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:prefixes <https://w3id.org/gonogo/shapes> ;
+        sh:message "A consent must name a co-owner that an ownership record for the same patent lists." ;
+        sh:select """
+            SELECT $this WHERE {
+              $this gng:aboutPatent ?p ; gng:consentBy ?c .
+              FILTER NOT EXISTS { ?o a gng:OwnershipRecord ; gng:aboutPatent ?p ; gng:coOwner ?c }
+            }""" ] .
+
+shp:RestrictedExportShape a sh:NodeShape ;
+    sh:targetClass gng:RestrictedExport ;
+    sh:property [ sh:path gng:aboutPatent ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:permittedTerritory ; sh:minCount 1 ; sh:class gng:Territory ] .
+
+shp:UnrestrictedExportShape a sh:NodeShape ;
+    sh:targetClass gng:UnrestrictedExport ;
+    sh:property [ sh:path gng:aboutPatent ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:permittedTerritory ; sh:maxCount 0 ] .
+
+shp:PatentLegalStatusShape a sh:NodeShape ;
+    sh:targetClass gng:PatentLegalStatus ;
+    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:legalState ; sh:maxCount 1 ; sh:class gng:LegalState ] ;
+    sh:property [ sh:path gng:expirationDate ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path gng:lapseDate ; sh:maxCount 1 ; sh:datatype xsd:date ;
+                  sh:lessThanOrEquals gng:reinstatedOn ] ;
+    sh:property [ sh:path gng:reinstatedOn ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:prefixes <https://w3id.org/gonogo/shapes> ;
+        sh:message "An expiration date needs its basis and its derived flag, so the card can label it." ;
+        sh:select """
+            SELECT $this WHERE {
+              $this gng:expirationDate ?d .
+              FILTER (NOT EXISTS { $this gng:expirationBasis ?b } || NOT EXISTS { $this gng:expirationIsDerived ?x })
+            }""" ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:prefixes <https://w3id.org/gonogo/shapes> ;
+        sh:message "A lapsed patent needs the date of the recorded lapse." ;
+        sh:select """
+            SELECT $this WHERE {
+              $this gng:legalState <https://w3id.org/gonogo/legal-state/lapsed> .
+              FILTER NOT EXISTS { $this gng:lapseDate ?d }
+            }""" ] .
+
+shp:FilingRecordShape a sh:NodeShape ;
+    sh:targetClass gng:FilingRecord ;
+    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path gng:filingDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+shp:RoyaltyTermShape a sh:NodeShape ;
+    sh:targetClass gng:RoyaltyTerm ;
+    sh:property [ sh:path gng:royaltyOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:ExecutedGrant ] ;
+    sh:property [ sh:path gng:royaltyPercent ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+                  sh:minInclusive 0 ; sh:maxInclusive 100 ] ;
+    sh:property [ sh:path gng:minimumAnnualRoyaltyUSD ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+# ----- Provenance activities ------------------------------------------------------------------------
+
+shp:FactGenerationShape a sh:NodeShape ;
+    sh:targetClass gng:FactGeneration ;
+    sh:property [ sh:path prov:startedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+shp:ExtractionShape a sh:NodeShape ;
+    sh:targetClass gng:Extraction ;
+    sh:property [ sh:path gng:extractionModel ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+shp:SyntheticGenerationShape a sh:NodeShape ;
+    sh:targetClass gng:SyntheticGeneration ;
+    sh:property [ sh:path gng:generatorSeed ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
+    sh:property [ sh:path prov:wasAssociatedWith ; sh:minCount 1 ; sh:class gng:Generator ] .
+
+# ----- Controlled vocabularies ----------------------------------------------------------------------
+
+shp:ConceptShape a sh:NodeShape ;
+    sh:targetClass skos:Concept ;
+    sh:property [ sh:path skos:prefLabel ; sh:minCount 1 ; sh:maxCount 1 ; sh:languageIn ( "en" ) ] ;
+    sh:property [ sh:path skos:inScheme ; sh:minCount 1 ; sh:maxCount 1 ; sh:class skos:ConceptScheme ] ;
+    sh:property [ sh:path skos:notation ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path skos:broader ; sh:maxCount 1 ] ;
+    sh:or ( [ sh:property [ sh:path skos:broader ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path skos:topConceptOf ; sh:minCount 1 ] ] ) ;
+    sh:message "A concept needs one English preferred label, one notation, one scheme, and either a broader concept or a top-concept link." ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:prefixes <https://w3id.org/gonogo/shapes> ;
+        sh:message "A concept cannot be its own ancestor. A cycle in skos:broader would make coverage undefined." ;
+        sh:select """
+            SELECT $this WHERE { $this skos:broaderTransitive $this }""" ] .

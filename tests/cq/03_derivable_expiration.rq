@@ -1,0 +1,14 @@
+# CQ03. Which patents have a filing date but no registry expiration date, so that a rule could derive an expiration?
+# Rule: R1 (derived expiration, labeled derived)
+# Ontology constructs: gng:FilingRecord, gng:filingDate, gng:expirationDate, absence as unknown
+SELECT ?patent ?filingDate
+{{FROM}}
+WHERE {
+  ?filing a gng:FilingRecord ; gng:aboutPatent ?patent ; gng:filingDate ?filingDate .
+  {{ASOF ?filing}}
+  FILTER NOT EXISTS {
+    ?status a gng:PatentLegalStatus ; gng:aboutPatent ?patent ; gng:expirationDate ?anyDate .
+    {{ASOF ?status}}
+  }
+}
+ORDER BY ?patent

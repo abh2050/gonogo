@@ -1,0 +1,11 @@
+# CQ12. Does patent P have an ownership record, does the record claim that its co-owner list is complete, and how many co-owners does it list?
+# Rule: R6
+# Ontology constructs: gng:coOwnerListIsComplete (explicit negative fact), open world: no record means unknown
+SELECT ?complete (COUNT(?coOwner) AS ?coOwners)
+{{FROM}}
+WHERE {
+  ?record a gng:OwnershipRecord ; gng:aboutPatent {{patent}} ; gng:coOwnerListIsComplete ?complete .
+  {{ASOF ?record}}
+  OPTIONAL { ?record gng:coOwner ?coOwner }
+}
+GROUP BY ?complete

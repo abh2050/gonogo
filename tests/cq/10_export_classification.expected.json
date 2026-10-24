@@ -1,0 +1,69 @@
+{
+  "id": "CQ10",
+  "question": "What is the export classification of patent P, and which territories may a licensee sit in?",
+  "rule": "R5",
+  "cases": [
+    {
+      "name": "P5 is restricted to the US and Canada",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P5"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "kind",
+        "code"
+      ],
+      "rows": [
+        [
+          "restricted",
+          "CA"
+        ],
+        [
+          "restricted",
+          "US"
+        ]
+      ]
+    },
+    {
+      "name": "P4 is unrestricted",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P4"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "kind",
+        "code"
+      ],
+      "rows": [
+        [
+          "unrestricted",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "P7 has no classification, which is unknown and not 'unrestricted'",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P7"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "kind",
+        "code"
+      ],
+      "rows": []
+    }
+  ]
+}

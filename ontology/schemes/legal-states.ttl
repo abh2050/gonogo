@@ -1,0 +1,54 @@
+@prefix gng:   <https://w3id.org/gonogo/ontology#> .
+@prefix state: <https://w3id.org/gonogo/legal-state/> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+
+# Legal states that a patent record can show, as of the date the record states.
+# Rule R1 reads these states. The scheme is flat.
+
+<https://w3id.org/gonogo/scheme/legal-state> a skos:ConceptScheme ;
+    dct:title "GoNoGo patent legal-state scheme"@en ;
+    dct:description "The legal state of a patent or application, as a registry reports it."@en ;
+    skos:hasTopConcept state:in-force, state:lapsed, state:term-ended, state:abandoned, state:not-granted, state:application .
+
+state:in-force a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:prefLabel "in force"@en ;
+    skos:notation "in_force" ;
+    skos:definition "The patent was granted, no maintenance-fee lapse stands, and its term has not ended."@en .
+
+state:lapsed a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:prefLabel "lapsed"@en ;
+    skos:notation "lapsed" ;
+    skos:definition "The patent expired early because the owner did not pay a maintenance fee, and no late payment reinstated it."@en .
+
+state:term-ended a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:prefLabel "term ended"@en ;
+    skos:notation "term_ended" ;
+    skos:definition "The statutory term ran out: earliest filing date plus 20 years plus any term adjustment."@en .
+
+state:abandoned a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:prefLabel "abandoned"@en ;
+    skos:notation "abandoned" ;
+    skos:definition "The application was abandoned before a patent issued."@en .
+
+state:not-granted a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:prefLabel "not granted"@en ;
+    skos:notation "not_granted" ;
+    skos:definition "No patent has issued and the registry reports no abandonment."@en .
+
+state:application a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:prefLabel "application"@en ;
+    skos:notation "application" ;
+    skos:definition "The NASA Patents snapshot lists the record as an application. The snapshot is old, so this state is weaker evidence than a USPTO state."@en .

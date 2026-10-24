@@ -1,0 +1,38 @@
+{
+  "id": "CQ01",
+  "question": "Which patents does a license notice name?",
+  "rule": "R4 (matching the notice to a patent)",
+  "cases": [
+    {
+      "name": "notice N1 names two patents",
+      "params": {
+        "notice": {
+          "iri": "https://example.org/cq/N1"
+        }
+      },
+      "vars": [
+        "caseNumber"
+      ],
+      "rows": [
+        [
+          "TST-10001-1"
+        ],
+        [
+          "TST-10004-1"
+        ]
+      ]
+    },
+    {
+      "name": "notice N2 announces no grant",
+      "params": {
+        "notice": {
+          "iri": "https://example.org/cq/N2"
+        }
+      },
+      "vars": [
+        "caseNumber"
+      ],
+      "rows": []
+    }
+  ]
+}

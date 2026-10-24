@@ -1,0 +1,132 @@
+{
+  "id": "CQ06",
+  "question": "Which executed grants on patent P have a term that overlaps a requested term?",
+  "rule": "R2 (and R3)",
+  "cases": [
+    {
+      "name": "a 2027 to 2031 request overlaps the three live grants",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "start": {
+          "date": "2027-01-01"
+        },
+        "end": {
+          "date": "2031-12-31"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "validFrom",
+        "validTo"
+      ],
+      "rows": [
+        [
+          "<ex:G1>",
+          "2025-01-01",
+          "2034-12-31"
+        ],
+        [
+          "<ex:G3>",
+          "2026-01-01",
+          "2035-12-31"
+        ],
+        [
+          "<ex:G4>",
+          "2026-02-01",
+          "2035-12-31"
+        ]
+      ]
+    },
+    {
+      "name": "a 2018 request overlaps only the grant that has since expired",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "start": {
+          "date": "2018-06-01"
+        },
+        "end": {
+          "date": "2019-06-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "validFrom",
+        "validTo"
+      ],
+      "rows": [
+        [
+          "<ex:G2>",
+          "2018-01-01",
+          "2024-12-31"
+        ]
+      ]
+    },
+    {
+      "name": "a request that straddles the end of G2 and the start of G1 overlaps both partially",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "start": {
+          "date": "2024-12-01"
+        },
+        "end": {
+          "date": "2025-02-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "validFrom",
+        "validTo"
+      ],
+      "rows": [
+        [
+          "<ex:G1>",
+          "2025-01-01",
+          "2034-12-31"
+        ],
+        [
+          "<ex:G2>",
+          "2018-01-01",
+          "2024-12-31"
+        ]
+      ]
+    },
+    {
+      "name": "a request after every term ends overlaps nothing",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "start": {
+          "date": "2040-01-01"
+        },
+        "end": {
+          "date": "2041-01-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "validFrom",
+        "validTo"
+      ],
+      "rows": []
+    }
+  ]
+}

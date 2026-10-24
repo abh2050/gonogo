@@ -1,0 +1,12 @@
+# CQ10. What is the export classification of patent P, and which territories may a licensee sit in?
+# Rule: R5
+# Ontology constructs: gng:RestrictedExport, gng:UnrestrictedExport, gng:permittedTerritory, gng:iso3166Alpha2, absence as unknown
+SELECT ?kind ?code
+{{FROM}}
+WHERE {
+  ?export a ?class ; gng:aboutPatent {{patent}} .
+  VALUES (?class ?kind) { (gng:RestrictedExport "restricted") (gng:UnrestrictedExport "unrestricted") }
+  {{ASOF ?export}}
+  OPTIONAL { ?export gng:permittedTerritory/gng:iso3166Alpha2 ?code }
+}
+ORDER BY ?code

@@ -1,0 +1,119 @@
+{
+  "id": "CQ05",
+  "question": "Which executed grants on patent P overlap a requested territory, in either direction on the territory hierarchy?",
+  "rule": "R2",
+  "cases": [
+    {
+      "name": "a United States request sits inside the North America grant G1 and equals the US grants G3 and G4",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "territory": {
+          "iri": "https://w3id.org/gonogo/territory/US"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "direction"
+      ],
+      "rows": [
+        [
+          "<ex:G1>",
+          "grant covers request"
+        ],
+        [
+          "<ex:G3>",
+          "grant covers request"
+        ],
+        [
+          "<ex:G4>",
+          "grant covers request"
+        ]
+      ]
+    },
+    {
+      "name": "a North America request covers the narrower US grants",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "territory": {
+          "iri": "https://w3id.org/gonogo/territory/NORTH-AMERICA"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "direction"
+      ],
+      "rows": [
+        [
+          "<ex:G1>",
+          "grant covers request"
+        ],
+        [
+          "<ex:G3>",
+          "request covers grant"
+        ],
+        [
+          "<ex:G4>",
+          "request covers grant"
+        ]
+      ]
+    },
+    {
+      "name": "a Germany request overlaps only the Germany grant G2",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "territory": {
+          "iri": "https://w3id.org/gonogo/territory/DE"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "direction"
+      ],
+      "rows": [
+        [
+          "<ex:G2>",
+          "grant covers request"
+        ]
+      ]
+    },
+    {
+      "name": "a Europe request covers the Germany grant G2",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "territory": {
+          "iri": "https://w3id.org/gonogo/territory/EUROPE"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "direction"
+      ],
+      "rows": [
+        [
+          "<ex:G2>",
+          "request covers grant"
+        ]
+      ]
+    }
+  ]
+}

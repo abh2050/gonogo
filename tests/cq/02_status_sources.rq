@@ -1,0 +1,15 @@
+# CQ02. What does each registry say about whether patent P is alive on a given day, as the system knew it at the recording cutoff?
+# Rule: R1
+# Ontology constructs: gng:PatentLegalStatus, gng:legalState, gng:expirationDate, gng:expirationIsDerived, bitemporal filter
+SELECT ?source ?state ?expiration ?derived
+{{FROM}}
+WHERE {
+  ?status a gng:PatentLegalStatus ; gng:aboutPatent {{patent}} ; gng:validFrom ?from .
+  {{ASOF ?status}}
+  FILTER(?from <= {{day}})
+  OPTIONAL { ?status prov:wasDerivedFrom ?source }
+  OPTIONAL { ?status gng:legalState/skos:prefLabel ?state }
+  OPTIONAL { ?status gng:expirationDate ?expiration }
+  OPTIONAL { ?status gng:expirationIsDerived ?derived }
+}
+ORDER BY ?source

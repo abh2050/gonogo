@@ -1,0 +1,53 @@
+{
+  "id": "CQ15",
+  "question": "How many facts of each kind are synthetic, and how many are real?",
+  "rule": "None (the README and the verdict card use this to label synthetic data)",
+  "cases": [
+    {
+      "name": "the sample world",
+      "params": {},
+      "vars": [
+        "class",
+        "synthetic",
+        "n"
+      ],
+      "rows": [
+        [
+          "<gng:ConsentRecord>",
+          "true",
+          "1"
+        ],
+        [
+          "<gng:ExecutedGrant>",
+          "true",
+          "6"
+        ],
+        [
+          "<gng:ExportClassification>",
+          "true",
+          "2"
+        ],
+        [
+          "<gng:FilingRecord>",
+          "true",
+          "1"
+        ],
+        [
+          "<gng:OwnershipRecord>",
+          "true",
+          "3"
+        ],
+        [
+          "<gng:PatentLegalStatus>",
+          "false",
+          "4"
+        ],
+        [
+          "<gng:ProposedGrant>",
+          "false",
+          "1"
+        ]
+      ]
+    }
+  ]
+}

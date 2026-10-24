@@ -1,0 +1,1178 @@
+{
+ "applications": {
+  "listedAsApplication": 260,
+  "nowGranted": 208
+ },
+ "extraction": {
+  "deadline": 91,
+  "fieldStated": 24,
+  "licensee": 91,
+  "specificExclusivity": 40,
+  "territory": 91,
+  "total": 92
+ },
+ "factsByClass": {
+  "ConsentRecord": {
+   "real": 0,
+   "synthetic": 60
+  },
+  "ExecutedGrant": {
+   "real": 0,
+   "synthetic": 120
+  },
+  "ExportClassification": {
+   "real": 0,
+   "synthetic": 265
+  },
+  "FilingRecord": {
+   "real": 0,
+   "synthetic": 15
+  },
+  "OwnershipRecord": {
+   "real": 0,
+   "synthetic": 274
+  },
+  "PatentLegalStatus": {
+   "real": 512,
+   "synthetic": 0
+  },
+  "ProposedGrant": {
+   "real": 41,
+   "synthetic": 7
+  }
+ },
+ "legalStatus": {
+  "lapsed": [
+   {
+    "key": "LEW-18254-1",
+    "lapse": "2015-02-20",
+    "nasaExpires": "2028-06-27",
+    "phantomYears": 13.35
+   },
+   {
+    "key": "LAR-17286-1",
+    "lapse": "2016-01-15",
+    "nasaExpires": "2030-02-26",
+    "phantomYears": 14.12
+   },
+   {
+    "key": "LAR-17327-1",
+    "lapse": "2016-03-11",
+    "nasaExpires": "2030-07-05",
+    "phantomYears": 14.32
+   },
+   {
+    "key": "LAR-18032-1",
+    "lapse": "2016-08-19",
+    "nasaExpires": "2030-12-29",
+    "phantomYears": 14.36
+   },
+   {
+    "key": "LAR-17651-1",
+    "lapse": "2016-09-30",
+    "nasaExpires": "2031-03-09",
+    "phantomYears": 14.44
+   },
+   {
+    "key": "LEW-18496-1",
+    "lapse": "2016-11-04",
+    "nasaExpires": "2030-02-24",
+    "phantomYears": 13.31
+   },
+   {
+    "key": "LAR-17163-1",
+    "lapse": "2017-01-19",
+    "nasaExpires": "2027-08-18",
+    "phantomYears": 10.58
+   },
+   {
+    "key": "LEW-18373-1",
+    "lapse": "2017-02-10",
+    "nasaExpires": "2031-02-04",
+    "phantomYears": 13.98
+   },
+   {
+    "key": "LAR-17017-1",
+    "lapse": "2017-06-23",
+    "nasaExpires": "2027-06-18",
+    "phantomYears": 9.98
+   },
+   {
+    "key": "LAR-17321-1",
+    "lapse": "2017-10-30",
+    "nasaExpires": "2030-06-27",
+    "phantomYears": 12.66
+   },
+   {
+    "key": "LEW-18356-2",
+    "lapse": "2017-12-04",
+    "nasaExpires": "2032-06-08",
+    "phantomYears": 14.51
+   },
+   {
+    "key": "LAR-17013-1",
+    "lapse": "2018-02-19",
+    "nasaExpires": "2026-11-12",
+    "phantomYears": 8.73
+   },
+   {
+    "key": "LAR-17346-1",
+    "lapse": "2018-02-19",
+    "nasaExpires": "2027-04-28",
+    "phantomYears": 9.19
+   },
+   {
+    "key": "LAR-17387-1",
+    "lapse": "2018-03-19",
+    "nasaExpires": "2028-01-23",
+    "phantomYears": 9.85
+   },
+   {
+    "key": "LAR-16858-1",
+    "lapse": "2018-03-26",
+    "nasaExpires": "2026-12-15",
+    "phantomYears": 8.72
+   },
+   {
+    "key": "LAR-17385-1",
+    "lapse": "2018-04-02",
+    "nasaExpires": "2028-03-10",
+    "phantomYears": 9.94
+   },
+   {
+    "key": "LAR-16538-1",
+    "lapse": "2018-04-09",
+    "nasaExpires": "2028-11-11",
+    "phantomYears": 10.59
+   },
+   {
+    "key": "LAR-17318-1",
+    "lapse": "2018-05-21",
+    "nasaExpires": "2027-08-29",
+    "phantomYears": 9.27
+   },
+   {
+    "key": "LAR-16874-1",
+    "lapse": "2018-06-25",
+    "nasaExpires": "2027-02-13",
+    "phantomYears": 8.64
+   },
+   {
+    "key": "LAR-17290-1",
+    "lapse": "2018-07-16",
+    "nasaExpires": "2028-06-11",
+    "phantomYears": 9.91
+   },
+   {
+    "key": "LAR-17576-1",
+    "lapse": "2018-07-23",
+    "nasaExpires": "2028-10-30",
+    "phantomYears": 10.27
+   },
+   {
+    "key": "LEW-17820-1",
+    "lapse": "2018-08-13",
+    "nasaExpires": "2027-01-22",
+    "phantomYears": 8.44
+   },
+   {
+    "key": "LAR-17229-1",
+    "lapse": "2018-08-27",
+    "nasaExpires": "2027-02-01",
+    "phantomYears": 8.43
+   },
+   {
+    "key": "LAR-16907-1",
+    "lapse": "2018-10-01",
+    "nasaExpires": "2029-03-27",
+    "phantomYears": 10.49
+   },
+   {
+    "key": "LAR-17365-1",
+    "lapse": "2018-10-08",
+    "nasaExpires": "2029-04-26",
+    "phantomYears": 10.55
+   },
+   {
+    "key": "LAR-17440-1",
+    "lapse": "2019-01-14",
+    "nasaExpires": "2029-02-03",
+    "phantomYears": 10.06
+   },
+   {
+    "key": "LAR-17547-1",
+    "lapse": "2019-01-14",
+    "nasaExpires": "2029-07-05",
+    "phantomYears": 10.47
+   },
+   {
+    "key": "LAR-17573-1",
+    "lapse": "2019-01-28",
+    "nasaExpires": "2028-10-09",
+    "phantomYears": 9.7
+   },
+   {
+    "key": "LAR-16885-1",
+    "lapse": "2019-03-25",
+    "nasaExpires": "2029-12-15",
+    "phantomYears": 10.73
+   },
+   {
+    "key": "LAR-17634-1",
+    "lapse": "2019-04-01",
+    "nasaExpires": "2029-03-14",
+    "phantomYears": 9.95
+   },
+   {
+    "key": "LAR-17608-1",
+    "lapse": "2019-04-15",
+    "nasaExpires": "2029-01-12",
+    "phantomYears": 9.75
+   },
+   {
+    "key": "LAR-17709-1",
+    "lapse": "2019-04-29",
+    "nasaExpires": "2029-12-01",
+    "phantomYears": 10.59
+   },
+   {
+    "key": "LEW-18261-1",
+    "lapse": "2019-06-03",
+    "nasaExpires": "2028-12-02",
+    "phantomYears": 9.5
+   },
+   {
+    "key": "LAR-17759-1",
+    "lapse": "2019-06-10",
+    "nasaExpires": "2029-03-18",
+    "phantomYears": 9.77
+   },
+   {
+    "key": "LAR-17332-1",
+    "lapse": "2019-07-22",
+    "nasaExpires": "2029-11-04",
+    "phantomYears": 10.29
+   },
+   {
+    "key": "LEW-18789-1",
+    "lapse": "2019-07-29",
+    "nasaExpires": "2032-02-27",
+    "phantomYears": 12.58
+   },
+   {
+    "key": "LAR-17293-1",
+    "lapse": "2019-09-09",
+    "nasaExpires": "2030-03-04",
+    "phantomYears": 10.48
+   },
+   {
+    "key": "LAR-17526-1",
+    "lapse": "2019-09-09",
+    "nasaExpires": "2029-06-07",
+    "phantomYears": 9.74
+   },
+   {
+    "key": "LEW-18248-2",
+    "lapse": "2019-09-09",
+    "nasaExpires": "2030-09-02",
+    "phantomYears": 10.98
+   },
+   {
+    "key": "LAR-17224-1",
+    "lapse": "2019-09-23",
+    "nasaExpires": "2029-06-04",
+    "phantomYears": 9.7
+   },
+   {
+    "key": "LEW-18076-1",
+    "lapse": "2019-09-23",
+    "nasaExpires": "2027-03-21",
+    "phantomYears": 7.49
+   },
+   {
+    "key": "LAR-17447-1",
+    "lapse": "2019-09-30",
+    "nasaExpires": "2030-01-16",
+    "phantomYears": 10.3
+   },
+   {
+    "key": "LAR-16409-1",
+    "lapse": "2019-10-21",
+    "nasaExpires": "2028-09-17",
+    "phantomYears": 8.91
+   },
+   {
+    "key": "LAR-17241-1",
+    "lapse": "2019-10-21",
+    "nasaExpires": "2029-12-05",
+    "phantomYears": 10.12
+   },
+   {
+    "key": "LAR-17382-1",
+    "lapse": "2019-12-16",
+    "nasaExpires": "2029-10-18",
+    "phantomYears": 9.84
+   },
+   {
+    "key": "LEW-17916-1",
+    "lapse": "2019-12-16",
+    "nasaExpires": "2027-05-25",
+    "phantomYears": 7.44
+   },
+   {
+    "key": "LAR-17325-1",
+    "lapse": "2019-12-23",
+    "nasaExpires": "2030-03-04",
+    "phantomYears": 10.2
+   },
+   {
+    "key": "LAR-17425-1",
+    "lapse": "2019-12-23",
+    "nasaExpires": "2029-08-19",
+    "phantomYears": 9.66
+   },
+   {
+    "key": "LAR-16083-1",
+    "lapse": "2019-12-30",
+    "nasaExpires": "2030-05-22",
+    "phantomYears": 10.39
+   },
+   {
+    "key": "LEW-18089-1",
+    "lapse": "2020-01-20",
+    "nasaExpires": "2027-07-06",
+    "phantomYears": 7.46
+   },
+   {
+    "key": "LAR-16845-1",
+    "lapse": "2020-02-03",
+    "nasaExpires": "2028-12-04",
+    "phantomYears": 8.84
+   },
+   {
+    "key": "LAR-16640-1",
+    "lapse": "2020-02-10",
+    "nasaExpires": "2029-08-05",
+    "phantomYears": 9.48
+   },
+   {
+    "key": "LAR-17959-1",
+    "lapse": "2020-02-10",
+    "nasaExpires": "2030-09-30",
+    "phantomYears": 10.64
+   },
+   {
+    "key": "LAR-17469-1",
+    "lapse": "2020-02-17",
+    "nasaExpires": "2030-08-27",
+    "phantomYears": 10.52
+   },
+   {
+    "key": "LEW-18325-2",
+    "lapse": "2020-02-17",
+    "nasaExpires": "2029-01-09",
+    "phantomYears": 8.9
+   },
+   {
+    "key": "LEW-18340-1",
+    "lapse": "2020-02-17",
+    "nasaExpires": "2029-04-28",
+    "phantomYears": 9.19
+   },
+   {
+    "key": "LAR-17432-1",
+    "lapse": "2020-03-16",
+    "nasaExpires": "2030-11-27",
+    "phantomYears": 10.7
+   },
+   {
+    "key": "LAR-17655-1",
+    "lapse": "2020-03-16",
+    "nasaExpires": "2030-06-25",
+    "phantomYears": 10.28
+   },
+   {
+    "key": "LAR-17736-1",
+    "lapse": "2020-05-11",
+    "nasaExpires": "2029-02-13",
+    "phantomYears": 8.76
+   },
+   {
+    "key": "LEW-18461-1",
+    "lapse": "2020-05-25",
+    "nasaExpires": "2029-09-30",
+    "phantomYears": 9.35
+   },
+   {
+    "key": "LAR-17355-1",
+    "lapse": "2020-06-01",
+    "nasaExpires": "2029-06-24",
+    "phantomYears": 9.06
+   },
+   {
+    "key": "LAR-17539-1",
+    "lapse": "2020-06-01",
+    "nasaExpires": "2030-01-08",
+    "phantomYears": 9.6
+   },
+   {
+    "key": "LAR-17335-1",
+    "lapse": "2020-06-08",
+    "nasaExpires": "2031-03-02",
+    "phantomYears": 10.73
+   },
+   {
+    "key": "LEW-18752-1",
+    "lapse": "2020-06-08",
+    "nasaExpires": "2031-11-28",
+    "phantomYears": 11.47
+   },
+   {
+    "key": "LAR-17242-1",
+    "lapse": "2020-06-15",
+    "nasaExpires": "2030-09-03",
+    "phantomYears": 10.22
+   },
+   {
+    "key": "LAR-17514-1",
+    "lapse": "2020-07-20",
+    "nasaExpires": "2031-02-15",
+    "phantomYears": 10.57
+   },
+   {
+    "key": "LAR-17856-1",
+    "lapse": "2020-07-20",
+    "nasaExpires": "2030-09-20",
+    "phantomYears": 10.17
+   },
+   {
+    "key": "LEW-17269-2",
+    "lapse": "2020-08-10",
+    "nasaExpires": "2027-04-04",
+    "phantomYears": 6.65
+   },
+   {
+    "key": "LEW-18356-1",
+    "lapse": "2020-08-24",
+    "nasaExpires": "2029-09-30",
+    "phantomYears": 9.1
+   },
+   {
+    "key": "LAR-17405-1",
+    "lapse": "2020-08-31",
+    "nasaExpires": "2031-05-11",
+    "phantomYears": 10.69
+   },
+   {
+    "key": "LAR-17390-1",
+    "lapse": "2020-09-14",
+    "nasaExpires": "2031-04-02",
+    "phantomYears": 10.55
+   },
+   {
+    "key": "LAR-17548-1",
+    "lapse": "2020-09-14",
+    "nasaExpires": "2030-07-07",
+    "phantomYears": 9.81
+   },
+   {
+    "key": "LAR-17609-1",
+    "lapse": "2020-10-05",
+    "nasaExpires": "2030-12-30",
+    "phantomYears": 10.23
+   },
+   {
+    "key": "LEW-17820-2",
+    "lapse": "2020-10-19",
+    "nasaExpires": "2032-09-11",
+    "phantomYears": 11.9
+   },
+   {
+    "key": "LAR-17237-1",
+    "lapse": "2020-11-30",
+    "nasaExpires": "2031-04-25",
+    "phantomYears": 10.4
+   },
+   {
+    "key": "LEW-18903-1",
+    "lapse": "2020-11-30",
+    "nasaExpires": "2033-06-21",
+    "phantomYears": 12.56
+   },
+   {
+    "key": "LEW-18483-1",
+    "lapse": "2020-12-21",
+    "nasaExpires": "2030-09-29",
+    "phantomYears": 9.77
+   },
+   {
+    "key": "LEW-18891-1",
+    "lapse": "2021-01-11",
+    "nasaExpires": "2031-12-23",
+    "phantomYears": 10.95
+   },
+   {
+    "key": "LAR-17681-1",
+    "lapse": "2021-02-15",
+    "nasaExpires": "2031-04-30",
+    "phantomYears": 10.2
+   },
+   {
+    "key": "LEW-18458-1",
+    "lapse": "2021-04-05",
+    "nasaExpires": "2030-06-02",
+    "phantomYears": 9.16
+   },
+   {
+    "key": "LAR-16958-1",
+    "lapse": "2021-05-03",
+    "nasaExpires": "2027-08-24",
+    "phantomYears": 6.31
+   },
+   {
+    "key": "LEW-18325-1",
+    "lapse": "2021-05-17",
+    "nasaExpires": "2029-01-09",
+    "phantomYears": 7.65
+   },
+   {
+    "key": "LAR-17300-1",
+    "lapse": "2021-06-28",
+    "nasaExpires": "2027-12-31",
+    "phantomYears": 6.51
+   },
+   {
+    "key": "LAR-17766-1",
+    "lapse": "2021-07-05",
+    "nasaExpires": "2031-10-02",
+    "phantomYears": 10.24
+   },
+   {
+    "key": "LEW-18426-1",
+    "lapse": "2021-08-23",
+    "nasaExpires": "2030-09-30",
+    "phantomYears": 9.1
+   },
+   {
+    "key": "LAR-17735-1",
+    "lapse": "2021-08-30",
+    "nasaExpires": "2031-10-22",
+    "phantomYears": 10.14
+   },
+   {
+    "key": "LEW-19013-1",
+    "lapse": "2021-09-13",
+    "nasaExpires": "2033-12-03",
+    "phantomYears": 12.22
+   },
+   {
+    "key": "LAR-17638-1",
+    "lapse": "2021-09-20",
+    "nasaExpires": "2032-03-02",
+    "phantomYears": 10.45
+   },
+   {
+    "key": "LEW-18003-1",
+    "lapse": "2021-10-04",
+    "nasaExpires": "2027-03-22",
+    "phantomYears": 5.46
+   },
+   {
+    "key": "LEW-18426-2",
+    "lapse": "2021-10-04",
+    "nasaExpires": "2033-07-15",
+    "phantomYears": 11.78
+   },
+   {
+    "key": "LAR-16906-1",
+    "lapse": "2021-10-18",
+    "nasaExpires": "2028-02-01",
+    "phantomYears": 6.29
+   },
+   {
+    "key": "LAR-17257-1",
+    "lapse": "2021-10-18",
+    "nasaExpires": "2027-10-07",
+    "phantomYears": 5.97
+   },
+   {
+    "key": "LAR-17502-1",
+    "lapse": "2021-10-18",
+    "nasaExpires": "2030-03-14",
+    "phantomYears": 8.4
+   },
+   {
+    "key": "LEW-18942-1",
+    "lapse": "2021-11-01",
+    "nasaExpires": "2033-02-20",
+    "phantomYears": 11.3
+   },
+   {
+    "key": "LEW-18601-1",
+    "lapse": "2021-12-13",
+    "nasaExpires": "2030-11-24",
+    "phantomYears": 8.95
+   },
+   {
+    "key": "LAR-16605-1",
+    "lapse": "2021-12-27",
+    "nasaExpires": "2026-11-27",
+    "phantomYears": 4.92
+   },
+   {
+    "key": "LAR-17888-1",
+    "lapse": "2022-01-17",
+    "nasaExpires": "2031-12-28",
+    "phantomYears": 9.94
+   },
+   {
+    "key": "LEW-18474-1",
+    "lapse": "2022-01-24",
+    "nasaExpires": "2030-06-02",
+    "phantomYears": 8.35
+   },
+   {
+    "key": "LAR-17831-1",
+    "lapse": "2022-03-28",
+    "nasaExpires": "2031-08-22",
+    "phantomYears": 9.4
+   },
+   {
+    "key": "LEW-18593-1",
+    "lapse": "2022-03-28",
+    "nasaExpires": "2031-01-27",
+    "phantomYears": 8.84
+   },
+   {
+    "key": "LAR-17695-1",
+    "lapse": "2022-04-04",
+    "nasaExpires": "2032-08-01",
+    "phantomYears": 10.33
+   },
+   {
+    "key": "LAR-17384-1",
+    "lapse": "2022-04-11",
+    "nasaExpires": "2031-10-27",
+    "phantomYears": 9.54
+   },
+   {
+    "key": "LAR-17993-1",
+    "lapse": "2022-04-11",
+    "nasaExpires": "2032-05-06",
+    "phantomYears": 10.07
+   },
+   {
+    "key": "LEW-18340-2",
+    "lapse": "2022-04-18",
+    "nasaExpires": "2032-01-10",
+    "phantomYears": 9.73
+   },
+   {
+    "key": "LAR-18006-1",
+    "lapse": "2022-04-25",
+    "nasaExpires": "2032-02-01",
+    "phantomYears": 9.77
+   },
+   {
+    "key": "LAR-17681-3",
+    "lapse": "2022-05-02",
+    "nasaExpires": "2030-08-04",
+    "phantomYears": 8.26
+   },
+   {
+    "key": "LAR-17332-2",
+    "lapse": "2022-05-10",
+    "nasaExpires": "2027-07-05",
+    "phantomYears": 5.15
+   },
+   {
+    "key": "LAR-17694-1",
+    "lapse": "2022-05-16",
+    "nasaExpires": "2032-03-09",
+    "phantomYears": 9.82
+   },
+   {
+    "key": "LAR-17923-1",
+    "lapse": "2022-05-16",
+    "nasaExpires": "2032-11-14",
+    "phantomYears": 10.5
+   },
+   {
+    "key": "LAR-17813-1",
+    "lapse": "2022-05-23",
+    "nasaExpires": "2032-08-17",
+    "phantomYears": 10.24
+   },
+   {
+    "key": "LAR-17984-1",
+    "lapse": "2022-05-23",
+    "nasaExpires": "2031-12-15",
+    "phantomYears": 9.56
+   },
+   {
+    "key": "LAR-18021-1",
+    "lapse": "2022-05-23",
+    "nasaExpires": "2032-07-31",
+    "phantomYears": 10.19
+   },
+   {
+    "key": "LAR-17267-1",
+    "lapse": "2022-05-30",
+    "nasaExpires": "2028-06-26",
+    "phantomYears": 6.08
+   },
+   {
+    "key": "LAR-17696-1",
+    "lapse": "2022-05-30",
+    "nasaExpires": "2031-03-16",
+    "phantomYears": 8.79
+   },
+   {
+    "key": "LAR-18023-1",
+    "lapse": "2022-06-06",
+    "nasaExpires": "2032-03-12",
+    "phantomYears": 9.77
+   },
+   {
+    "key": "LAR-17168-1",
+    "lapse": "2022-07-11",
+    "nasaExpires": "2027-09-24",
+    "phantomYears": 5.2
+   },
+   {
+    "key": "LAR-18202-1",
+    "lapse": "2022-08-08",
+    "nasaExpires": "2032-12-13",
+    "phantomYears": 10.35
+   },
+   {
+    "key": "LEW-18221-1",
+    "lapse": "2022-08-29",
+    "nasaExpires": "2027-09-28",
+    "phantomYears": 5.08
+   },
+   {
+    "key": "LEW-18887-1",
+    "lapse": "2022-09-19",
+    "nasaExpires": "2033-02-01",
+    "phantomYears": 10.37
+   },
+   {
+    "key": "LAR-17154-2",
+    "lapse": "2022-09-26",
+    "nasaExpires": "2029-02-12",
+    "phantomYears": 6.38
+   },
+   {
+    "key": "LEW-19040-1",
+    "lapse": "2022-09-26",
+    "nasaExpires": "2034-02-28",
+    "phantomYears": 11.43
+   },
+   {
+    "key": "LAR-17391-1",
+    "lapse": "2022-10-10",
+    "nasaExpires": "2028-08-14",
+    "phantomYears": 5.85
+   },
+   {
+    "key": "LEW-18248-1",
+    "lapse": "2022-10-10",
+    "nasaExpires": "2027-10-12",
+    "phantomYears": 5.0
+   },
+   {
+    "key": "LAR-17502-1-CON",
+    "lapse": "2022-10-17",
+    "nasaExpires": "2027-09-25",
+    "phantomYears": 4.94
+   },
+   {
+    "key": "LAR-18246-1",
+    "lapse": "2023-02-06",
+    "nasaExpires": "2033-02-13",
+    "phantomYears": 10.02
+   },
+   {
+    "key": "LEW-18362-1",
+    "lapse": "2023-02-20",
+    "nasaExpires": "2028-09-30",
+    "phantomYears": 5.61
+   },
+   {
+    "key": "LEW-18844-1",
+    "lapse": "2023-02-20",
+    "nasaExpires": "2033-06-14",
+    "phantomYears": 10.31
+   },
+   {
+    "key": "LAR-17478-1",
+    "lapse": "2023-03-13",
+    "nasaExpires": "2029-09-24",
+    "phantomYears": 6.54
+   },
+   {
+    "key": "LEW-18049-1",
+    "lapse": "2023-04-24",
+    "nasaExpires": "2028-11-28",
+    "phantomYears": 5.6
+   },
+   {
+    "key": "LEW-18313-1",
+    "lapse": "2023-05-15",
+    "nasaExpires": "2028-12-06",
+    "phantomYears": 5.56
+   },
+   {
+    "key": "LAR-17887-1",
+    "lapse": "2023-05-22",
+    "nasaExpires": "2033-01-17",
+    "phantomYears": 9.66
+   },
+   {
+    "key": "LAR-18266-1",
+    "lapse": "2023-05-22",
+    "nasaExpires": "2033-11-14",
+    "phantomYears": 10.48
+   },
+   {
+    "key": "LAR-17947-1",
+    "lapse": "2023-07-10",
+    "nasaExpires": "2033-02-25",
+    "phantomYears": 9.63
+   },
+   {
+    "key": "LAR-17636-1",
+    "lapse": "2023-07-17",
+    "nasaExpires": "2033-01-29",
+    "phantomYears": 9.54
+   },
+   {
+    "key": "LAR-18065-1",
+    "lapse": "2023-07-17",
+    "nasaExpires": "2033-04-11",
+    "phantomYears": 9.74
+   },
+   {
+    "key": "LAR-16383-2",
+    "lapse": "2023-08-07",
+    "nasaExpires": "2029-10-12",
+    "phantomYears": 6.18
+   },
+   {
+    "key": "LAR-16307-2",
+    "lapse": "2023-08-28",
+    "nasaExpires": "2027-04-16",
+    "phantomYears": 3.63
+   },
+   {
+    "key": "LAR-18374-1",
+    "lapse": "2023-09-11",
+    "nasaExpires": "2031-06-23",
+    "phantomYears": 7.78
+   },
+   {
+    "key": "LEW-18864-1",
+    "lapse": "2023-09-25",
+    "nasaExpires": "2032-02-03",
+    "phantomYears": 8.36
+   },
+   {
+    "key": "LAR-17485-2",
+    "lapse": "2023-10-16",
+    "nasaExpires": "2028-05-21",
+    "phantomYears": 4.6
+   },
+   {
+    "key": "LAR-17213-1",
+    "lapse": "2023-10-23",
+    "nasaExpires": "2030-03-25",
+    "phantomYears": 6.42
+   },
+   {
+    "key": "LAR-18301-1",
+    "lapse": "2023-10-23",
+    "nasaExpires": "2033-03-15",
+    "phantomYears": 9.39
+   },
+   {
+    "key": "LEW-18816-1",
+    "lapse": "2023-11-20",
+    "nasaExpires": "2032-06-01",
+    "phantomYears": 8.53
+   },
+   {
+    "key": "LAR-18160-1",
+    "lapse": "2023-12-04",
+    "nasaExpires": "2033-04-17",
+    "phantomYears": 9.37
+   },
+   {
+    "key": "LAR-18270-1",
+    "lapse": "2024-01-08",
+    "nasaExpires": "2033-11-14",
+    "phantomYears": 9.85
+   },
+   {
+    "key": "LAR-17993-2",
+    "lapse": "2024-02-12",
+    "nasaExpires": "2033-01-03",
+    "phantomYears": 8.89
+   },
+   {
+    "key": "LAR-18166-1",
+    "lapse": "2024-02-12",
+    "nasaExpires": "2032-03-12",
+    "phantomYears": 8.08
+   },
+   {
+    "key": "LAR-17656-1",
+    "lapse": "2024-03-04",
+    "nasaExpires": "2030-05-05",
+    "phantomYears": 6.17
+   },
+   {
+    "key": "LAR-18143-1",
+    "lapse": "2024-03-04",
+    "nasaExpires": "2032-11-15",
+    "phantomYears": 8.7
+   },
+   {
+    "key": "LAR-18211-1",
+    "lapse": "2024-03-04",
+    "nasaExpires": "2033-03-01",
+    "phantomYears": 8.99
+   },
+   {
+    "key": "LEW-19045-1",
+    "lapse": "2024-03-11",
+    "nasaExpires": "2033-08-16",
+    "phantomYears": 9.43
+   },
+   {
+    "key": "LEW-18362-2",
+    "lapse": "2024-05-20",
+    "nasaExpires": "2030-12-20",
+    "phantomYears": 6.58
+   },
+   {
+    "key": "LAR-18089-1",
+    "lapse": "2024-06-17",
+    "nasaExpires": "2033-03-06",
+    "phantomYears": 8.72
+   },
+   {
+    "key": "LAR-18090-1",
+    "lapse": "2024-06-24",
+    "nasaExpires": "2033-03-06",
+    "phantomYears": 8.7
+   },
+   {
+    "key": "LAR-18179-1",
+    "lapse": "2024-07-08",
+    "nasaExpires": "2033-03-11",
+    "phantomYears": 8.67
+   },
+   {
+    "key": "LAR-18217-1",
+    "lapse": "2024-07-08",
+    "nasaExpires": "2033-02-20",
+    "phantomYears": 8.62
+   },
+   {
+    "key": "LAR-18318-1",
+    "lapse": "2024-07-08",
+    "nasaExpires": "2034-02-27",
+    "phantomYears": 9.64
+   },
+   {
+    "key": "LEW-18253-1",
+    "lapse": "2024-07-08",
+    "nasaExpires": "2028-06-05",
+    "phantomYears": 3.91
+   },
+   {
+    "key": "LAR-17813-1-CON",
+    "lapse": "2024-07-29",
+    "nasaExpires": "2031-08-05",
+    "phantomYears": 7.02
+   },
+   {
+    "key": "LEW-18491-1",
+    "lapse": "2024-08-05",
+    "nasaExpires": "2028-11-25",
+    "phantomYears": 4.31
+   },
+   {
+    "key": "LAR-17135-1",
+    "lapse": "2024-08-12",
+    "nasaExpires": "2030-11-17",
+    "phantomYears": 6.26
+   },
+   {
+    "key": "LAR-17996-1",
+    "lapse": "2024-10-28",
+    "nasaExpires": "2034-03-10",
+    "phantomYears": 9.36
+   },
+   {
+    "key": "LEW-18821-1",
+    "lapse": "2024-11-04",
+    "nasaExpires": "2032-07-30",
+    "phantomYears": 7.73
+   },
+   {
+    "key": "LAR-17748-1",
+    "lapse": "2024-12-09",
+    "nasaExpires": "2030-11-19",
+    "phantomYears": 5.94
+   },
+   {
+    "key": "LAR-17245-1",
+    "lapse": "2025-02-03",
+    "nasaExpires": "2031-04-26",
+    "phantomYears": 6.22
+   },
+   {
+    "key": "LAR-18006-2",
+    "lapse": "2025-02-10",
+    "nasaExpires": "2032-02-01",
+    "phantomYears": 6.97
+   },
+   {
+    "key": "LAR-18073-1",
+    "lapse": "2025-03-03",
+    "nasaExpires": "2033-07-12",
+    "phantomYears": 8.36
+   },
+   {
+    "key": "LEW-18538-1",
+    "lapse": "2025-03-17",
+    "nasaExpires": "2030-06-01",
+    "phantomYears": 5.21
+   },
+   {
+    "key": "LAR-17724-1",
+    "lapse": "2025-03-24",
+    "nasaExpires": "2031-01-22",
+    "phantomYears": 5.83
+   },
+   {
+    "key": "LAR-17455-3",
+    "lapse": "2025-04-07",
+    "nasaExpires": "2031-10-28",
+    "phantomYears": 6.56
+   },
+   {
+    "key": "LAR-17243-1",
+    "lapse": "2025-05-05",
+    "nasaExpires": "2032-02-01",
+    "phantomYears": 6.74
+   },
+   {
+    "key": "LAR-17493-1",
+    "lapse": "2025-05-26",
+    "nasaExpires": "2031-05-16",
+    "phantomYears": 5.97
+   },
+   {
+    "key": "LEW-18934-1",
+    "lapse": "2025-05-26",
+    "nasaExpires": "2033-05-23",
+    "phantomYears": 7.99
+   },
+   {
+    "key": "LEW-18858-1",
+    "lapse": "2025-06-16",
+    "nasaExpires": "2033-05-29",
+    "phantomYears": 7.95
+   },
+   {
+    "key": "LEW-18902-1",
+    "lapse": "2025-06-30",
+    "nasaExpires": "2033-12-02",
+    "phantomYears": 8.42
+   },
+   {
+    "key": "LAR-17743-1",
+    "lapse": "2025-07-28",
+    "nasaExpires": "2031-10-07",
+    "phantomYears": 6.19
+   },
+   {
+    "key": "LEW-18717-1",
+    "lapse": "2025-08-04",
+    "nasaExpires": "2031-07-07",
+    "phantomYears": 5.92
+   },
+   {
+    "key": "LAR-18183-1",
+    "lapse": "2025-10-27",
+    "nasaExpires": "2033-03-15",
+    "phantomYears": 7.38
+   },
+   {
+    "key": "LAR-18040-1",
+    "lapse": "2026-01-26",
+    "nasaExpires": "2033-03-29",
+    "phantomYears": 7.17
+   },
+   {
+    "key": "LAR-17908-1",
+    "lapse": "2026-03-23",
+    "nasaExpires": "2032-04-23",
+    "phantomYears": 6.09
+   },
+   {
+    "key": "LEW-18970-1",
+    "lapse": "2026-08-03",
+    "nasaExpires": "2034-01-17",
+    "phantomYears": 7.46
+   }
+  ],
+  "nasaCallsInForce": 263,
+  "phantomYearsMedian": 9.4,
+  "states": {
+   "abandoned": 6,
+   "in_force": 72,
+   "lapsed": 181,
+   "term_ended": 4
+  }
+ },
+ "noticeMatch": {
+  "datasetOnly": 30,
+  "total": 92,
+  "withT2": 48
+ },
+ "scope": {
+  "byCenter": {
+   "NASA Glenn Research Center": 78,
+   "NASA Kennedy Space Center": 79,
+   "NASA Langley Research Center": 143
+  },
+  "byUsptoState": {
+   "abandoned": 2,
+   "in_force": 170,
+   "lapsed": 77,
+   "not_found": 28,
+   "term_ended": 23
+  },
+  "notices": 41,
+  "patents": 300
+ },
+ "synthetic": {
+  "agreements": 120,
+  "injectedCases": 44,
+  "verdicts": {
+   "COUNSEL": 8,
+   "GO": 11,
+   "HOLD": 2,
+   "NO DATA": 5,
+   "NO GO": 18
+  }
+ },
+ "uspto": {
+  "candidates": 724,
+  "found": 631
+ }
+}

@@ -1,0 +1,14 @@
+# CQ04. Which executed grants on patent P overlap a requested field of use, in either direction on the field hierarchy?
+# Rule: R2
+# Ontology constructs: gng:coversField (property chain over skos:narrowerTransitive), skos:broaderTransitive
+SELECT ?grant ?direction
+{{FROM}}
+WHERE {
+  ?grant a gng:ExecutedGrant ; gng:aboutPatent {{patent}} .
+  {{ASOF ?grant}}
+  { ?grant gng:coversField {{field}} . BIND("grant covers request" AS ?direction) }
+  UNION
+  { ?grant gng:fieldOfUse ?grantField . ?grantField skos:broaderTransitive {{field}} .
+    BIND("request covers grant" AS ?direction) }
+}
+ORDER BY ?grant

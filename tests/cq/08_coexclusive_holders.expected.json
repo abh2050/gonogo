@@ -1,0 +1,97 @@
+{
+  "id": "CQ08",
+  "question": "How many licensees already hold co-exclusive rights that reach a requested field and territory on a given day, and what cap do the agreements state?",
+  "rule": "R3",
+  "cases": [
+    {
+      "name": "two licensees hold the laser field in the US and the cap is two",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "field": {
+          "iri": "https://w3id.org/gonogo/field/lasers"
+        },
+        "territory": {
+          "iri": "https://w3id.org/gonogo/territory/US"
+        },
+        "day": {
+          "date": "2027-01-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "holders",
+        "statedCap"
+      ],
+      "rows": [
+        [
+          "2",
+          "2"
+        ]
+      ]
+    },
+    {
+      "name": "only one had started by mid-January 2026",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "field": {
+          "iri": "https://w3id.org/gonogo/field/lasers"
+        },
+        "territory": {
+          "iri": "https://w3id.org/gonogo/territory/US"
+        },
+        "day": {
+          "date": "2026-01-15"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "holders",
+        "statedCap"
+      ],
+      "rows": [
+        [
+          "1",
+          "2"
+        ]
+      ]
+    },
+    {
+      "name": "lenses and mirrors have no co-exclusive holder, so no cap is stated",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "field": {
+          "iri": "https://w3id.org/gonogo/field/lenses-and-mirrors"
+        },
+        "territory": {
+          "iri": "https://w3id.org/gonogo/territory/US"
+        },
+        "day": {
+          "date": "2027-01-01"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "holders",
+        "statedCap"
+      ],
+      "rows": [
+        [
+          "0",
+          null
+        ]
+      ]
+    }
+  ]
+}

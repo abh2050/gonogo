@@ -1,0 +1,11 @@
+# CQ06. Which executed grants on patent P have a term that overlaps a requested term?
+# Rule: R2 (and R3)
+# Ontology constructs: gng:validFrom, gng:validTo, partial overlaps, expired grants, bitemporal filter
+SELECT ?grant ?validFrom ?validTo
+{{FROM}}
+WHERE {
+  ?grant a gng:ExecutedGrant ; gng:aboutPatent {{patent}} ; gng:validFrom ?validFrom ; gng:validTo ?validTo .
+  {{ASOF ?grant}}
+  FILTER(?validFrom <= {{end}} && ?validTo >= {{start}})
+}
+ORDER BY ?grant

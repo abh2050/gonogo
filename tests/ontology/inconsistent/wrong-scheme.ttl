@@ -1,0 +1,17 @@
+@prefix gng:       <https://w3id.org/gonogo/ontology#> .
+@prefix ex:        <https://example.org/test/> .
+@prefix field:     <https://w3id.org/gonogo/field/> .
+@prefix territory: <https://w3id.org/gonogo/territory/> .
+@prefix excl:      <https://w3id.org/gonogo/exclusivity/> .
+
+# A grant names a territory concept as its field of use. The range of gng:fieldOfUse is the
+# field-of-use class, the territory concept belongs to the territory scheme, and the two classes
+# are disjoint, so a reasoner must report an inconsistency.
+ex:grant a gng:ExecutedGrant ;
+    gng:fieldOfUse territory:US ;
+    gng:territory territory:US ;
+    gng:exclusivityType excl:exclusive ;
+    gng:licensee ex:licensee ;
+    gng:aboutPatent ex:patent .
+ex:licensee a gng:Licensee .
+ex:patent a gng:Patent .

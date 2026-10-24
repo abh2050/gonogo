@@ -1,0 +1,323 @@
+@prefix gng:     <https://w3id.org/gonogo/ontology#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix field:   <https://w3id.org/gonogo/field/> .
+
+# Field-of-use scheme
+#
+# Rights coverage rule: a grant for a broader field covers every narrower field beneath it, and a
+# request for a broader field overlaps every grant on a narrower field. Every edit to skos:broader
+# in this file therefore changes legal outcomes, and the release pipeline reports each changed verdict
+# before it publishes a new release (docs/modeling-decisions.md, decision 4).
+#
+# Top concepts are the NASA Technology Transfer portal (T2) categories. The narrower concepts are
+# GoNoGo's own refinement. skos:notation orders siblings and is stable across edits.
+
+<https://w3id.org/gonogo/scheme/field-of-use> a skos:ConceptScheme ;
+    dct:title "GoNoGo field-of-use scheme"@en ;
+    dct:description "Fields of use that a license can name. Broader means wider rights coverage, not logical subclassing."@en ;
+    dct:source <https://technology.nasa.gov/> ;
+    skos:hasTopConcept field:aerospace, field:communications, field:electrical-and-electronics, field:environment, field:health-medicine-and-biotechnology, field:information-technology-and-software, field:instrumentation, field:manufacturing, field:materials-and-coatings, field:mechanical-and-fluid-systems, field:optics, field:power-generation-and-storage, field:propulsion, field:robotics-automation-and-control, field:sensors .
+
+field:aerospace a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Aerospace"@en ;
+    skos:notation "01" ;
+    skos:definition "NASA T2 portal category Aerospace."@en ;
+    skos:narrower field:aircraft-structures, field:spacecraft-systems, field:unmanned-aircraft .
+field:aircraft-structures a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:aerospace ;
+    skos:prefLabel "Aircraft structures"@en ;
+    skos:notation "01.01" .
+field:spacecraft-systems a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:aerospace ;
+    skos:prefLabel "Spacecraft systems"@en ;
+    skos:notation "01.02" .
+field:unmanned-aircraft a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:aerospace ;
+    skos:prefLabel "Unmanned aircraft"@en ;
+    skos:notation "01.03" .
+
+field:communications a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Communications"@en ;
+    skos:notation "02" ;
+    skos:definition "NASA T2 portal category Communications."@en ;
+    skos:narrower field:rf-antennas, field:optical-communications .
+field:rf-antennas a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:communications ;
+    skos:prefLabel "RF antennas"@en ;
+    skos:notation "02.01" .
+field:optical-communications a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:communications ;
+    skos:prefLabel "Optical communications"@en ;
+    skos:notation "02.02" .
+
+field:electrical-and-electronics a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Electrical and Electronics"@en ;
+    skos:notation "03" ;
+    skos:definition "NASA T2 portal category Electrical and Electronics."@en ;
+    skos:narrower field:power-electronics, field:wiring-and-insulation .
+field:power-electronics a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:electrical-and-electronics ;
+    skos:prefLabel "Power electronics"@en ;
+    skos:notation "03.01" .
+field:wiring-and-insulation a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:electrical-and-electronics ;
+    skos:prefLabel "Wiring and insulation"@en ;
+    skos:notation "03.02" .
+
+field:environment a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Environment"@en ;
+    skos:notation "04" ;
+    skos:definition "NASA T2 portal category Environment."@en ;
+    skos:narrower field:remediation, field:emissions-monitoring .
+field:remediation a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:environment ;
+    skos:prefLabel "Environmental remediation"@en ;
+    skos:notation "04.01" .
+field:emissions-monitoring a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:environment ;
+    skos:prefLabel "Emissions monitoring"@en ;
+    skos:notation "04.02" .
+
+field:health-medicine-and-biotechnology a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Health, Medicine, and Biotechnology"@en ;
+    skos:notation "05" ;
+    skos:definition "NASA T2 portal category Health, Medicine, and Biotechnology."@en ;
+    skos:narrower field:medical-imaging, field:medical-devices, field:biotechnology .
+field:medical-imaging a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:health-medicine-and-biotechnology ;
+    skos:prefLabel "Medical imaging"@en ;
+    skos:notation "05.01" .
+field:medical-devices a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:health-medicine-and-biotechnology ;
+    skos:prefLabel "Medical devices"@en ;
+    skos:notation "05.02" .
+field:biotechnology a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:health-medicine-and-biotechnology ;
+    skos:prefLabel "Biotechnology"@en ;
+    skos:notation "05.03" .
+
+field:information-technology-and-software a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Information Technology and Software"@en ;
+    skos:notation "06" ;
+    skos:definition "NASA T2 portal category Information Technology and Software."@en ;
+    skos:narrower field:data-analytics, field:cybersecurity .
+field:data-analytics a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:information-technology-and-software ;
+    skos:prefLabel "Data analytics"@en ;
+    skos:notation "06.01" .
+field:cybersecurity a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:information-technology-and-software ;
+    skos:prefLabel "Cybersecurity"@en ;
+    skos:notation "06.02" .
+
+field:instrumentation a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Instrumentation"@en ;
+    skos:notation "07" ;
+    skos:definition "NASA T2 portal category Instrumentation."@en ;
+    skos:narrower field:test-and-measurement, field:nondestructive-evaluation .
+field:test-and-measurement a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:instrumentation ;
+    skos:prefLabel "Test and measurement"@en ;
+    skos:notation "07.01" .
+field:nondestructive-evaluation a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:instrumentation ;
+    skos:prefLabel "Nondestructive evaluation"@en ;
+    skos:notation "07.02" .
+
+field:manufacturing a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Manufacturing"@en ;
+    skos:notation "08" ;
+    skos:definition "NASA T2 portal category Manufacturing."@en ;
+    skos:narrower field:additive-manufacturing, field:joining-and-welding .
+field:additive-manufacturing a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:manufacturing ;
+    skos:prefLabel "Additive manufacturing"@en ;
+    skos:notation "08.01" .
+field:joining-and-welding a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:manufacturing ;
+    skos:prefLabel "Joining and welding"@en ;
+    skos:notation "08.02" .
+
+field:materials-and-coatings a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Materials and Coatings"@en ;
+    skos:notation "09" ;
+    skos:definition "NASA T2 portal category Materials and Coatings."@en ;
+    skos:narrower field:polymers-and-composites, field:coatings, field:aerogels, field:alloys .
+field:polymers-and-composites a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:materials-and-coatings ;
+    skos:prefLabel "Polymers and composites"@en ;
+    skos:notation "09.01" .
+field:coatings a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:materials-and-coatings ;
+    skos:prefLabel "Coatings"@en ;
+    skos:notation "09.02" .
+field:aerogels a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:materials-and-coatings ;
+    skos:prefLabel "Aerogels"@en ;
+    skos:notation "09.03" .
+field:alloys a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:materials-and-coatings ;
+    skos:prefLabel "Alloys"@en ;
+    skos:notation "09.04" .
+
+field:mechanical-and-fluid-systems a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Mechanical and Fluid Systems"@en ;
+    skos:notation "10" ;
+    skos:definition "NASA T2 portal category Mechanical and Fluid Systems."@en ;
+    skos:narrower field:tires-and-wheels, field:valves-and-pumps, field:damping-and-vibration .
+field:tires-and-wheels a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:mechanical-and-fluid-systems ;
+    skos:prefLabel "Tires and wheels"@en ;
+    skos:notation "10.01" .
+field:valves-and-pumps a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:mechanical-and-fluid-systems ;
+    skos:prefLabel "Valves and pumps"@en ;
+    skos:notation "10.02" .
+field:damping-and-vibration a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:mechanical-and-fluid-systems ;
+    skos:prefLabel "Damping and vibration"@en ;
+    skos:notation "10.03" .
+
+field:optics a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Optics"@en ;
+    skos:notation "11" ;
+    skos:definition "NASA T2 portal category Optics."@en ;
+    skos:narrower field:lasers, field:lenses-and-mirrors .
+field:lasers a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:optics ;
+    skos:prefLabel "Lasers"@en ;
+    skos:notation "11.01" .
+field:lenses-and-mirrors a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:optics ;
+    skos:prefLabel "Lenses and mirrors"@en ;
+    skos:notation "11.02" .
+
+field:power-generation-and-storage a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Power Generation and Storage"@en ;
+    skos:notation "12" ;
+    skos:definition "NASA T2 portal category Power Generation and Storage."@en ;
+    skos:narrower field:batteries, field:energy-generation .
+field:batteries a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:power-generation-and-storage ;
+    skos:prefLabel "Batteries"@en ;
+    skos:notation "12.01" .
+field:energy-generation a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:power-generation-and-storage ;
+    skos:prefLabel "Energy generation"@en ;
+    skos:notation "12.02" .
+
+field:propulsion a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Propulsion"@en ;
+    skos:notation "13" ;
+    skos:definition "NASA T2 portal category Propulsion."@en ;
+    skos:narrower field:rocket-propulsion, field:electric-propulsion .
+field:rocket-propulsion a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:propulsion ;
+    skos:prefLabel "Rocket propulsion"@en ;
+    skos:notation "13.01" .
+field:electric-propulsion a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:propulsion ;
+    skos:prefLabel "Electric propulsion"@en ;
+    skos:notation "13.02" .
+
+field:robotics-automation-and-control a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Robotics, Automation, and Control"@en ;
+    skos:notation "14" ;
+    skos:definition "NASA T2 portal category Robotics, Automation, and Control."@en ;
+    skos:narrower field:robotics, field:control-systems .
+field:robotics a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:robotics-automation-and-control ;
+    skos:prefLabel "Robotics"@en ;
+    skos:notation "14.01" .
+field:control-systems a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:robotics-automation-and-control ;
+    skos:prefLabel "Control systems"@en ;
+    skos:notation "14.02" .
+
+field:sensors a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:prefLabel "Sensors"@en ;
+    skos:notation "15" ;
+    skos:definition "NASA T2 portal category Sensors."@en ;
+    skos:narrower field:chemical-sensors, field:structural-health-sensors, field:magnetic-field-sensors .
+field:chemical-sensors a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:sensors ;
+    skos:prefLabel "Chemical sensors"@en ;
+    skos:notation "15.01" .
+field:structural-health-sensors a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:sensors ;
+    skos:prefLabel "Structural health sensors"@en ;
+    skos:notation "15.02" .
+field:magnetic-field-sensors a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:broader field:sensors ;
+    skos:prefLabel "Magnetic field sensors"@en ;
+    skos:notation "15.03" .

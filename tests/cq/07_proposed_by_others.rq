@@ -1,0 +1,12 @@
+# CQ07. Which proposed grants on patent P belong to a party other than the requester?
+# Rule: R2 (overlap with another party's proposed grant needs counsel)
+# Ontology constructs: gng:ProposedGrant is separate from gng:ExecutedGrant, gng:licensee
+SELECT ?grant ?name
+{{FROM}}
+WHERE {
+  ?grant a gng:ProposedGrant ; gng:aboutPatent {{patent}} ; gng:licensee ?licensee .
+  {{ASOF ?grant}}
+  ?licensee schema:legalName ?name .
+  FILTER(?licensee != {{requester}})
+}
+ORDER BY ?grant

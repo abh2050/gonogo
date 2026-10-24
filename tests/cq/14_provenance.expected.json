@@ -1,0 +1,38 @@
+{
+  "id": "CQ14",
+  "question": "For a grant, which document and clause span does each fact come from, which activity generated it, and who approved it?",
+  "rule": "Every finding (the verdict card cites these)",
+  "cases": [
+    {
+      "name": "G1 cites its grant clause and its term clause",
+      "params": {
+        "grant": {
+          "iri": "https://example.org/cq/G1"
+        }
+      },
+      "vars": [
+        "document",
+        "kind",
+        "text",
+        "run",
+        "approver"
+      ],
+      "rows": [
+        [
+          "<ex:agreement-G1>",
+          "grant",
+          "NASA grants Licensee an exclusive license under the Licensed Patents.",
+          "<https://w3id.org/gonogo/synth/generator/v0.1>",
+          "<policy:synthetic-load-v1>"
+        ],
+        [
+          "<ex:agreement-G1>",
+          "term",
+          "This Agreement takes effect on January 1, 2025.",
+          "<https://w3id.org/gonogo/synth/generator/v0.1>",
+          "<policy:synthetic-load-v1>"
+        ]
+      ]
+    }
+  ]
+}

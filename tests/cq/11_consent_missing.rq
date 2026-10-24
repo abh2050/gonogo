@@ -1,0 +1,15 @@
+# CQ11. Which listed co-owners of patent P have not consented?
+# Rule: R6
+# Ontology constructs: gng:OwnershipRecord, gng:coOwner, gng:ConsentRecord, gng:consentBy, FILTER NOT EXISTS
+SELECT ?coOwner ?name
+{{FROM}}
+WHERE {
+  ?record a gng:OwnershipRecord ; gng:aboutPatent {{patent}} ; gng:coOwner ?coOwner .
+  {{ASOF ?record}}
+  ?coOwner schema:legalName ?name .
+  FILTER NOT EXISTS {
+    ?consent a gng:ConsentRecord ; gng:aboutPatent {{patent}} ; gng:consentBy ?coOwner .
+    {{ASOF ?consent}}
+  }
+}
+ORDER BY ?coOwner

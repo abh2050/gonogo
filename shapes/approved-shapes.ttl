@@ -1,0 +1,15 @@
+@prefix shp:  <https://w3id.org/gonogo/shapes#> .
+@prefix gng:  <https://w3id.org/gonogo/ontology#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+# Shapes that apply only to the approved and royalty graphs.
+#
+# Every fact in those graphs needs an approver: a steward, or the standing policy that stands in for
+# one. Candidate facts have none yet, so the candidate graph is validated without this file. A fact
+# moves from candidate to approved only when an ApproveFact action adds its approver.
+
+shp:ApprovedFactShape a sh:NodeShape ;
+    sh:targetClass gng:BitemporalFact ;
+    sh:property [ sh:path gng:approvedBy ; sh:minCount 1 ; sh:class prov:Agent ] ;
+    sh:message "An approved fact needs a steward or an approval policy." .

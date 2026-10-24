@@ -11,3 +11,9 @@ data/raw/
 # Processed outputs and synthetic data are committed so tests and readers can use them.
 cdk.out/
 node_modules/
+.cache/
+build/
+
+ui/node_modules/
+ui/dist/
+.vercel/

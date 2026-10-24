@@ -26,8 +26,16 @@ from gonogo import aws
     ],
 )
 def test_source_is_reachable(method: str, url: str, body: dict[str, object] | None) -> None:
-    r = httpx.request(method, url, json=body, timeout=60, follow_redirects=True)
-    assert r.status_code == 200
+    """Public sources are sometimes slow, so each gets three attempts before the test fails."""
+    last: Exception | None = None
+    for _ in range(3):
+        try:
+            r = httpx.request(method, url, json=body, timeout=45, follow_redirects=True)
+            assert r.status_code == 200
+            return
+        except (httpx.TransportError, AssertionError) as exc:
+            last = exc
+    raise AssertionError(f"{url} failed three times: {last}")
 
 
 @pytest.mark.network

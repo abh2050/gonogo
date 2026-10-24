@@ -1,0 +1,70 @@
+{
+  "id": "CQ13",
+  "question": "Which executed grants on patent P did the system know about, and not yet consider replaced, at a recording cutoff?",
+  "rule": "Every rule (reproducing a past decision)",
+  "cases": [
+    {
+      "name": "on 25 October the system still believed the grant was for Optics",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P8"
+        },
+        "cutoff": {
+          "datetime": "2026-10-25T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "fieldLabel",
+        "supersedes"
+      ],
+      "rows": [
+        [
+          "<ex:GA>",
+          "Optics",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "after the 26 October correction the grant is for Aerospace and says what it replaced",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P8"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "fieldLabel",
+        "supersedes"
+      ],
+      "rows": [
+        [
+          "<ex:GB>",
+          "Aerospace",
+          "<ex:GA>"
+        ]
+      ]
+    },
+    {
+      "name": "before any grant was recorded the system knew nothing",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P8"
+        },
+        "cutoff": {
+          "datetime": "2024-01-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "fieldLabel",
+        "supersedes"
+      ],
+      "rows": []
+    }
+  ]
+}

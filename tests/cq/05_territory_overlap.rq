@@ -1,0 +1,14 @@
+# CQ05. Which executed grants on patent P overlap a requested territory, in either direction on the territory hierarchy?
+# Rule: R2
+# Ontology constructs: gng:coversTerritory (property chain), skos:broaderTransitive, ISO 3166 countries under regions
+SELECT ?grant ?direction
+{{FROM}}
+WHERE {
+  ?grant a gng:ExecutedGrant ; gng:aboutPatent {{patent}} .
+  {{ASOF ?grant}}
+  { ?grant gng:coversTerritory {{territory}} . BIND("grant covers request" AS ?direction) }
+  UNION
+  { ?grant gng:territory ?grantTerritory . ?grantTerritory skos:broaderTransitive {{territory}} .
+    BIND("request covers grant" AS ?direction) }
+}
+ORDER BY ?grant

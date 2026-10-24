@@ -1,0 +1,13 @@
+# CQ15. How many facts of each kind are synthetic, and how many are real?
+# Rule: None (the README and the verdict card use this to label synthetic data)
+# Ontology constructs: prov:wasGeneratedBy the generator run, subclass typing from the defined hierarchy
+SELECT ?class ?synthetic (COUNT(?fact) AS ?n)
+{{FROM}}
+WHERE {
+  VALUES ?class { gng:ExecutedGrant gng:ProposedGrant gng:OwnershipRecord gng:ConsentRecord
+                  gng:ExportClassification gng:PatentLegalStatus gng:FilingRecord }
+  ?fact a ?class .
+  BIND(EXISTS { ?fact prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> } AS ?synthetic)
+}
+GROUP BY ?class ?synthetic
+ORDER BY ?class

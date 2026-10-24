@@ -1,0 +1,305 @@
+{
+ "title": "GoNoGo field-of-use scheme",
+ "tops": [
+  {
+   "children": [
+    {
+     "id": "aircraft-structures",
+     "label": "Aircraft structures",
+     "notation": "01.01"
+    },
+    {
+     "id": "spacecraft-systems",
+     "label": "Spacecraft systems",
+     "notation": "01.02"
+    },
+    {
+     "id": "unmanned-aircraft",
+     "label": "Unmanned aircraft",
+     "notation": "01.03"
+    }
+   ],
+   "definition": "NASA T2 portal category Aerospace.",
+   "id": "aerospace",
+   "label": "Aerospace",
+   "notation": "01"
+  },
+  {
+   "children": [
+    {
+     "id": "rf-antennas",
+     "label": "RF antennas",
+     "notation": "02.01"
+    },
+    {
+     "id": "optical-communications",
+     "label": "Optical communications",
+     "notation": "02.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Communications.",
+   "id": "communications",
+   "label": "Communications",
+   "notation": "02"
+  },
+  {
+   "children": [
+    {
+     "id": "power-electronics",
+     "label": "Power electronics",
+     "notation": "03.01"
+    },
+    {
+     "id": "wiring-and-insulation",
+     "label": "Wiring and insulation",
+     "notation": "03.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Electrical and Electronics.",
+   "id": "electrical-and-electronics",
+   "label": "Electrical and Electronics",
+   "notation": "03"
+  },
+  {
+   "children": [
+    {
+     "id": "remediation",
+     "label": "Environmental remediation",
+     "notation": "04.01"
+    },
+    {
+     "id": "emissions-monitoring",
+     "label": "Emissions monitoring",
+     "notation": "04.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Environment.",
+   "id": "environment",
+   "label": "Environment",
+   "notation": "04"
+  },
+  {
+   "children": [
+    {
+     "id": "medical-imaging",
+     "label": "Medical imaging",
+     "notation": "05.01"
+    },
+    {
+     "id": "medical-devices",
+     "label": "Medical devices",
+     "notation": "05.02"
+    },
+    {
+     "id": "biotechnology",
+     "label": "Biotechnology",
+     "notation": "05.03"
+    }
+   ],
+   "definition": "NASA T2 portal category Health, Medicine, and Biotechnology.",
+   "id": "health-medicine-and-biotechnology",
+   "label": "Health, Medicine, and Biotechnology",
+   "notation": "05"
+  },
+  {
+   "children": [
+    {
+     "id": "data-analytics",
+     "label": "Data analytics",
+     "notation": "06.01"
+    },
+    {
+     "id": "cybersecurity",
+     "label": "Cybersecurity",
+     "notation": "06.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Information Technology and Software.",
+   "id": "information-technology-and-software",
+   "label": "Information Technology and Software",
+   "notation": "06"
+  },
+  {
+   "children": [
+    {
+     "id": "test-and-measurement",
+     "label": "Test and measurement",
+     "notation": "07.01"
+    },
+    {
+     "id": "nondestructive-evaluation",
+     "label": "Nondestructive evaluation",
+     "notation": "07.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Instrumentation.",
+   "id": "instrumentation",
+   "label": "Instrumentation",
+   "notation": "07"
+  },
+  {
+   "children": [
+    {
+     "id": "additive-manufacturing",
+     "label": "Additive manufacturing",
+     "notation": "08.01"
+    },
+    {
+     "id": "joining-and-welding",
+     "label": "Joining and welding",
+     "notation": "08.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Manufacturing.",
+   "id": "manufacturing",
+   "label": "Manufacturing",
+   "notation": "08"
+  },
+  {
+   "children": [
+    {
+     "id": "polymers-and-composites",
+     "label": "Polymers and composites",
+     "notation": "09.01"
+    },
+    {
+     "id": "coatings",
+     "label": "Coatings",
+     "notation": "09.02"
+    },
+    {
+     "id": "aerogels",
+     "label": "Aerogels",
+     "notation": "09.03"
+    },
+    {
+     "id": "alloys",
+     "label": "Alloys",
+     "notation": "09.04"
+    }
+   ],
+   "definition": "NASA T2 portal category Materials and Coatings.",
+   "id": "materials-and-coatings",
+   "label": "Materials and Coatings",
+   "notation": "09"
+  },
+  {
+   "children": [
+    {
+     "id": "tires-and-wheels",
+     "label": "Tires and wheels",
+     "notation": "10.01"
+    },
+    {
+     "id": "valves-and-pumps",
+     "label": "Valves and pumps",
+     "notation": "10.02"
+    },
+    {
+     "id": "damping-and-vibration",
+     "label": "Damping and vibration",
+     "notation": "10.03"
+    }
+   ],
+   "definition": "NASA T2 portal category Mechanical and Fluid Systems.",
+   "id": "mechanical-and-fluid-systems",
+   "label": "Mechanical and Fluid Systems",
+   "notation": "10"
+  },
+  {
+   "children": [
+    {
+     "id": "lasers",
+     "label": "Lasers",
+     "notation": "11.01"
+    },
+    {
+     "id": "lenses-and-mirrors",
+     "label": "Lenses and mirrors",
+     "notation": "11.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Optics.",
+   "id": "optics",
+   "label": "Optics",
+   "notation": "11"
+  },
+  {
+   "children": [
+    {
+     "id": "batteries",
+     "label": "Batteries",
+     "notation": "12.01"
+    },
+    {
+     "id": "energy-generation",
+     "label": "Energy generation",
+     "notation": "12.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Power Generation and Storage.",
+   "id": "power-generation-and-storage",
+   "label": "Power Generation and Storage",
+   "notation": "12"
+  },
+  {
+   "children": [
+    {
+     "id": "rocket-propulsion",
+     "label": "Rocket propulsion",
+     "notation": "13.01"
+    },
+    {
+     "id": "electric-propulsion",
+     "label": "Electric propulsion",
+     "notation": "13.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Propulsion.",
+   "id": "propulsion",
+   "label": "Propulsion",
+   "notation": "13"
+  },
+  {
+   "children": [
+    {
+     "id": "robotics",
+     "label": "Robotics",
+     "notation": "14.01"
+    },
+    {
+     "id": "control-systems",
+     "label": "Control systems",
+     "notation": "14.02"
+    }
+   ],
+   "definition": "NASA T2 portal category Robotics, Automation, and Control.",
+   "id": "robotics-automation-and-control",
+   "label": "Robotics, Automation, and Control",
+   "notation": "14"
+  },
+  {
+   "children": [
+    {
+     "id": "chemical-sensors",
+     "label": "Chemical sensors",
+     "notation": "15.01"
+    },
+    {
+     "id": "structural-health-sensors",
+     "label": "Structural health sensors",
+     "notation": "15.02"
+    },
+    {
+     "id": "magnetic-field-sensors",
+     "label": "Magnetic field sensors",
+     "notation": "15.03"
+    }
+   ],
+   "definition": "NASA T2 portal category Sensors.",
+   "id": "sensors",
+   "label": "Sensors",
+   "notation": "15"
+  }
+ ]
+}

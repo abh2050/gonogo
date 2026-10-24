@@ -1,0 +1,30 @@
+{
+ "cutoffAfter": "2026-11-01T00:00:00Z",
+ "cutoffBefore": "2026-10-25T00:00:00Z",
+ "facts": [
+  {
+   "field": "Structural health sensors",
+   "id": "AGR-0018",
+   "recordedAt": "2025-01-10T00:00:00+00:00",
+   "supersededAt": "2026-10-26T00:00:00+00:00",
+   "supersedes": [],
+   "validFrom": "2025-01-01",
+   "validTo": "2034-12-31"
+  },
+  {
+   "field": "Chemical sensors",
+   "id": "AGR-0019",
+   "recordedAt": "2026-10-26T00:00:00+00:00",
+   "supersededAt": null,
+   "supersedes": [
+    "AGR-0018"
+   ],
+   "validFrom": "2025-01-01",
+   "validTo": "2034-12-31"
+  }
+ ],
+ "patent": "LEW-18768-1",
+ "requestExclusivity": "non-exclusive",
+ "requestField": "Structural health sensors",
+ "requestText": "Orbital Lens Works, Inc. wants a non-exclusive license to NASA case LEW-18768-1 for structural health sensors in United States from January 1, 2027 to December 31, 2031."
+}

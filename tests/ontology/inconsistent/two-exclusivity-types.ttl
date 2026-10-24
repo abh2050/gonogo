@@ -1,0 +1,17 @@
+@prefix gng:       <https://w3id.org/gonogo/ontology#> .
+@prefix ex:        <https://example.org/test/> .
+@prefix field:     <https://w3id.org/gonogo/field/> .
+@prefix territory: <https://w3id.org/gonogo/territory/> .
+@prefix excl:      <https://w3id.org/gonogo/exclusivity/> .
+
+# An executed grant has exactly one exclusivity type. This one names two different types.
+ex:grant a gng:ExecutedGrant ;
+    gng:fieldOfUse field:optics ;
+    gng:territory territory:US ;
+    gng:exclusivityType excl:exclusive , excl:non-exclusive ;
+    gng:licensee ex:licensee ;
+    gng:aboutPatent ex:patent .
+excl:exclusive owl:differentFrom excl:non-exclusive .
+ex:licensee a gng:Licensee .
+ex:patent a gng:Patent .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .

@@ -1,0 +1,10 @@
+# CQ14. For a grant, which document and clause span does each fact come from, which activity generated it, and who approved it?
+# Rule: Every finding (the verdict card cites these)
+# Ontology constructs: gng:sourceClause, gng:inDocument, gng:spanText, prov:wasGeneratedBy, gng:approvedBy
+SELECT ?document ?kind ?text ?run ?approver
+{{FROM}}
+WHERE {
+  {{grant}} gng:sourceClause ?clause ; prov:wasGeneratedBy ?run ; gng:approvedBy ?approver .
+  ?clause gng:inDocument ?document ; gng:clauseKind ?kind ; gng:spanText ?text .
+}
+ORDER BY ?kind

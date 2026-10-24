@@ -788,7 +788,7 @@
       },
       "expected_verdict": "NO GO",
       "patent_key": "LEW-18768-1",
-      "recording_cutoff": "2026-03-01T00:00:00Z",
+      "recording_cutoff": "2026-10-25T00:00:00Z",
       "request_id": "REQ-0038",
       "type": "retroactive_correction_before"
     },

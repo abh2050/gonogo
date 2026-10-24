@@ -1,0 +1,74 @@
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix schema: <https://schema.org/> .
+
+# Declarations of the external terms that GoNoGo reuses.
+#
+# The GoNoGo ontology reuses SKOS, PROV-O, Dublin Core Terms, and schema.org terms without importing
+# the full vocabularies. A reasoner that checks OWL 2 DL needs every property to be typed as an object,
+# datatype, or annotation property, so this file declares only the terms that GoNoGo uses, with the
+# axioms that the source vocabularies state. The semantics belong to the source vocabularies:
+#   SKOS     https://www.w3.org/TR/skos-reference/
+#   PROV-O   https://www.w3.org/TR/prov-o/
+#   DCMI     https://www.dublincore.org/specifications/dublin-core/dcmi-terms/
+#   schema   https://schema.org/
+# ROBOT merges this file with the ontology and the schemes before it runs HermiT (scripts/robot.sh).
+
+<https://w3id.org/gonogo/ontology/external-terms> a owl:Ontology ;
+    dct:title "External terms reused by the GoNoGo ontology"@en .
+
+# ----- SKOS -----------------------------------------------------------------------------------------
+
+skos:Concept a owl:Class ; owl:disjointWith skos:ConceptScheme .
+skos:ConceptScheme a owl:Class .
+
+skos:inScheme a owl:ObjectProperty ; rdfs:range skos:ConceptScheme .
+skos:hasTopConcept a owl:ObjectProperty ; rdfs:domain skos:ConceptScheme ; rdfs:range skos:Concept ;
+    owl:inverseOf skos:topConceptOf .
+skos:topConceptOf a owl:ObjectProperty ; rdfs:subPropertyOf skos:inScheme .
+
+skos:broaderTransitive a owl:ObjectProperty , owl:TransitiveProperty ;
+    owl:inverseOf skos:narrowerTransitive .
+skos:narrowerTransitive a owl:ObjectProperty , owl:TransitiveProperty .
+skos:broader a owl:ObjectProperty ; rdfs:subPropertyOf skos:broaderTransitive ; owl:inverseOf skos:narrower .
+skos:narrower a owl:ObjectProperty ; rdfs:subPropertyOf skos:narrowerTransitive .
+
+skos:prefLabel a owl:AnnotationProperty .
+skos:altLabel a owl:AnnotationProperty .
+skos:definition a owl:AnnotationProperty .
+skos:notation a owl:DatatypeProperty ; rdfs:range rdfs:Literal .
+
+# ----- PROV-O ---------------------------------------------------------------------------------------
+
+prov:Entity a owl:Class .
+prov:Activity a owl:Class .
+prov:Agent a owl:Class .
+prov:SoftwareAgent a owl:Class ; rdfs:subClassOf prov:Agent .
+prov:Person a owl:Class ; rdfs:subClassOf prov:Agent .
+
+prov:wasGeneratedBy a owl:ObjectProperty ; rdfs:domain prov:Entity ; rdfs:range prov:Activity .
+prov:wasDerivedFrom a owl:ObjectProperty ; rdfs:domain prov:Entity ; rdfs:range prov:Entity .
+prov:wasAttributedTo a owl:ObjectProperty ; rdfs:domain prov:Entity ; rdfs:range prov:Agent .
+prov:wasAssociatedWith a owl:ObjectProperty ; rdfs:domain prov:Activity ; rdfs:range prov:Agent .
+prov:used a owl:ObjectProperty ; rdfs:domain prov:Activity ; rdfs:range prov:Entity .
+prov:startedAtTime a owl:DatatypeProperty ; rdfs:domain prov:Activity ; rdfs:range xsd:dateTime .
+prov:endedAtTime a owl:DatatypeProperty ; rdfs:domain prov:Activity ; rdfs:range xsd:dateTime .
+
+# ----- Dublin Core Terms ----------------------------------------------------------------------------
+
+dct:title a owl:AnnotationProperty .
+dct:description a owl:AnnotationProperty .
+dct:source a owl:AnnotationProperty .
+dct:identifier a owl:AnnotationProperty .
+dct:created a owl:AnnotationProperty .
+
+# ----- schema.org -----------------------------------------------------------------------------------
+
+schema:Organization a owl:Class .
+schema:legalName a owl:DatatypeProperty ; rdfs:domain schema:Organization ; rdfs:range xsd:string .
+schema:url a owl:DatatypeProperty ; rdfs:range xsd:anyURI .

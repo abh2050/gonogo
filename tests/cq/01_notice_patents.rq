@@ -1,0 +1,10 @@
+# CQ01. Which patents does a license notice name?
+# Rule: R4 (matching the notice to a patent)
+# Ontology constructs: gng:announcedIn, gng:aboutPatent, gng:caseNumber
+SELECT ?caseNumber
+{{FROM}}
+WHERE {
+  ?grant gng:announcedIn {{notice}} ; gng:aboutPatent ?patent .
+  ?patent gng:caseNumber ?caseNumber .
+}
+ORDER BY ?caseNumber

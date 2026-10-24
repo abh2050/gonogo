@@ -1,0 +1,69 @@
+{
+  "id": "CQ07",
+  "question": "Which proposed grants on patent P belong to a party other than the requester?",
+  "rule": "R2 (overlap with another party's proposed grant needs counsel)",
+  "cases": [
+    {
+      "name": "Alpha Optics asks while Delta Welding holds a proposed grant",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "requester": {
+          "iri": "https://example.org/cq/LicA"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "name"
+      ],
+      "rows": [
+        [
+          "<ex:PG1>",
+          "Delta Welding Co."
+        ]
+      ]
+    },
+    {
+      "name": "Delta Welding asks, so its own proposed grant does not count",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "requester": {
+          "iri": "https://example.org/cq/LicD"
+        },
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "name"
+      ],
+      "rows": []
+    },
+    {
+      "name": "before the notice was recorded the system knew of no proposed grant",
+      "params": {
+        "patent": {
+          "iri": "https://example.org/cq/P1"
+        },
+        "requester": {
+          "iri": "https://example.org/cq/LicA"
+        },
+        "cutoff": {
+          "datetime": "2026-10-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "grant",
+        "name"
+      ],
+      "rows": []
+    }
+  ]
+}

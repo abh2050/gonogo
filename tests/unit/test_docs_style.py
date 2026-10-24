@@ -8,7 +8,9 @@ BANNED = ["delve", "crucial", "pivotal", "robust", "seamless", "landscape", "lev
 
 
 def test_docs_avoid_banned_words() -> None:
-    paths = [ROOT / "README.md", *(ROOT / "docs").rglob("*.md"), *ROOT.glob("*/README.md")]
+    skipped = {".venv", "node_modules", "raw", "build", ".cache"}
+    paths = [p for p in ROOT.rglob("*.md") if not skipped & set(p.relative_to(ROOT).parts)]
+    assert len(paths) >= 8
     offenders = []
     for path in paths:
         if path.name == "prd.md":

@@ -1,0 +1,38 @@
+{
+  "id": "CQ03",
+  "question": "Which patents have a filing date but no registry expiration date, so that a rule could derive an expiration?",
+  "rule": "R1 (derived expiration, labeled derived)",
+  "cases": [
+    {
+      "name": "P3 has only a filing date",
+      "params": {
+        "cutoff": {
+          "datetime": "2026-11-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "patent",
+        "filingDate"
+      ],
+      "rows": [
+        [
+          "<ex:P3>",
+          "2016-05-02"
+        ]
+      ]
+    },
+    {
+      "name": "before the filing record was recorded, nothing is derivable",
+      "params": {
+        "cutoff": {
+          "datetime": "2026-01-01T00:00:00Z"
+        }
+      },
+      "vars": [
+        "patent",
+        "filingDate"
+      ],
+      "rows": []
+    }
+  ]
+}
