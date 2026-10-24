@@ -48,5 +48,6 @@ markers = [
   "docker: needs docker compose services running",
   "aws: makes read-only AWS calls with profile awsnew",
   "robot: runs ROBOT with the HermiT reasoner (needs Java)",
+  "w3id: needs the local w3id.org Apache server on port 8080 (see docs/w3id/README.md)",
 ]
-addopts = "-m 'not network and not docker and not aws and not robot'"
+addopts = "-m 'not network and not docker and not aws and not robot and not w3id'"

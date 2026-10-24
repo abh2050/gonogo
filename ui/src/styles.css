@@ -706,3 +706,21 @@ input[type="range"] {
     margin: 12px;
   }
 }
+
+.nav-ref {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-ref:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 760px) {
+  .nav-ref {
+    display: none;
+  }
+}

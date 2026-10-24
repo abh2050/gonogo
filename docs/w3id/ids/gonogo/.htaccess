@@ -1,0 +1,48 @@
+# # /gonogo/
+#
+# Persistent identifiers for GoNoGo, an open ontology for patent license clearance.
+# The ontology namespace is https://w3id.org/gonogo/ontology#. A client that asks for Turtle receives the
+# Turtle file, and everyone else receives the generated documentation. Both live on the project site.
+#
+# Project: https://github.com/abh2050/gonogo
+#
+# ## Contact
+# This space is administered by:
+#
+# Abhishek Shah
+# GitHub username: abh2050
+
+RewriteEngine on
+
+# Ontology, with or without a version number
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^ontology(/[0-9.]+)?$ https://gonogo-livid.vercel.app/ontology/gonogo.ttl [R=303,L]
+RewriteRule ^ontology(/[0-9.]+)?$ https://gonogo-livid.vercel.app/ontology/index.html [R=303,L]
+
+# SHACL shapes
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^shapes$ https://gonogo-livid.vercel.app/ontology/gonogo-shapes.ttl [R=303,L]
+RewriteRule ^shapes$ https://gonogo-livid.vercel.app/ontology/shapes.html [R=303,L]
+
+# SKOS scheme: fields of use
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^(scheme/field-of-use|field(/.*)?)$ https://gonogo-livid.vercel.app/ontology/fields.ttl [R=303,L]
+RewriteRule ^(scheme/field-of-use|field(/.*)?)$ https://gonogo-livid.vercel.app/ontology/fields.html [R=303,L]
+
+# SKOS scheme: territories
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^(scheme/territory|territory(/.*)?)$ https://gonogo-livid.vercel.app/ontology/territories.ttl [R=303,L]
+RewriteRule ^(scheme/territory|territory(/.*)?)$ https://gonogo-livid.vercel.app/ontology/territories.html [R=303,L]
+
+# SKOS scheme: exclusivity types
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^(scheme/exclusivity|exclusivity(/.*)?)$ https://gonogo-livid.vercel.app/ontology/exclusivity.ttl [R=303,L]
+RewriteRule ^(scheme/exclusivity|exclusivity(/.*)?)$ https://gonogo-livid.vercel.app/ontology/exclusivity.html [R=303,L]
+
+# SKOS scheme: legal states
+RewriteCond %{HTTP_ACCEPT} text/turtle
+RewriteRule ^(scheme/legal-state|legal-state(/.*)?)$ https://gonogo-livid.vercel.app/ontology/legal-states.ttl [R=303,L]
+RewriteRule ^(scheme/legal-state|legal-state(/.*)?)$ https://gonogo-livid.vercel.app/ontology/legal-states.html [R=303,L]
+
+# Everything else, including the identifiers of data, graphs, and runs, goes to the project overview
+RewriteRule ^ https://gonogo-livid.vercel.app/ [R=302,L]

@@ -40,7 +40,7 @@ jobs:
       - run: uv run pytest -m robot
       # The reference documentation is generated, so the committed copy must match.
       - run: uv run python -m kg.docs
-      - run: git diff --exit-code docs/ontology
+      - run: git diff --exit-code docs/ontology ui/public/ontology
 
   fuseki:
     name: Competency questions on Fuseki

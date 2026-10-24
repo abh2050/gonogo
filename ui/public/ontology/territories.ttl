@@ -1,0 +1,173 @@
+@prefix gng:     <https://w3id.org/gonogo/ontology#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix territory: <https://w3id.org/gonogo/territory/> .
+
+# Territory scheme
+#
+# Countries carry ISO 3166-1 alpha-2 codes (gng:iso3166Alpha2). Regions are GoNoGo commercial
+# groupings, not ISO or UN regions: "North America" here includes Mexico. A grant for a region
+# covers every country beneath it.
+
+<https://w3id.org/gonogo/scheme/territory> a skos:ConceptScheme ;
+    dct:title "GoNoGo territory scheme"@en ;
+    dct:description "Territories that a license can name: the world, commercial regions, and ISO 3166 countries."@en ;
+    dct:source <https://www.iso.org/iso-3166-country-codes.html> ;
+    skos:hasTopConcept territory:WORLD .
+
+territory:WORLD a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/territory> ;
+    skos:prefLabel "Worldwide"@en ;
+    skos:notation "WORLD" ;
+    skos:narrower territory:NORTH-AMERICA, territory:EUROPE, territory:ASIA-PACIFIC, territory:MIDDLE-EAST .
+
+territory:NORTH-AMERICA a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:WORLD ;
+    skos:prefLabel "North America"@en ;
+    skos:notation "NORTH-AMERICA" ;
+    skos:narrower territory:US, territory:CA, territory:MX .
+
+territory:US a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:NORTH-AMERICA ;
+    skos:prefLabel "United States"@en ;
+    skos:notation "US" ;
+    gng:iso3166Alpha2 "US" .
+
+territory:CA a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:NORTH-AMERICA ;
+    skos:prefLabel "Canada"@en ;
+    skos:notation "CA" ;
+    gng:iso3166Alpha2 "CA" .
+
+territory:MX a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:NORTH-AMERICA ;
+    skos:prefLabel "Mexico"@en ;
+    skos:notation "MX" ;
+    gng:iso3166Alpha2 "MX" .
+
+territory:EUROPE a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:WORLD ;
+    skos:prefLabel "Europe"@en ;
+    skos:notation "EUROPE" ;
+    skos:narrower territory:GB, territory:DE, territory:FR, territory:SE, territory:IT, territory:NL .
+
+territory:GB a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:EUROPE ;
+    skos:prefLabel "United Kingdom"@en ;
+    skos:notation "GB" ;
+    gng:iso3166Alpha2 "GB" .
+
+territory:DE a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:EUROPE ;
+    skos:prefLabel "Germany"@en ;
+    skos:notation "DE" ;
+    gng:iso3166Alpha2 "DE" .
+
+territory:FR a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:EUROPE ;
+    skos:prefLabel "France"@en ;
+    skos:notation "FR" ;
+    gng:iso3166Alpha2 "FR" .
+
+territory:SE a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:EUROPE ;
+    skos:prefLabel "Sweden"@en ;
+    skos:notation "SE" ;
+    gng:iso3166Alpha2 "SE" .
+
+territory:IT a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:EUROPE ;
+    skos:prefLabel "Italy"@en ;
+    skos:notation "IT" ;
+    gng:iso3166Alpha2 "IT" .
+
+territory:NL a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:EUROPE ;
+    skos:prefLabel "Netherlands"@en ;
+    skos:notation "NL" ;
+    gng:iso3166Alpha2 "NL" .
+
+territory:ASIA-PACIFIC a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:WORLD ;
+    skos:prefLabel "Asia Pacific"@en ;
+    skos:notation "ASIA-PACIFIC" ;
+    skos:narrower territory:JP, territory:KR, territory:AU, territory:IN, territory:CN, territory:SG .
+
+territory:JP a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:prefLabel "Japan"@en ;
+    skos:notation "JP" ;
+    gng:iso3166Alpha2 "JP" .
+
+territory:KR a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:prefLabel "Republic of Korea"@en ;
+    skos:notation "KR" ;
+    gng:iso3166Alpha2 "KR" .
+
+territory:AU a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:prefLabel "Australia"@en ;
+    skos:notation "AU" ;
+    gng:iso3166Alpha2 "AU" .
+
+territory:IN a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:prefLabel "India"@en ;
+    skos:notation "IN" ;
+    gng:iso3166Alpha2 "IN" .
+
+territory:CN a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:prefLabel "China"@en ;
+    skos:notation "CN" ;
+    gng:iso3166Alpha2 "CN" .
+
+territory:SG a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:prefLabel "Singapore"@en ;
+    skos:notation "SG" ;
+    gng:iso3166Alpha2 "SG" .
+
+territory:MIDDLE-EAST a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:WORLD ;
+    skos:prefLabel "Middle East"@en ;
+    skos:notation "MIDDLE-EAST" ;
+    skos:narrower territory:AE, territory:IL .
+
+territory:AE a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:MIDDLE-EAST ;
+    skos:prefLabel "United Arab Emirates"@en ;
+    skos:notation "AE" ;
+    gng:iso3166Alpha2 "AE" .
+
+territory:IL a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:broader territory:MIDDLE-EAST ;
+    skos:prefLabel "Israel"@en ;
+    skos:notation "IL" ;
+    gng:iso3166Alpha2 "IL" .

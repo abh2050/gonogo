@@ -1,0 +1,757 @@
+@prefix gng:    <https://w3id.org/gonogo/ontology#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix schema: <https://schema.org/> .
+
+# =====================================================================================================
+# GoNoGo ontology
+#
+# Scope: patent license clearance for NASA technology transfer. The ontology describes the facts that
+# seven clearance rules read, the provenance behind each fact, and the time dimensions that make a past
+# decision reproducible. It does not describe verdicts. Rules and the decision combiner compute those.
+#
+# Reused vocabularies: PROV-O (provenance), SKOS (controlled vocabularies), Dublin Core Terms (document
+# metadata), and schema.org (organization names). See docs/adr/0001-upper-ontology-alignment.md.
+#
+# Companion files:
+#   ontology/schemes/*.ttl          SKOS concept schemes: fields of use, territories, exclusivity, legal states
+#   ontology/imports/external-terms.ttl   declarations of reused terms, so a reasoner can check OWL 2 DL
+#   shapes/gonogo-shapes.ttl        SHACL shapes that check conformance (they never decide a verdict)
+#   docs/modeling-decisions.md      the reasons behind each modeling choice
+# =====================================================================================================
+
+<https://w3id.org/gonogo/ontology> a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/gonogo/ontology/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    dct:title "GoNoGo ontology"@en ;
+    dct:description """Vocabulary for patent license clearance. A Grant relates a patent, a licensee, a field of use, a territory, a term, and an exclusivity type. Every fact is bitemporal and carries provenance. Fields of use and territories are SKOS concepts, and a broader concept means wider rights coverage."""@en ;
+    rdfs:comment """Under the open world assumption, a missing fact means unknown. The rule engine, not the reasoner, turns unknown into the verdict NO DATA."""@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Annotation properties that link terms to the rules and decisions that use them
+# -----------------------------------------------------------------------------------------------------
+
+gng:readByRule a owl:AnnotationProperty ;
+    rdfs:label "read by rule"@en ;
+    skos:definition "Names the clearance rule (R1 to R7) whose SPARQL template reads this term."@en .
+
+gng:modelingDecision a owl:AnnotationProperty ;
+    rdfs:label "modeling decision"@en ;
+    skos:definition "Names the entry in docs/modeling-decisions.md that explains why this term is modeled this way."@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Classes: things and documents
+# -----------------------------------------------------------------------------------------------------
+
+gng:Patent a owl:Class ;
+    rdfs:label "Patent"@en ;
+    skos:definition "A United States patent or patent application that NASA owns, alone or jointly. The class holds identity only. Legal status, ownership, and licenses are separate facts about the patent."@en ;
+    rdfs:comment "Keeping status out of the Patent node lets two sources disagree about the same patent without overwriting each other, and lets a later fact supersede an earlier one."@en ;
+    gng:modelingDecision "MD1" .
+
+gng:NASACenter a owl:Class ;
+    rdfs:label "NASA center"@en ;
+    skos:definition "A NASA field center or headquarters that holds patents."@en .
+
+gng:Licensee a owl:Class ;
+    rdfs:subClassOf schema:Organization ;
+    rdfs:label "Licensee"@en ;
+    skos:definition "An organization that holds, or asks for, a license. Different documents name the same licensee in different ways, so each spelling can be a separate node until a steward links them with owl:sameAs."@en ;
+    gng:modelingDecision "MD9" .
+
+gng:CoOwner a owl:Class ;
+    rdfs:subClassOf schema:Organization ;
+    rdfs:label "Co-owner"@en ;
+    skos:definition "An organization, other than NASA, that the USPTO assignment records or an ownership record name as an owner of a patent."@en ;
+    gng:readByRule "R6" .
+
+gng:SourceDocument a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Source document"@en ;
+    skos:definition "A document or registry record from which a fact was read."@en .
+
+gng:LicenseNotice a owl:Class ;
+    rdfs:subClassOf gng:SourceDocument ;
+    rdfs:label "License notice"@en ;
+    skos:definition "A Federal Register notice of NASA's intent to grant a patent license. A notice announces a proposed grant and opens an objection window. It never proves that a license exists."@en ;
+    gng:readByRule "R4" ;
+    gng:modelingDecision "MD2" .
+
+gng:LicenseAgreement a owl:Class ;
+    rdfs:subClassOf gng:SourceDocument ;
+    rdfs:label "License agreement"@en ;
+    skos:definition "A signed patent license agreement. Only an agreement creates an executed grant."@en ;
+    gng:modelingDecision "MD2" .
+
+gng:RegistryRecord a owl:Class ;
+    rdfs:subClassOf gng:SourceDocument ;
+    rdfs:label "Registry record"@en ;
+    skos:definition "A record from a patent registry or dataset, such as a USPTO file wrapper or the NASA Patents snapshot."@en .
+
+gng:Clause a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Clause"@en ;
+    skos:definition "A character span inside a source document. A clause is the evidence that a fact points to, so a reader can open the document at the exact words."@en ;
+    gng:modelingDecision "MD7" .
+
+# -----------------------------------------------------------------------------------------------------
+# Classes: bitemporal facts
+# -----------------------------------------------------------------------------------------------------
+
+gng:BitemporalFact a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Bitemporal fact"@en ;
+    skos:definition "A statement that the system records with two times: the valid time, when the statement holds in the world, and the recording time, when the system learned it. A correction supersedes a fact and never deletes it."@en ;
+    rdfs:comment "Valid time answers whether a grant applies on a date. Recording time answers what the system knew when it decided. Reproducing a past verdict needs both."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:Grant a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    owl:equivalentClass [ a owl:Class ; owl:unionOf ( gng:ProposedGrant gng:ExecutedGrant ) ] ;
+    rdfs:label "Grant"@en ;
+    skos:definition "A license that relates a patent, a licensee, a field of use, a territory, a term, and an exclusivity type at once. The class is abstract: every grant is either proposed or executed."@en ;
+    rdfs:comment "Modeled as a class, in the pattern of the W3C note on n-ary relations, because a binary property cannot carry six participants."@en ;
+    gng:readByRule "R2", "R3" ;
+    gng:modelingDecision "MD1", "MD2" .
+
+gng:ProposedGrant a owl:Class ;
+    rdfs:subClassOf gng:Grant ;
+    rdfs:label "Proposed grant"@en ;
+    skos:definition "A grant that a license notice announces. It records intent. The objection window can end without a license."@en ;
+    gng:readByRule "R2", "R4" ;
+    gng:modelingDecision "MD2" .
+
+gng:ExecutedGrant a owl:Class ;
+    rdfs:subClassOf gng:Grant ,
+        [ a owl:Restriction ; owl:onProperty gng:licensee ; owl:someValuesFrom gng:Licensee ] ,
+        [ a owl:Restriction ; owl:onProperty gng:aboutPatent ; owl:someValuesFrom gng:Patent ] ,
+        [ a owl:Restriction ; owl:onProperty gng:fieldOfUse ; owl:someValuesFrom gng:FieldOfUse ] ,
+        [ a owl:Restriction ; owl:onProperty gng:territory ; owl:someValuesFrom gng:Territory ] ,
+        [ a owl:Restriction ; owl:onProperty gng:exclusivityType ; owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ; owl:onClass gng:ExclusivityType ] ;
+    owl:disjointWith gng:ProposedGrant ;
+    rdfs:label "Executed grant"@en ;
+    skos:definition "A grant that a signed agreement creates. It states one exclusivity type, a field of use, a territory, and a term."@en ;
+    gng:readByRule "R2", "R3" ;
+    gng:modelingDecision "MD2" .
+
+gng:OwnershipRecord a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    rdfs:label "Ownership record"@en ;
+    skos:definition "A statement about who co-owns a patent. The record says whether its co-owner list is exhaustive. An exhaustive list with no entries is an explicit negative fact: the patent has no co-owners."@en ;
+    rdfs:comment "Without this record, the absence of co-owners proves nothing under the open world assumption."@en ;
+    gng:readByRule "R6" ;
+    gng:modelingDecision "MD5", "MD6" .
+
+gng:ConsentRecord a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    rdfs:label "Consent record"@en ;
+    skos:definition "A co-owner's consent to license the patent."@en ;
+    gng:readByRule "R6" .
+
+gng:ExportClassification a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    owl:equivalentClass [ a owl:Class ; owl:unionOf ( gng:RestrictedExport gng:UnrestrictedExport ) ] ;
+    rdfs:label "Export classification"@en ;
+    skos:definition "The export-control status of the technology a patent covers. The class is abstract: a classification is either restricted or unrestricted."@en ;
+    gng:readByRule "R5" .
+
+gng:RestrictedExport a owl:Class ;
+    rdfs:subClassOf gng:ExportClassification ;
+    owl:disjointWith gng:UnrestrictedExport ;
+    rdfs:label "Restricted export classification"@en ;
+    skos:definition "Export controls apply. The classification lists the territories that a licensee may sit in."@en ;
+    gng:readByRule "R5" .
+
+gng:UnrestrictedExport a owl:Class ;
+    rdfs:subClassOf gng:ExportClassification ;
+    rdfs:label "Unrestricted export classification"@en ;
+    skos:definition "No export controls apply."@en ;
+    gng:readByRule "R5" .
+
+gng:PatentLegalStatus a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    rdfs:label "Patent legal status"@en ;
+    skos:definition "What a registry reports about whether a patent is alive: its legal state, its expiration date, and how that date was found. Two registries can each report a status for the same patent."@en ;
+    gng:readByRule "R1" ;
+    gng:modelingDecision "MD1", "MD10" .
+
+gng:FilingRecord a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    rdfs:label "Filing record"@en ;
+    skos:definition "The filing date of a patent application, used when no registry supplies an expiration date. A rule that uses it must label the resulting expiration as derived."@en ;
+    gng:readByRule "R1" .
+
+gng:RoyaltyTerm a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    rdfs:label "Royalty term"@en ;
+    skos:definition "The confidential royalty terms of an executed grant. Royalty terms live in their own named graph, so graph-level access control can hide them from licensing managers."@en ;
+    gng:modelingDecision "MD11" .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( gng:Grant gng:OwnershipRecord gng:ConsentRecord gng:ExportClassification
+                  gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( gng:LicenseNotice gng:LicenseAgreement gng:RegistryRecord ) .
+
+# -----------------------------------------------------------------------------------------------------
+# Classes: controlled-vocabulary concepts (defined by scheme membership)
+#
+# A concept is a FieldOfUse exactly when it is in the field-of-use scheme. A reasoner therefore types
+# concepts from their skos:inScheme statements, and a grant that names a concept from the wrong scheme
+# becomes inconsistent because the four classes are disjoint.
+# -----------------------------------------------------------------------------------------------------
+
+gng:FieldOfUse a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        skos:Concept
+        [ a owl:Restriction ; owl:onProperty skos:inScheme ; owl:hasValue <https://w3id.org/gonogo/scheme/field-of-use> ] ) ] ;
+    rdfs:label "Field of use"@en ;
+    skos:definition "A concept in the field-of-use scheme. Broader means wider rights coverage."@en ;
+    rdfs:comment "Fields of use are SKOS concepts, not OWL subclasses. Subclassing would assert that every instance of a narrow field is an instance of the broad field, which is a claim about sets that the business does not make. The business edits this hierarchy as a policy."@en ;
+    gng:readByRule "R2" ;
+    gng:modelingDecision "MD3", "MD4" .
+
+gng:Territory a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        skos:Concept
+        [ a owl:Restriction ; owl:onProperty skos:inScheme ; owl:hasValue <https://w3id.org/gonogo/scheme/territory> ] ) ] ;
+    rdfs:label "Territory"@en ;
+    skos:definition "A concept in the territory scheme: the world, a commercial region, or a country with an ISO 3166-1 alpha-2 code."@en ;
+    gng:readByRule "R2", "R5" ;
+    gng:modelingDecision "MD3", "MD4" .
+
+gng:ExclusivityType a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        skos:Concept
+        [ a owl:Restriction ; owl:onProperty skos:inScheme ; owl:hasValue <https://w3id.org/gonogo/scheme/exclusivity> ] ) ] ;
+    rdfs:label "Exclusivity type"@en ;
+    skos:definition "A concept in the exclusivity scheme: exclusive, partially exclusive, co-exclusive, or non-exclusive."@en ;
+    gng:readByRule "R2", "R3", "R4", "R7" .
+
+gng:LegalState a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf (
+        skos:Concept
+        [ a owl:Restriction ; owl:onProperty skos:inScheme ; owl:hasValue <https://w3id.org/gonogo/scheme/legal-state> ] ) ] ;
+    rdfs:label "Legal state"@en ;
+    skos:definition "A concept in the legal-state scheme: in force, lapsed, term ended, abandoned, not granted, or application."@en ;
+    gng:readByRule "R1" .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( gng:FieldOfUse gng:Territory gng:ExclusivityType gng:LegalState ) .
+
+# -----------------------------------------------------------------------------------------------------
+# Classes: provenance (PROV-O), actions, and agents
+# -----------------------------------------------------------------------------------------------------
+
+gng:FactGeneration a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:label "Fact generation"@en ;
+    skos:definition "An activity that produced facts: a bulk load of registry data, an extraction from a document, or a run of the synthetic generator."@en ;
+    gng:modelingDecision "MD8" .
+
+gng:BulkLoad a owl:Class ;
+    rdfs:subClassOf gng:FactGeneration ;
+    rdfs:label "Bulk load"@en ;
+    skos:definition "A run that loaded system-of-record data from a public registry or dataset under a standing approval policy."@en .
+
+gng:Extraction a owl:Class ;
+    rdfs:subClassOf gng:FactGeneration ;
+    rdfs:label "Extraction"@en ;
+    skos:definition "A run that read candidate facts out of document text. A language model or a deterministic extractor can perform it. A steward must approve its facts before they affect a verdict."@en .
+
+gng:SyntheticGeneration a owl:Class ;
+    rdfs:subClassOf gng:FactGeneration ;
+    rdfs:label "Synthetic generation"@en ;
+    skos:definition "A run of the seeded synthetic generator. Every fact it produces is synthetic, and the prov:wasGeneratedBy link to this activity is the label that says so."@en ;
+    gng:modelingDecision "MD8" .
+
+gng:Action a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:label "Action"@en ;
+    skos:definition "A governed state change. Each action has typed inputs, a permission check, a validation step, a target named graph, and a queryable provenance record."@en ;
+    gng:modelingDecision "MD12" .
+
+gng:SubmitClearanceRequest a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Submit clearance request"@en ;
+    skos:definition "A licensing manager asks for a verdict."@en .
+gng:ProposeFacts a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Propose facts"@en ;
+    skos:definition "The ingestion pipeline writes candidate facts to the candidate graph."@en .
+gng:ApproveFact a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Approve fact"@en ;
+    skos:definition "A steward promotes a candidate fact to the approved graph and records the reason."@en .
+gng:RejectFact a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Reject fact"@en ;
+    skos:definition "A steward discards a candidate fact and records the reason."@en .
+gng:CorrectFact a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Correct fact"@en ;
+    skos:definition "A steward supersedes an approved fact with a new one. The original stays in the graph."@en .
+gng:OverrideVerdict a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Override verdict"@en ;
+    skos:definition "Counsel records a different outcome with a written justification. The original decision stays unchanged."@en .
+gng:PublishRelease a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Publish release"@en ;
+    skos:definition "The ontology owner activates a release bundle after the release gate passes."@en .
+
+gng:Steward a owl:Class ;
+    rdfs:subClassOf prov:Person ;
+    rdfs:label "Steward"@en ;
+    skos:definition "A person who approves, edits, rejects, or corrects facts."@en .
+
+gng:ApprovalPolicy a owl:Class ;
+    rdfs:subClassOf prov:Agent ;
+    rdfs:label "Approval policy"@en ;
+    skos:definition "A standing approval that stands in for a person. The bulk-load policy approves public system-of-record data. It never approves a fact that a language model extracted."@en .
+
+gng:Generator a owl:Class ;
+    rdfs:subClassOf prov:SoftwareAgent ;
+    rdfs:label "Generator"@en ;
+    skos:definition "The synthetic-data generator, as a software agent."@en .
+
+gng:ClearanceRequest a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Clearance request"@en ;
+    skos:definition "A structured request for a verdict: patent, licensee, field of use, territory, term, and exclusivity type. Gate 2 adds its properties."@en .
+
+gng:Decision a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Decision"@en ;
+    skos:definition "The stored result of one clearance request: the rule findings, the combiner policy, the release, the recording cutoff, and the verdict. Gate 2 adds its properties."@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Object properties
+# -----------------------------------------------------------------------------------------------------
+
+gng:aboutPatent a owl:ObjectProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range gng:Patent ;
+    rdfs:label "about patent"@en ;
+    skos:definition "Relates a fact to a patent that it describes. A grant can cover several patents."@en ;
+    gng:readByRule "R1", "R2", "R3", "R4", "R5", "R6" .
+
+gng:center a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Patent ; rdfs:range gng:NASACenter ;
+    rdfs:label "center"@en ;
+    skos:definition "The NASA center that manages the patent."@en .
+
+gng:licensee a owl:ObjectProperty ;
+    rdfs:domain gng:Grant ; rdfs:range gng:Licensee ;
+    rdfs:label "licensee"@en ;
+    skos:definition "The party that holds or asks for the grant."@en ;
+    gng:readByRule "R2", "R3" .
+
+gng:fieldOfUse a owl:ObjectProperty ;
+    rdfs:subPropertyOf gng:coversField ;
+    rdfs:domain gng:Grant ; rdfs:range gng:FieldOfUse ;
+    rdfs:label "field of use"@en ;
+    skos:definition "The field that the grant names. A notice may name none."@en ;
+    gng:readByRule "R2" .
+
+gng:territory a owl:ObjectProperty ;
+    rdfs:subPropertyOf gng:coversTerritory ;
+    rdfs:domain gng:Grant ; rdfs:range gng:Territory ;
+    rdfs:label "territory"@en ;
+    skos:definition "The territory that the grant names. A notice may name none."@en ;
+    gng:readByRule "R2" .
+
+gng:exclusivityType a owl:ObjectProperty ;
+    rdfs:domain gng:Grant ; rdfs:range gng:ExclusivityType ;
+    rdfs:label "exclusivity type"@en ;
+    skos:definition "How exclusive the grant is. An executed grant has exactly one. A proposed grant from a notice that offers several types has several."@en ;
+    gng:readByRule "R2", "R3", "R4", "R7" .
+
+gng:coversField a owl:ObjectProperty ;
+    rdfs:domain gng:Grant ; rdfs:range gng:FieldOfUse ;
+    owl:propertyChainAxiom ( gng:fieldOfUse skos:narrowerTransitive ) ;
+    rdfs:label "covers field"@en ;
+    skos:definition "Relates a grant to every field its rights reach: the named field and every narrower field beneath it. A reasoner derives this property from skos:narrower, so the hierarchy decides coverage."@en ;
+    rdfs:comment "This property chain is the formal statement of the rule that broader means wider rights. The pipeline materializes it before load because Neptune does not reason at query time."@en ;
+    gng:readByRule "R2" ;
+    gng:modelingDecision "MD4", "MD13" .
+
+gng:coversTerritory a owl:ObjectProperty ;
+    rdfs:domain gng:Grant ; rdfs:range gng:Territory ;
+    owl:propertyChainAxiom ( gng:territory skos:narrowerTransitive ) ;
+    rdfs:label "covers territory"@en ;
+    skos:definition "Relates a grant to every territory its rights reach: the named territory and every country beneath it."@en ;
+    gng:readByRule "R2" ;
+    gng:modelingDecision "MD4", "MD13" .
+
+gng:announcedIn a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:domain gng:ProposedGrant ; rdfs:range gng:LicenseNotice ;
+    rdfs:label "announced in"@en ;
+    skos:definition "The notice that announces a proposed grant."@en ;
+    gng:readByRule "R4" .
+
+gng:executedUnder a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:domain gng:ExecutedGrant ; rdfs:range gng:LicenseAgreement ;
+    rdfs:label "executed under"@en ;
+    skos:definition "The agreement that creates an executed grant."@en .
+
+gng:seededFrom a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:domain gng:LicenseAgreement ; rdfs:range gng:LicenseNotice ;
+    rdfs:label "seeded from"@en ;
+    skos:definition "Links a synthetic agreement to the real notice whose patents, exclusivity, field, and territory it copies."@en .
+
+gng:sourceClause a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range gng:Clause ;
+    rdfs:label "source clause"@en ;
+    skos:definition "The clause that a fact was read from. A fact can point to several clauses."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:inDocument a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Clause ; rdfs:range gng:SourceDocument ;
+    rdfs:label "in document"@en ;
+    skos:definition "The document that holds the clause."@en .
+
+gng:supersedes a owl:ObjectProperty , owl:AsymmetricProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range gng:BitemporalFact ;
+    owl:inverseOf gng:supersededBy ;
+    rdfs:label "supersedes"@en ;
+    skos:definition "A correction supersedes the fact it replaces. The replaced fact stays in the graph with a supersededAt time."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:supersededBy a owl:ObjectProperty ;
+    rdfs:label "superseded by"@en ;
+    skos:definition "Inverse of supersedes."@en .
+
+gng:approvedBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasAttributedTo ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range prov:Agent ;
+    rdfs:label "approved by"@en ;
+    skos:definition "The steward, or the standing approval policy, that approved the fact."@en ;
+    gng:modelingDecision "MD8" .
+
+gng:coOwner a owl:ObjectProperty ;
+    rdfs:domain gng:OwnershipRecord ; rdfs:range gng:CoOwner ;
+    rdfs:label "co-owner"@en ;
+    skos:definition "A co-owner that an ownership record lists."@en ;
+    gng:readByRule "R6" .
+
+gng:consentBy a owl:ObjectProperty ;
+    rdfs:domain gng:ConsentRecord ; rdfs:range gng:CoOwner ;
+    rdfs:label "consent by"@en ;
+    skos:definition "The co-owner who gave consent."@en ;
+    gng:readByRule "R6" .
+
+gng:permittedTerritory a owl:ObjectProperty ;
+    rdfs:domain gng:RestrictedExport ; rdfs:range gng:Territory ;
+    rdfs:label "permitted territory"@en ;
+    skos:definition "A territory in which a licensee may sit when the technology is export-restricted."@en ;
+    gng:readByRule "R5" .
+
+gng:legalState a owl:ObjectProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range gng:LegalState ;
+    rdfs:label "legal state"@en ;
+    skos:definition "The legal state that a registry reports."@en ;
+    gng:readByRule "R1" .
+
+gng:royaltyOf a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:RoyaltyTerm ; rdfs:range gng:ExecutedGrant ;
+    rdfs:label "royalty of"@en ;
+    skos:definition "The executed grant that a royalty term belongs to."@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Datatype properties: identity
+# -----------------------------------------------------------------------------------------------------
+
+gng:caseNumber a owl:DatatypeProperty ;
+    rdfs:domain gng:Patent ; rdfs:range xsd:string ;
+    rdfs:label "NASA case number"@en ;
+    skos:definition "The NASA case number, for example LAR-18232-1. A divisional or continuation keeps its suffix."@en .
+
+gng:patentNumber a owl:DatatypeProperty ;
+    rdfs:domain gng:Patent ; rdfs:range xsd:string ;
+    rdfs:label "patent number"@en ;
+    skos:definition "The United States patent number without punctuation. Absent while the patent has not issued."@en .
+
+gng:applicationSerial a owl:DatatypeProperty ;
+    rdfs:domain gng:Patent ; rdfs:range xsd:string ;
+    rdfs:label "application serial number"@en ;
+    skos:definition "The application serial number as digits, for example 13033085."@en .
+
+gng:iso3166Alpha2 a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Territory ;
+    rdfs:range [ a rdfs:Datatype ; owl:onDatatype xsd:string ;
+                 owl:withRestrictions ( [ xsd:pattern "[A-Z]{2}" ] ) ] ;
+    rdfs:label "ISO 3166-1 alpha-2 code"@en ;
+    skos:definition "The two-letter country code. Regions have none."@en ;
+    gng:readByRule "R5" .
+
+gng:centerCode a owl:DatatypeProperty ;
+    rdfs:domain gng:NASACenter ; rdfs:range xsd:string ;
+    rdfs:label "center code"@en ;
+    skos:definition "The short center code, for example LaRC."@en .
+
+gng:nameVariant a owl:DatatypeProperty ;
+    rdfs:domain gng:Licensee ; rdfs:range xsd:string ;
+    rdfs:label "name variant"@en ;
+    skos:definition "Another spelling of the licensee's name that appears in some document."@en ;
+    gng:modelingDecision "MD9" .
+
+gng:countryCode a owl:DatatypeProperty ;
+    rdfs:domain schema:Organization ;
+    rdfs:range [ a rdfs:Datatype ; owl:onDatatype xsd:string ;
+                 owl:withRestrictions ( [ xsd:pattern "[A-Z]{2}" ] ) ] ;
+    rdfs:label "country code"@en ;
+    skos:definition "The ISO 3166-1 alpha-2 code of the organization's country."@en ;
+    gng:readByRule "R5" .
+
+gng:registeredAddress a owl:DatatypeProperty ;
+    rdfs:domain schema:Organization ; rdfs:range xsd:string ;
+    rdfs:label "registered address"@en ;
+    skos:definition "The address as a document writes it."@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Datatype properties: time (the bitemporal model)
+# -----------------------------------------------------------------------------------------------------
+
+gng:validFrom a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range xsd:date ;
+    rdfs:label "valid from"@en ;
+    skos:definition "First day on which the fact holds in the world."@en ;
+    gng:readByRule "R1", "R2", "R3" ;
+    gng:modelingDecision "MD7" .
+
+gng:validTo a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range xsd:date ;
+    rdfs:label "valid to"@en ;
+    skos:definition "Last day on which the fact holds. Absent means the fact has no stated end."@en ;
+    gng:readByRule "R1", "R2", "R3" ;
+    gng:modelingDecision "MD7" .
+
+gng:recordedAt a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range xsd:dateTime ;
+    rdfs:label "recorded at"@en ;
+    skos:definition "The moment the system recorded the fact. A rerun that uses a recording cutoff sees only facts recorded at or before the cutoff."@en ;
+    gng:readByRule "R1", "R2", "R3", "R4", "R5", "R6" ;
+    gng:modelingDecision "MD7" .
+
+gng:supersededAt a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range xsd:dateTime ;
+    rdfs:label "superseded at"@en ;
+    skos:definition "The moment a correction replaced the fact. After a recording cutoff that falls on or after this moment, the fact no longer counts."@en ;
+    gng:modelingDecision "MD7" .
+
+# -----------------------------------------------------------------------------------------------------
+# Datatype properties: grants
+# -----------------------------------------------------------------------------------------------------
+
+gng:executedOn a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:ExecutedGrant ; rdfs:range xsd:date ;
+    rdfs:label "executed on"@en ;
+    skos:definition "The date both parties signed the agreement."@en .
+
+gng:coExclusiveCap a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:ExecutedGrant ; rdfs:range xsd:positiveInteger ;
+    rdfs:label "co-exclusive cap"@en ;
+    skos:definition "The largest number of co-exclusive licensees the agreement allows. Absent means no cap is recorded."@en ;
+    gng:readByRule "R3" .
+
+gng:sublicenseAllowed a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:ExecutedGrant ; rdfs:range xsd:boolean ;
+    rdfs:label "sublicense allowed"@en ;
+    skos:definition "True when the agreement lets the licensee grant sublicenses."@en .
+
+gng:fieldOfUseText a owl:DatatypeProperty ;
+    rdfs:domain gng:Grant ; rdfs:range xsd:string ;
+    rdfs:label "field of use text"@en ;
+    skos:definition "The field of use as the document words it, before any mapping to a concept."@en .
+
+gng:fieldOfUseStatus a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:ProposedGrant ;
+    rdfs:range [ a rdfs:Datatype ; owl:oneOf ( "stated" "limited_unspecified" "not_mentioned" ) ] ;
+    rdfs:label "field of use status"@en ;
+    skos:definition "Whether the notice states a field (stated), says only that fields may be limited (limited_unspecified), or says nothing (not_mentioned)."@en ;
+    rdfs:comment "Most notices state no field. The model keeps that fact explicit, so a rule can return UNKNOWN instead of guessing."@en .
+
+gng:publishedOn a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:ProposedGrant ; rdfs:range xsd:date ;
+    rdfs:label "published on"@en ;
+    skos:definition "The date the notice appeared in the Federal Register."@en .
+
+gng:objectionDeadline a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:ProposedGrant ; rdfs:range xsd:date ;
+    rdfs:label "objection deadline"@en ;
+    skos:definition "The last day on which NASA accepts objections. Until this day passes, rule R4 returns PENDING."@en ;
+    gng:readByRule "R4" .
+
+gng:objectionDeadlineBasis a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:ProposedGrant ; rdfs:range xsd:string ;
+    rdfs:label "objection deadline basis"@en ;
+    skos:definition "How the deadline was found: a date the notice states, or the publication date plus a stated number of days."@en .
+
+gng:royaltyPercent a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:RoyaltyTerm ; rdfs:range xsd:decimal ;
+    rdfs:label "royalty percent"@en ;
+    skos:definition "The running royalty as a percentage of net sales."@en .
+
+gng:minimumAnnualRoyaltyUSD a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:RoyaltyTerm ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "minimum annual royalty (USD)"@en ;
+    skos:definition "The smallest royalty the licensee pays in a year, in U.S. dollars."@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Datatype properties: ownership, export, and patent status
+# -----------------------------------------------------------------------------------------------------
+
+gng:coOwnerListIsComplete a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:OwnershipRecord ; rdfs:range xsd:boolean ;
+    rdfs:label "co-owner list is complete"@en ;
+    skos:definition "True when the record asserts that its co-owner list is exhaustive. False means the record knows only some co-owners."@en ;
+    rdfs:comment "This boolean turns 'no co-owners are listed' into either a real negative fact (complete, with an empty list) or an unknown (incomplete). OWL alone cannot make that distinction, because OWL treats a missing statement as unknown."@en ;
+    gng:readByRule "R6" ;
+    gng:modelingDecision "MD5", "MD6" .
+
+gng:consentScope a owl:DatatypeProperty ;
+    rdfs:domain gng:ConsentRecord ; rdfs:range xsd:string ;
+    rdfs:label "consent scope"@en ;
+    skos:definition "What the co-owner consented to, in words."@en .
+
+gng:expirationDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:date ;
+    rdfs:label "expiration date"@en ;
+    skos:definition "The date the patent expires or expired, according to the registry or the computation named in expirationBasis."@en ;
+    gng:readByRule "R1" .
+
+gng:expirationBasis a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:string ;
+    rdfs:label "expiration basis"@en ;
+    skos:definition "How the expiration date was found."@en ;
+    gng:readByRule "R1" .
+
+gng:expirationIsDerived a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:boolean ;
+    rdfs:label "expiration is derived"@en ;
+    skos:definition "True when the date was computed from other dates, for example filing date plus 20 years. A derived date appears on the verdict card with that label."@en ;
+    gng:readByRule "R1" .
+
+gng:statusText a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:string ;
+    rdfs:label "status text"@en ;
+    skos:definition "The status as the registry words it."@en .
+
+gng:filingDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range xsd:date ;
+    rdfs:label "filing date"@en ;
+    skos:definition "The date the application was filed."@en ;
+    gng:readByRule "R1" .
+
+gng:grantDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:date ;
+    rdfs:label "grant date"@en ;
+    skos:definition "The date the patent issued."@en .
+
+gng:termAdjustmentDays a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "term adjustment (days)"@en ;
+    skos:definition "Days that the USPTO added to the 20-year term for its own delays."@en .
+
+gng:hasTerminalDisclaimer a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:boolean ;
+    rdfs:label "has terminal disclaimer"@en ;
+    skos:definition "True when the prosecution history shows a terminal disclaimer. A disclaimer can shorten the term below the computed date, so a rule should treat the expiration as an upper bound."@en .
+
+gng:lapseDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:date ;
+    rdfs:label "lapse date"@en ;
+    skos:definition "The date the registry recorded an expiry for unpaid maintenance fees."@en ;
+    gng:readByRule "R1" .
+
+gng:reinstatedOn a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:PatentLegalStatus ; rdfs:range xsd:date ;
+    rdfs:label "reinstated on"@en ;
+    skos:definition "The date the registry accepted a late fee and revived a lapsed patent. Third parties may hold intervening rights for acts between the lapse date and this date."@en ;
+    gng:readByRule "R1" .
+
+# -----------------------------------------------------------------------------------------------------
+# Datatype properties: documents, clauses, and activities
+# -----------------------------------------------------------------------------------------------------
+
+gng:fullText a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:SourceDocument ; rdfs:range xsd:string ;
+    rdfs:label "full text"@en ;
+    skos:definition "The cleaned document text. Clause spans index this text by character offset."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:retrievedAt a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:SourceDocument ; rdfs:range xsd:dateTime ;
+    rdfs:label "retrieved at"@en ;
+    skos:definition "The moment the pipeline fetched the document."@en .
+
+gng:spanStart a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Clause ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "span start"@en ;
+    skos:definition "Zero-based character offset where the clause begins in the document's full text."@en .
+
+gng:spanEnd a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Clause ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "span end"@en ;
+    skos:definition "Zero-based character offset where the clause ends, exclusive."@en .
+
+gng:spanText a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Clause ; rdfs:range xsd:string ;
+    rdfs:label "span text"@en ;
+    skos:definition "The words in the span. A citation checker compares quoted text with this value."@en .
+
+gng:clauseKind a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Clause ; rdfs:range xsd:string ;
+    rdfs:label "clause kind"@en ;
+    skos:definition "What the clause states, for example grant, field, territory, term, or exclusivity."@en .
+
+gng:extractionModel a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Extraction ; rdfs:range xsd:string ;
+    rdfs:label "extraction model"@en ;
+    skos:definition "The identifier of the model or extractor that read the facts out of text."@en ;
+    gng:modelingDecision "MD8" .
+
+gng:generatorSeed a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:SyntheticGeneration ; rdfs:range xsd:integer ;
+    rdfs:label "generator seed"@en ;
+    skos:definition "The seed that makes a generator run reproducible."@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Datatype properties: patent metadata from the NASA Technology Transfer portal, and document bookkeeping
+# -----------------------------------------------------------------------------------------------------
+
+gng:topsId a owl:DatatypeProperty ;
+    rdfs:domain gng:Patent ; rdfs:range xsd:string ;
+    rdfs:label "TOPS identifier"@en ;
+    skos:definition "The technology record identifier on the NASA Technology Transfer portal, for example LEW-TOPS-161."@en .
+
+gng:t2Category a owl:DatatypeProperty ;
+    rdfs:domain gng:Patent ; rdfs:range xsd:string ;
+    rdfs:label "T2 category"@en ;
+    skos:definition "The category that the NASA Technology Transfer portal assigns to the technology. The top level of the field-of-use scheme reuses these categories."@en .
+
+gng:technologyReadinessLevel a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Patent ;
+    rdfs:range [ a rdfs:Datatype ; owl:onDatatype xsd:integer ;
+                 owl:withRestrictions ( [ xsd:minInclusive 1 ] [ xsd:maxInclusive 9 ] ) ] ;
+    rdfs:label "technology readiness level"@en ;
+    skos:definition "The NASA technology readiness level, from 1 to 9, when the portal's description states one."@en .
+
+gng:licenseeNameAsWritten a owl:DatatypeProperty ;
+    rdfs:domain gng:Grant ; rdfs:range xsd:string ;
+    rdfs:label "licensee name as written"@en ;
+    skos:definition "The licensee's name exactly as the source document spells it. Entity resolution compares this string with the names of licensee nodes."@en ;
+    gng:modelingDecision "MD9" .
+
+gng:namesIdentifier a owl:DatatypeProperty ;
+    rdfs:domain gng:LicenseNotice ; rdfs:range xsd:string ;
+    rdfs:label "names identifier"@en ;
+    skos:definition "A patent number, application serial, or case number that the notice names, including identifiers of patents that are not in the graph."@en .
+
+gng:storedAt a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:SourceDocument ; rdfs:range xsd:string ;
+    rdfs:label "stored at"@en ;
+    skos:definition "The repository path of the stored copy of the document."@en .

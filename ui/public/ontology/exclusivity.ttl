@@ -1,0 +1,42 @@
+@prefix gng:   <https://w3id.org/gonogo/ontology#> .
+@prefix excl:  <https://w3id.org/gonogo/exclusivity/> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+
+# Exclusivity types under 35 U.S.C. 209 and 37 CFR 404.7.
+#
+# This scheme is flat. The four types are mutually distinct license structures, not a hierarchy, and
+# no type "covers" another. Rule R2 and R3 compare types by name.
+
+<https://w3id.org/gonogo/scheme/exclusivity> a skos:ConceptScheme ;
+    dct:title "GoNoGo exclusivity-type scheme"@en ;
+    dct:description "How exclusive a license is. The scheme is flat on purpose."@en ;
+    skos:hasTopConcept excl:exclusive, excl:partially-exclusive, excl:co-exclusive, excl:non-exclusive .
+
+excl:exclusive a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:prefLabel "exclusive"@en ;
+    skos:notation "exclusive" ;
+    skos:definition "One licensee holds the rights in the field and territory, and NASA grants no other license there."@en .
+
+excl:partially-exclusive a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:prefLabel "partially exclusive"@en ;
+    skos:notation "partially-exclusive" ;
+    skos:definition "One licensee holds exclusive rights in a narrowed field or territory, and NASA may license the rest."@en .
+
+excl:co-exclusive a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:prefLabel "co-exclusive"@en ;
+    skos:notation "co-exclusive" ;
+    skos:definition "A fixed, small number of licensees share the rights, and the agreements state the cap."@en .
+
+excl:non-exclusive a skos:Concept ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:prefLabel "non-exclusive"@en ;
+    skos:notation "non-exclusive" ;
+    skos:definition "Any number of licensees may hold the rights. NASA can grant more licenses at any time."@en .
