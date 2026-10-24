@@ -1,7 +1,7 @@
 # RightsGraph PRD
 
 > Reference input. GoNoGo follows its own build spec where the two differ; docs/status.md lists each
-> resolution. Apart from the omitted section 2, this file is kept verbatim, so the style test in
+> resolution. Apart from the omitted sections 2 and 22 and one removed line in section 18, this file is kept verbatim, so the style test in
 > tests/unit/test_docs_style.py skips it.
 
 **Version:** 2.1, revised after the Claude, Abacus, and ChatGPT architecture reviews
@@ -324,9 +324,8 @@ False clearance rate is the primary metric. A Clear verdict on a request that sh
 5. The modeling decisions document explains section 7.3 in plain language.
 6. The NFR matrix lists each target, the design that meets it, and the test that proves it.
 7. The STRIDE threat model lists threats, mitigations, and residual risk.
-8. A RACI assigns onsite and offshore responsibilities for ontology, AI, data, application, DevOps, and QA.
-9. A 10 slide deck presents the architecture to a customer security board.
-10. A five minute demo video follows section 19.4.
+8. A 10 slide deck presents the architecture to a customer security board.
+9. A five minute demo video follows section 19.4.
 
 ## 19. Build plan
 
@@ -376,6 +375,6 @@ False clearance rate is the primary metric. A Clear verdict on a request that sh
 7. **Neptune idle cost may exceed budget.** Phase A runs locally through Gate 2, and teardown after each AWS session plus a budget alarm control spend afterward.
 8. **The Snowflake trial expires after 30 days.** The team starts the trial at Gate 2 for the Ontop proof, completes Gate 7 within the trial window, and records evidence before expiry.
 
-## 22. Transfer to media rights
+## 22. Omitted
 
-The decision combiner, the rule status model, the evidence and provenance model, bitemporal facts, the semantic release pipeline, and the governed action framework transfer to any licensing domain. Each domain needs its own ontology module and rule set. A media rights module would model titles, rights holders, chain of title, languages, platforms, distribution windows, holdbacks, and sublicensing, and its rules would differ from the patent rules even where the names look similar. A Federal Register objection window, for example, is not a contractual holdback, and an export classification is not a commercial territorial restriction. RightsGraph demonstrates the reusable architecture with one fully implemented domain.
+This public copy omits section 22.
