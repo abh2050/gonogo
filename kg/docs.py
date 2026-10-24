@@ -1,6 +1,7 @@
 """Generate the HTML reference documentation with pyLODE: python -m kg.docs
 
-Outputs go to docs/ontology/, with a copy in ui/public/ontology/. The output is deterministic, so CI regenerates it and fails on any difference.
+Outputs go to docs/ontology/, with a copy in ui/public/ontology/. The output is deterministic, so CI
+regenerates it and fails on any difference.
 """
 
 from __future__ import annotations
