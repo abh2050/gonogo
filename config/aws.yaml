@@ -3,7 +3,7 @@
 # so the region below is the only one the code accepts.
 profile: awsnew
 region: us-east-2
-budget_usd: 50
+budget_usd: 10
 deploy_neptune: false
 deploy_fargate: false
 # Claude family for agent calls. gonogo.aws picks the newest us. (then global.) inference

@@ -19,7 +19,7 @@ jobs:
       - run: uv sync --frozen
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run mypy gonogo ingest synth kg
+      - run: uv run mypy gonogo ingest synth kg rules er agent api
       # Offline suite: shapes, competency questions on rdflib, the graph build, and the ontology checks.
       - run: uv run pytest
 
@@ -64,6 +64,8 @@ jobs:
       - run: uv run pytest -m docker -k fuseki
       - name: Build and load the full graph
         run: uv run python -m kg all
+      # The public demo serves a committed snapshot of the graph, so it must match a fresh build.
+      - run: git diff --exit-code api/snapshot
 
   ui:
     name: UI build and data drift

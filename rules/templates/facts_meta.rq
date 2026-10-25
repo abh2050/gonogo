@@ -1,0 +1,17 @@
+# Where each fact came from: when it was recorded, who approved it, whether the synthetic generator made it
+# (directly, or through a candidate that a steward approved), and the registry document behind it.
+SELECT ?fact ?recorded ?approver ?approverLabel ?origin ?source ?sourceTitle ?sourceUrl
+{{FROM}}
+WHERE {
+  VALUES ?fact { {{facts}} }
+  OPTIONAL { ?fact gng:recordedAt ?recorded }
+  OPTIONAL { ?fact gng:approvedBy ?approver . OPTIONAL { ?approver rdfs:label ?approverLabel } }
+  OPTIONAL {
+    ?fact (prov:wasGeneratedBy|prov:wasDerivedFrom/prov:wasGeneratedBy) ?origin .
+    FILTER(?origin = <https://w3id.org/gonogo/synth/generator/v0.1>)
+  }
+  OPTIONAL {
+    ?fact prov:wasDerivedFrom ?source . ?source a gng:RegistryRecord ; dct:title ?sourceTitle .
+    OPTIONAL { ?source schema:url ?sourceUrl }
+  }
+}

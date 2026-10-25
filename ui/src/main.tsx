@@ -2,13 +2,16 @@ import "@fontsource-variable/inter";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import { SessionProvider } from "./session";
 import { ThemeProvider } from "./theme";
 import "./styles.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <SessionProvider>
+        <App />
+      </SessionProvider>
     </ThemeProvider>
   </StrictMode>,
 );

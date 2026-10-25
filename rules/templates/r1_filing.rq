@@ -1,0 +1,8 @@
+# R1. A filing date, when no registry gave an expiration date. A date derived from it is labeled derived.
+SELECT ?filing ?filingDate ?recorded
+{{FROM}}
+WHERE {
+  ?filing a gng:FilingRecord ; gng:aboutPatent {{patent}} ; gng:filingDate ?filingDate ; gng:recordedAt ?recorded .
+  {{ASOF ?filing}}
+}
+ORDER BY DESC(?recorded)

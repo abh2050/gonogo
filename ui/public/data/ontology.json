@@ -1,8 +1,8 @@
 {
  "counts": {
-  "classes": 42,
-  "datatypeProperties": 48,
-  "objectProperties": 21
+  "classes": 44,
+  "datatypeProperties": 51,
+  "objectProperties": 22
  },
  "edges": [
   {
@@ -22,6 +22,12 @@
    "label": "subclass of",
    "source": "ApproveFact",
    "target": "Action"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
+   "source": "ApproveFact",
+   "target": "FactGeneration"
   },
   {
    "kind": "subclass",
@@ -64,6 +70,12 @@
    "label": "subclass of",
    "source": "CorrectFact",
    "target": "Action"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
+   "source": "CorrectFact",
+   "target": "FactGeneration"
   },
   {
    "kind": "subclass",
@@ -116,6 +128,12 @@
   {
    "kind": "subclass",
    "label": "subclass of",
+   "source": "IdentityLink",
+   "target": "BitemporalFact"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
    "source": "LicenseAgreement",
    "target": "SourceDocument"
   },
@@ -130,6 +148,18 @@
    "label": "subclass of",
    "source": "Licensee",
    "target": "schema:Organization"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
+   "source": "LinkIdentity",
+   "target": "Action"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
+   "source": "LinkIdentity",
+   "target": "FactGeneration"
   },
   {
    "kind": "subclass",
@@ -377,7 +407,12 @@
  "nodes": [
   {
    "comment": "",
-   "datatypeProperties": [],
+   "datatypeProperties": [
+    {
+     "definition": "The reason that the person who performed the action gave for it.",
+     "name": "actionReason"
+    }
+   ],
    "decisions": [
     "MD12"
    ],
@@ -703,6 +738,30 @@
    ]
   },
   {
+   "comment": "A rule must never merge two companies on a guess. A link is a decision, so it carries provenance like any other fact.",
+   "datatypeProperties": [
+    {
+     "definition": "The resolver and version that proposed the link.",
+     "name": "matchMethod"
+    },
+    {
+     "definition": "The resolver's similarity score for the two names, from 0 to 1.",
+     "name": "matchScore"
+    }
+   ],
+   "decisions": [
+    "MD9"
+   ],
+   "definition": "A steward-approved statement that two party nodes name the same organization. Approval writes an owl:sameAs statement and this node, which records the match score, the method, who approved the link, and when.",
+   "external": false,
+   "id": "IdentityLink",
+   "kind": "fact",
+   "label": "Identity link",
+   "rules": [
+    "R4"
+   ]
+  },
+  {
    "comment": "",
    "datatypeProperties": [],
    "decisions": [],
@@ -764,6 +823,17 @@
    "id": "Licensee",
    "kind": "party",
    "label": "Licensee",
+   "rules": []
+  },
+  {
+   "comment": "",
+   "datatypeProperties": [],
+   "decisions": [],
+   "definition": "A steward approves a proposed identity link between two party nodes.",
+   "external": false,
+   "id": "LinkIdentity",
+   "kind": "process",
+   "label": "Link identity",
    "rules": []
   },
   {

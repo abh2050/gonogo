@@ -40,6 +40,7 @@ from kg.ns import (
     PROV,
     RUN,
     SCHEMA,
+    SKOS,
     STATE,
     TERRITORY,
     iri_part,
@@ -534,20 +535,25 @@ class Builder:
             )
             g.add((node, GNG.filingDate, date(fr["filing_date"])))
         for cand in jsonl(SYNTHETIC / "candidate_facts.jsonl"):
-            node = ID["ownership/" + iri_part(cand["patent_key"]) + "/candidate"]
+            if cand["fact_type"] == "ExportClassification":
+                node = ID["export/" + iri_part(cand["patent_key"]) + "/candidate"]
+                cls = GNG.RestrictedExport if cand["classification"] == "restricted" else GNG.UnrestrictedExport
+            else:
+                node = ID["ownership/" + iri_part(cand["patent_key"]) + "/candidate"]
+                cls = GNG.OwnershipRecord
             self.synthetic_fact(
-                self.candidate,
-                node,
-                GNG.OwnershipRecord,
-                [cand["patent_key"]],
-                cand["proposed_at"],
-                HOUSE_VALID_FROM,
-                run,
+                self.candidate, node, cls, [cand["patent_key"]], cand["proposed_at"], HOUSE_VALID_FROM, run
             )
             self.candidate.remove((node, GNG.approvedBy, None))
-            self.candidate.add((node, GNG.coOwnerListIsComplete, boolean(cand["completeness"] == "complete")))
-            for ref in cand["co_owners"]:
-                self.candidate.add((node, GNG.coOwner, co_owner_node(ref)))
+            self.candidate.add((node, RDFS.comment, Literal(f"Proposed from a {cand['source']}.", lang="en")))
+            if cand.get("conflicts_with"):
+                self.candidate.add((node, SKOS.note, Literal(f"Conflicts with {cand['conflicts_with']}.", lang="en")))
+            if cls == GNG.OwnershipRecord:
+                self.candidate.add((node, GNG.coOwnerListIsComplete, boolean(cand["completeness"] == "complete")))
+                for ref in cand["co_owners"]:
+                    self.candidate.add((node, GNG.coOwner, co_owner_node(ref)))
+            for code in cand.get("permitted_countries", []):
+                self.candidate.add((node, GNG.permittedTerritory, TERRITORY[code]))
 
     # ---- orchestration -----------------------------------------------------------------------
 

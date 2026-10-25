@@ -22,6 +22,7 @@ No rule ever sees an LLM-written query. Templates are reviewed text, and paramet
 from __future__ import annotations
 
 import re
+from typing import Any
 
 _ASOF = re.compile(r"\{\{ASOF (\?[A-Za-z_]\w*)\}\}")
 _PARAM = re.compile(r"\{\{([A-Za-z_]\w*)\}\}")
@@ -39,6 +40,7 @@ PREFIX schema: <https://schema.org/>
 PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX excl:   <https://w3id.org/gonogo/exclusivity/>
+PREFIX owl:    <http://www.w3.org/2002/07/owl#>
 """
 
 
@@ -46,11 +48,16 @@ class TemplateError(ValueError):
     """Raised when a template or a parameter is unsafe or incomplete."""
 
 
-def term(param: dict[str, str]) -> str:
+def term(param: dict[str, Any]) -> str:
     """Turn a typed parameter into a SPARQL term. Exactly one type key is allowed."""
     if len(param) != 1:
         raise TemplateError(f"A parameter has exactly one type key, got {sorted(param)}")
     ((kind, value),) = param.items()
+    if kind == "iris":
+        # A list of IRIs for a VALUES block. An empty list becomes a block that matches nothing.
+        if not isinstance(value, list) or not all(isinstance(v, str) and _IRI_OK.match(v) for v in value):
+            raise TemplateError(f"Unsafe IRI list: {value!r}")
+        return " ".join(f"<{v}>" for v in value)
     if kind == "iri":
         if not _IRI_OK.match(value):
             raise TemplateError(f"Unsafe IRI: {value!r}")
@@ -66,7 +73,7 @@ def term(param: dict[str, str]) -> str:
     if kind == "int":
         if not _INT.match(value):
             raise TemplateError(f"Bad integer: {value!r}")
-        return value
+        return str(value)
     if kind == "string":
         escaped = value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
         return f'"{escaped}"'
@@ -81,7 +88,7 @@ def asof(var: str, cutoff: str) -> str:
     )
 
 
-def render(template: str, params: dict[str, dict[str, str]], graphs: list[str], prefixes: bool = True) -> str:
+def render(template: str, params: dict[str, dict[str, Any]], graphs: list[str], prefixes: bool = True) -> str:
     """Fill a template. Raise TemplateError when it has no {{FROM}}, no graphs, or a missing parameter."""
     if "{{FROM}}" not in template:
         raise TemplateError("The template has no {{FROM}} placeholder, so it could read every named graph.")
@@ -112,4 +119,4 @@ def render(template: str, params: dict[str, dict[str, str]], graphs: list[str], 
 
 def strip_from(query: str) -> str:
     """Remove FROM clauses. An in-memory engine uses this after it merges the named graphs itself."""
-    return re.sub(r"^FROM <[^>]+>\n?", "", query, flags=re.M)
+    return re.sub(r"\bFROM\s+<[^>]+>[ \t]*\n?", "", query)

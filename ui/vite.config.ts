@@ -7,4 +7,6 @@ export default defineConfig({
   base: "./",
   plugins: [react()],
   build: { chunkSizeWarningLimit: 700 },
+  // Local development: `uv run uvicorn api.index:app` serves the API on port 8000.
+  server: { proxy: { "/api": "http://127.0.0.1:8000" } },
 });

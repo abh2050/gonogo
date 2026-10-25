@@ -1,8 +1,103 @@
 # Status
 
+## Gate 2: rules, verdicts, entity resolution, the steward loop, and the live demo
+
+**State:** complete and waiting for approval. Gate 3 has not started.
+**Date:** 2026-10-24
+**Live demo:** https://gonogo-livid.vercel.app/#/ask
+
+Gate 2 is done, and the whole loop runs in a browser with no AWS account: ask, read the verdict, approve the
+missing fact, and watch the rerun name the rule that changed. Two things need you before Gate 3. First, I did
+not build the model-proposed field-of-use facts that the Gate 1 status promised, because they need paid
+Bedrock calls. Second, I moved the Vercel project's root directory to the repository root.
+
+### Deliverables
+
+| Deliverable | Where | State |
+|---|---|---|
+| Rules R1 to R7 as SPARQL templates plus Python | `rules/`, `rules/templates/` (11 templates) | Done. Every template names its graphs and filters by recording time. |
+| Versioned combiner | `config/precedence.yaml` (1.0.0), `rules/policy.py` | Done. Tested against every combination of statuses. |
+| Decision record and rerun | `rules/decision.py`, `rules/engine.py` | Done. A rerun from the stored cutoff reproduces the signature for all 44 injected cases and after steward actions. |
+| Explanations and diffs | `rules/explain.py` | Done. One sentence per rule; a diff names the rule that changed and the evidence behind it. |
+| Governed actions as a replayable event log | `kg/actions.py`, `kg/store.py` | Done. Approve, reject, link, and keep apart. SHACL validates each approval. The log replays to the same graph, and exports as SPARQL Update. |
+| Deterministic entity resolver with labeled pairs | `er/`, `er/labeled_pairs.jsonl` (120 pairs) | Done. Automatic matches made no false link on any split. |
+| Request parser | `agent/parser.py`, `agent/model_parser.py` | Done. All 43 synthetic requests parse to their recorded values. The model fallback is built and tested with a fake client, and is off by default. |
+| API | `api/index.py` | Done. One FastAPI app, local and on Vercel. Stateless. |
+| UI: Ask, Steward, History, provenance graph | `ui/src/pages/`, `ui/src/components/` | Done. D3 for the provenance graph and the session timeline. |
+| Public demo on Vercel | `vercel.json`, `api/snapshot/` | Live. The real engine runs as a Vercel function over a committed snapshot, with no AWS account. |
+| Documentation | [docs/rules.md](rules.md), [docs/public-demo.md](public-demo.md), `api/README.md` | Done. |
+
+### Test results
+
+| Suite | Command | Result |
+|---|---|---|
+| Lint, format, types | `ruff check`, `ruff format --check`, `mypy` (strict, 56 files) | Pass |
+| Offline | `uv run pytest` | 528 passed |
+| Regression | `tests/rules/test_regression.py` | 44 of 44 injected cases give the expected status on every rule and the expected verdict. No case returned a false GO. |
+| Steward loop | `tests/rules/test_loop.py` | 17 passed, including both NO DATA → GO approvals, the decoy, the GenH2 link, reproducibility, and replay |
+| API over HTTP | `tests/api/test_api.py` | 17 passed. Each of the 8 example questions reaches the verdict it states. |
+| Fuseki and Neo4j | `uv run pytest -m docker` | 44 passed |
+| HermiT | `uv run pytest -m robot` | 6 passed |
+| UI | `npm run build` | Pass |
+| Browser | Playwright on Chrome, the full loop in light and dark themes | No console errors |
+| Drift checks | `kg.docs`, `kg.export_viz`, and a fresh build against `api/snapshot/` | The committed files match. CI repeats all three. |
+
+### What the work found
+
+1. **GoNoGo acts on a wrong approval exactly as on a right one.** The demo queue holds a decoy, a proposed
+   ownership record that leaves out a co-owner, and approving it turns COUNSEL into GO. The queue shows the
+   conflict with the recorded assignment, and a test checks both paths. Nothing in the engine can catch this
+   mistake; the provenance record only makes it findable afterward.
+2. **An identity link changed two rules on real data.** Two real Federal Register notices name "GenH2" and
+   "GenH2 Corporation". Once a steward links them, an exclusive request by GenH2 Corporation finds its own
+   closed notice (R4 REVIEW → PASS), and the proposed grant to GenH2 stops counting as another party's
+   (R2 REVIEW → PASS). R7 keeps the verdict at COUNSEL, as it does for every exclusive request.
+3. **The name score depended on argument order.** For pair P053, (a, b) scored 0.5088 and (b, a) scored
+   0.5351, because Python's `SequenceMatcher` and the greedy token pairing both depend on order. A symmetry
+   test over all 120 labeled pairs caught it. The fix changed no outcome on the labeled pairs.
+4. **SHACL rejected valid approvals until it saw two steps of context.** An approved fact keeps its synthetic
+   origin, and a shape checks that the generator run was associated with a generator. With one step of
+   context, the validator never saw the generator's type.
+5. **The patent key is the identifier, not the case number.** Patents named by notices are keyed by their US
+   number (`US10431355`), so the parser maps both case numbers and patent numbers to the graph's key.
+
+### Decisions and deviations
+
+| Topic | Decision | Made by |
+|---|---|---|
+| Demo session | The browser holds the event log and the server replays it on every call. Nothing is stored server side, and a new tab starts fresh. | Me |
+| Demo clock | Requests are evaluated on 2026-11-01, and event *n* is recorded *n* seconds later, so a session reproduces exactly. | Me |
+| Vercel project root | Changed from `ui/` to the repository root, because a function under `ui/` cannot import the engine. The build still runs in `ui/`. | Me, using the Vercel access you gave |
+| Explanations | Written from the structured findings, not by a model, in Gate 2 | Me |
+| Two more candidate facts and a decoy | Added to the generator without consuming its random stream, so every other synthetic file is byte-identical | Me |
+| `config/aws.yaml` budget | The file now says `budget_usd: 10` (it said 50). I did not make that change and left it as it is. | You, I assume |
+
+### Not done, and why
+
+- **Model-proposed field-of-use facts for the real notices.** The Gate 1 status said Gate 2 would add them.
+  Only 24 of 92 real notices state a field the patterns can read. A model could propose the rest as candidate
+  facts with citation spans, for a steward to approve. That needs paid Bedrock calls (about 70 notices,
+  well under $1 at current prices), so I did not run it without asking. See question 1.
+- **Rules on Fuseki.** The rules run on the in-memory store. The same templates run on Fuseki for the
+  competency questions, and Gate 3 runs the rules through the query service on Neptune.
+
+### Open questions for you
+
+1. **Field-of-use extraction.** Should I build the Bedrock extractor for the real notices now (under $1, with
+   a citation check and steward approval), or move it into Gate 3 with the rest of the AWS work?
+2. **Gate 3 approval.** Gate 3 deploys the AWS stack behind its deploy flags, adds Cedar authorization, the
+   leakage and prompt-injection suites, and the release workflow, records the evidence, and tears it down.
+
+### Gate 3 preview
+
+Gate 3 builds the CDK app (Neptune Serverless, the Fargate agent, the Lambda rules and SHACL container, Step
+Functions with a steward callback, API Gateway with Cognito, Verified Permissions with Cedar), the query
+service's graph allowlist, the leakage and injection test suites, the Snowflake and Ontop mapping, and the
+release workflow. Each deployment session ends with `scripts/teardown.sh`.
+
 ## Gate 1: ontology, vocabularies, shapes, and the graph load
 
-**State:** complete and waiting for approval. Gate 2 has not started.
+**State:** approved.
 **Date:** 2026-10-24
 
 ### Deliverables

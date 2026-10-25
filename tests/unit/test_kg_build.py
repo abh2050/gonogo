@@ -48,8 +48,11 @@ def test_the_graph_matches_the_source_counts(kg_graphs: dict[str, Graph]) -> Non
     assert count(approved, GNG.ExecutedGrant) == manifest["agreements"]
     assert count(approved, GNG.LicenseAgreement) == manifest["agreements"]
     assert count(approved, GNG.ProposedGrant) == scope["notices_in_scope"] + manifest["proposed_grants"]
-    assert count(approved, GNG.OwnershipRecord) + count(kg_graphs[GRAPH_CANDIDATE], GNG.OwnershipRecord) == (
-        manifest["ownership_records"] + manifest["candidate_facts"]
+    candidate = kg_graphs[GRAPH_CANDIDATE]
+    assert count(approved, GNG.OwnershipRecord) == manifest["ownership_records"]
+    assert (
+        count(candidate, GNG.OwnershipRecord) + count(candidate, GNG.ExportClassification)
+        == manifest["candidate_facts"]
     )
     assert count(approved, GNG.ConsentRecord) == manifest["consents"]
     assert count(approved, GNG.ExportClassification) == manifest["export_classifications"]

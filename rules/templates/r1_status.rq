@@ -1,0 +1,21 @@
+# R1. Every legal-status fact for the patent that the system had recorded by the cutoff, was not replaced by
+# then, and had begun to hold by the evaluation date. The rule picks among them: the USPTO fact first.
+SELECT ?status ?source ?stateIri ?stateText ?expiration ?basis ?derived ?lapse ?reinstated ?grantDate ?filing ?disclaimer ?recorded
+{{FROM}}
+WHERE {
+  ?status a gng:PatentLegalStatus ; gng:aboutPatent {{patent}} ; gng:validFrom ?from ; gng:recordedAt ?recorded .
+  {{ASOF ?status}}
+  FILTER(?from <= {{asof}})
+  OPTIONAL { ?status prov:wasDerivedFrom ?source }
+  OPTIONAL { ?status gng:legalState ?stateIri }
+  OPTIONAL { ?status gng:statusText ?stateText }
+  OPTIONAL { ?status gng:expirationDate ?expiration }
+  OPTIONAL { ?status gng:expirationBasis ?basis }
+  OPTIONAL { ?status gng:expirationIsDerived ?derived }
+  OPTIONAL { ?status gng:lapseDate ?lapse }
+  OPTIONAL { ?status gng:reinstatedOn ?reinstated }
+  OPTIONAL { ?status gng:grantDate ?grantDate }
+  OPTIONAL { ?status gng:filingDate ?filing }
+  OPTIONAL { ?status gng:hasTerminalDisclaimer ?disclaimer }
+}
+ORDER BY DESC(?recorded)

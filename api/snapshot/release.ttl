@@ -1,0 +1,2023 @@
+@prefix center: <https://w3id.org/gonogo/center/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix excl: <https://w3id.org/gonogo/exclusivity/> .
+@prefix field: <https://w3id.org/gonogo/field/> .
+@prefix gng: <https://w3id.org/gonogo/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix state: <https://w3id.org/gonogo/legal-state/> .
+@prefix territory: <https://w3id.org/gonogo/territory/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dct:created a owl:AnnotationProperty .
+
+dct:description a owl:AnnotationProperty .
+
+dct:identifier a owl:AnnotationProperty .
+
+dct:source a owl:AnnotationProperty .
+
+dct:title a owl:AnnotationProperty .
+
+skos:altLabel a owl:AnnotationProperty .
+
+skos:broader a owl:ObjectProperty ;
+    rdfs:subPropertyOf skos:broaderTransitive ;
+    owl:inverseOf skos:narrower .
+
+skos:definition a owl:AnnotationProperty .
+
+skos:hasTopConcept a owl:ObjectProperty ;
+    rdfs:domain skos:ConceptScheme ;
+    rdfs:range skos:Concept ;
+    owl:inverseOf skos:topConceptOf .
+
+skos:notation a owl:DatatypeProperty ;
+    rdfs:range rdfs:Literal .
+
+skos:prefLabel a owl:AnnotationProperty .
+
+prov:endedAtTime a owl:DatatypeProperty ;
+    rdfs:domain prov:Activity ;
+    rdfs:range xsd:dateTime .
+
+prov:startedAtTime a owl:DatatypeProperty ;
+    rdfs:domain prov:Activity ;
+    rdfs:range xsd:dateTime .
+
+prov:used a owl:ObjectProperty ;
+    rdfs:domain prov:Activity ;
+    rdfs:range prov:Entity .
+
+prov:wasAssociatedWith a owl:ObjectProperty ;
+    rdfs:domain prov:Activity ;
+    rdfs:range prov:Agent .
+
+prov:wasGeneratedBy a owl:ObjectProperty ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Activity .
+
+schema:legalName a owl:DatatypeProperty ;
+    rdfs:domain schema:Organization ;
+    rdfs:range xsd:string .
+
+schema:url a owl:DatatypeProperty ;
+    rdfs:range xsd:anyURI .
+
+center:AFRC a gng:NASACenter ;
+    rdfs:label "NASA Armstrong Flight Research Center" ;
+    gng:centerCode "AFRC" .
+
+center:ARC a gng:NASACenter ;
+    rdfs:label "NASA Ames Research Center" ;
+    gng:centerCode "ARC" .
+
+center:GRC a gng:NASACenter ;
+    rdfs:label "NASA Glenn Research Center" ;
+    gng:centerCode "GRC" .
+
+center:GSFC a gng:NASACenter ;
+    rdfs:label "NASA Goddard Space Flight Center" ;
+    gng:centerCode "GSFC" .
+
+center:HQ a gng:NASACenter ;
+    rdfs:label "NASA Headquarters" ;
+    gng:centerCode "HQ" .
+
+center:JPL a gng:NASACenter ;
+    rdfs:label "NASA Jet Propulsion Laboratory" ;
+    gng:centerCode "JPL" .
+
+center:JSC a gng:NASACenter ;
+    rdfs:label "NASA Johnson Space Center" ;
+    gng:centerCode "JSC" .
+
+center:KSC a gng:NASACenter ;
+    rdfs:label "NASA Kennedy Space Center" ;
+    gng:centerCode "KSC" .
+
+center:LaRC a gng:NASACenter ;
+    rdfs:label "NASA Langley Research Center" ;
+    gng:centerCode "LaRC" .
+
+center:MSFC a gng:NASACenter ;
+    rdfs:label "NASA Marshall Space Flight Center" ;
+    gng:centerCode "MSFC" .
+
+center:SSC a gng:NASACenter ;
+    rdfs:label "NASA Stennis Space Center" ;
+    gng:centerCode "SSC" .
+
+<https://w3id.org/gonogo/ontology> a owl:Ontology ;
+    dct:description "Vocabulary for patent license clearance. A Grant relates a patent, a licensee, a field of use, a territory, a term, and an exclusivity type. Every fact is bitemporal and carries provenance. Fields of use and territories are SKOS concepts, and a broader concept means wider rights coverage."@en ;
+    dct:title "GoNoGo ontology"@en ;
+    rdfs:comment "Under the open world assumption, a missing fact means unknown. The rule engine, not the reasoner, turns unknown into the verdict NO DATA."@en ;
+    owl:versionIRI <https://w3id.org/gonogo/ontology/0.1.0> ;
+    owl:versionInfo "0.1.0" .
+
+gng:actionReason a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "action reason"@en ;
+    rdfs:domain gng:Action ;
+    rdfs:range xsd:string ;
+    skos:definition "The reason that the person who performed the action gave for it."@en ;
+    gng:modelingDecision "MD12" .
+
+gng:announcedIn a owl:ObjectProperty ;
+    rdfs:label "announced in"@en ;
+    rdfs:domain gng:ProposedGrant ;
+    rdfs:range gng:LicenseNotice ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    skos:definition "The notice that announces a proposed grant."@en ;
+    gng:readByRule "R4" .
+
+gng:applicationSerial a owl:DatatypeProperty ;
+    rdfs:label "application serial number"@en ;
+    rdfs:domain gng:Patent ;
+    rdfs:range xsd:string ;
+    skos:definition "The application serial number as digits, for example 13033085."@en .
+
+gng:approvedBy a owl:ObjectProperty ;
+    rdfs:label "approved by"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range prov:Agent ;
+    rdfs:subPropertyOf prov:wasAttributedTo ;
+    skos:definition "The steward, or the standing approval policy, that approved the fact."@en ;
+    gng:modelingDecision "MD8" .
+
+gng:caseNumber a owl:DatatypeProperty ;
+    rdfs:label "NASA case number"@en ;
+    rdfs:domain gng:Patent ;
+    rdfs:range xsd:string ;
+    skos:definition "The NASA case number, for example LAR-18232-1. A divisional or continuation keeps its suffix."@en .
+
+gng:center a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "center"@en ;
+    rdfs:domain gng:Patent ;
+    rdfs:range gng:NASACenter ;
+    skos:definition "The NASA center that manages the patent."@en .
+
+gng:centerCode a owl:DatatypeProperty ;
+    rdfs:label "center code"@en ;
+    rdfs:domain gng:NASACenter ;
+    rdfs:range xsd:string ;
+    skos:definition "The short center code, for example LaRC."@en .
+
+gng:clauseKind a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "clause kind"@en ;
+    rdfs:domain gng:Clause ;
+    rdfs:range xsd:string ;
+    skos:definition "What the clause states, for example grant, field, territory, term, or exclusivity."@en .
+
+gng:coExclusiveCap a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "co-exclusive cap"@en ;
+    rdfs:domain gng:ExecutedGrant ;
+    rdfs:range xsd:positiveInteger ;
+    skos:definition "The largest number of co-exclusive licensees the agreement allows. Absent means no cap is recorded."@en ;
+    gng:readByRule "R3" .
+
+gng:coOwner a owl:ObjectProperty ;
+    rdfs:label "co-owner"@en ;
+    rdfs:domain gng:OwnershipRecord ;
+    rdfs:range gng:CoOwner ;
+    skos:definition "A co-owner that an ownership record lists."@en ;
+    gng:readByRule "R6" .
+
+gng:coOwnerListIsComplete a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "co-owner list is complete"@en ;
+    rdfs:comment "This boolean turns 'no co-owners are listed' into either a real negative fact (complete, with an empty list) or an unknown (incomplete). OWL alone cannot make that distinction, because OWL treats a missing statement as unknown."@en ;
+    rdfs:domain gng:OwnershipRecord ;
+    rdfs:range xsd:boolean ;
+    skos:definition "True when the record asserts that its co-owner list is exhaustive. False means the record knows only some co-owners."@en ;
+    gng:modelingDecision "MD5",
+        "MD6" ;
+    gng:readByRule "R6" .
+
+gng:consentBy a owl:ObjectProperty ;
+    rdfs:label "consent by"@en ;
+    rdfs:domain gng:ConsentRecord ;
+    rdfs:range gng:CoOwner ;
+    skos:definition "The co-owner who gave consent."@en ;
+    gng:readByRule "R6" .
+
+gng:consentScope a owl:DatatypeProperty ;
+    rdfs:label "consent scope"@en ;
+    rdfs:domain gng:ConsentRecord ;
+    rdfs:range xsd:string ;
+    skos:definition "What the co-owner consented to, in words."@en .
+
+gng:countryCode a owl:DatatypeProperty ;
+    rdfs:label "country code"@en ;
+    rdfs:domain schema:Organization ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "[A-Z]{2}" ] ) ] ;
+    skos:definition "The ISO 3166-1 alpha-2 code of the organization's country."@en ;
+    gng:readByRule "R5" .
+
+gng:executedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "executed on"@en ;
+    rdfs:domain gng:ExecutedGrant ;
+    rdfs:range xsd:date ;
+    skos:definition "The date both parties signed the agreement."@en .
+
+gng:executedUnder a owl:ObjectProperty ;
+    rdfs:label "executed under"@en ;
+    rdfs:domain gng:ExecutedGrant ;
+    rdfs:range gng:LicenseAgreement ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    skos:definition "The agreement that creates an executed grant."@en .
+
+gng:expirationBasis a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "expiration basis"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:string ;
+    skos:definition "How the expiration date was found."@en ;
+    gng:readByRule "R1" .
+
+gng:expirationDate a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "expiration date"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:date ;
+    skos:definition "The date the patent expires or expired, according to the registry or the computation named in expirationBasis."@en ;
+    gng:readByRule "R1" .
+
+gng:expirationIsDerived a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "expiration is derived"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:boolean ;
+    skos:definition "True when the date was computed from other dates, for example filing date plus 20 years. A derived date appears on the verdict card with that label."@en ;
+    gng:readByRule "R1" .
+
+gng:extractionModel a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "extraction model"@en ;
+    rdfs:domain gng:Extraction ;
+    rdfs:range xsd:string ;
+    skos:definition "The identifier of the model or extractor that read the facts out of text."@en ;
+    gng:modelingDecision "MD8" .
+
+gng:fieldOfUseStatus a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "field of use status"@en ;
+    rdfs:comment "Most notices state no field. The model keeps that fact explicit, so a rule can return UNKNOWN instead of guessing."@en ;
+    rdfs:domain gng:ProposedGrant ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:oneOf ( "stated" "limited_unspecified" "not_mentioned" ) ] ;
+    skos:definition "Whether the notice states a field (stated), says only that fields may be limited (limited_unspecified), or says nothing (not_mentioned)."@en .
+
+gng:fieldOfUseText a owl:DatatypeProperty ;
+    rdfs:label "field of use text"@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range xsd:string ;
+    skos:definition "The field of use as the document words it, before any mapping to a concept."@en .
+
+gng:filingDate a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "filing date"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range xsd:date ;
+    skos:definition "The date the application was filed."@en ;
+    gng:readByRule "R1" .
+
+gng:fullText a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "full text"@en ;
+    rdfs:domain gng:SourceDocument ;
+    rdfs:range xsd:string ;
+    skos:definition "The cleaned document text. Clause spans index this text by character offset."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:generatorSeed a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "generator seed"@en ;
+    rdfs:domain gng:SyntheticGeneration ;
+    rdfs:range xsd:integer ;
+    skos:definition "The seed that makes a generator run reproducible."@en .
+
+gng:grantDate a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "grant date"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:date ;
+    skos:definition "The date the patent issued."@en .
+
+gng:hasTerminalDisclaimer a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "has terminal disclaimer"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:boolean ;
+    skos:definition "True when the prosecution history shows a terminal disclaimer. A disclaimer can shorten the term below the computed date, so a rule should treat the expiration as an upper bound."@en .
+
+gng:inDocument a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "in document"@en ;
+    rdfs:domain gng:Clause ;
+    rdfs:range gng:SourceDocument ;
+    skos:definition "The document that holds the clause."@en .
+
+gng:iso3166Alpha2 a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "ISO 3166-1 alpha-2 code"@en ;
+    rdfs:domain gng:Territory ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:string ;
+            owl:withRestrictions ( [ xsd:pattern "[A-Z]{2}" ] ) ] ;
+    skos:definition "The two-letter country code. Regions have none."@en ;
+    gng:readByRule "R5" .
+
+gng:lapseDate a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "lapse date"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:date ;
+    skos:definition "The date the registry recorded an expiry for unpaid maintenance fees."@en ;
+    gng:readByRule "R1" .
+
+gng:legalState a owl:ObjectProperty ;
+    rdfs:label "legal state"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range gng:LegalState ;
+    skos:definition "The legal state that a registry reports."@en ;
+    gng:readByRule "R1" .
+
+gng:licenseeNameAsWritten a owl:DatatypeProperty ;
+    rdfs:label "licensee name as written"@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range xsd:string ;
+    skos:definition "The licensee's name exactly as the source document spells it. Entity resolution compares this string with the names of licensee nodes."@en ;
+    gng:modelingDecision "MD9" .
+
+gng:linksParty a owl:ObjectProperty ;
+    rdfs:label "links party"@en ;
+    rdfs:domain gng:IdentityLink ;
+    rdfs:range schema:Organization ;
+    skos:definition "A party that an identity link says is the same organization as another party. An identity link names exactly two."@en ;
+    gng:readByRule "R4" .
+
+gng:matchMethod a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "match method"@en ;
+    rdfs:domain gng:IdentityLink ;
+    rdfs:range xsd:string ;
+    skos:definition "The resolver and version that proposed the link."@en .
+
+gng:matchScore a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "match score"@en ;
+    rdfs:domain gng:IdentityLink ;
+    rdfs:range xsd:decimal ;
+    skos:definition "The resolver's similarity score for the two names, from 0 to 1."@en .
+
+gng:minimumAnnualRoyaltyUSD a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "minimum annual royalty (USD)"@en ;
+    rdfs:domain gng:RoyaltyTerm ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "The smallest royalty the licensee pays in a year, in U.S. dollars."@en .
+
+gng:modelingDecision a owl:AnnotationProperty ;
+    rdfs:label "modeling decision"@en ;
+    skos:definition "Names the entry in docs/modeling-decisions.md that explains why this term is modeled this way."@en .
+
+gng:nameVariant a owl:DatatypeProperty ;
+    rdfs:label "name variant"@en ;
+    rdfs:domain gng:Licensee ;
+    rdfs:range xsd:string ;
+    skos:definition "Another spelling of the licensee's name that appears in some document."@en ;
+    gng:modelingDecision "MD9" .
+
+gng:namesIdentifier a owl:DatatypeProperty ;
+    rdfs:label "names identifier"@en ;
+    rdfs:domain gng:LicenseNotice ;
+    rdfs:range xsd:string ;
+    skos:definition "A patent number, application serial, or case number that the notice names, including identifiers of patents that are not in the graph."@en .
+
+gng:objectionDeadline a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "objection deadline"@en ;
+    rdfs:domain gng:ProposedGrant ;
+    rdfs:range xsd:date ;
+    skos:definition "The last day on which NASA accepts objections. Until this day passes, rule R4 returns PENDING."@en ;
+    gng:readByRule "R4" .
+
+gng:objectionDeadlineBasis a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "objection deadline basis"@en ;
+    rdfs:domain gng:ProposedGrant ;
+    rdfs:range xsd:string ;
+    skos:definition "How the deadline was found: a date the notice states, or the publication date plus a stated number of days."@en .
+
+gng:patentNumber a owl:DatatypeProperty ;
+    rdfs:label "patent number"@en ;
+    rdfs:domain gng:Patent ;
+    rdfs:range xsd:string ;
+    skos:definition "The United States patent number without punctuation. Absent while the patent has not issued."@en .
+
+gng:permittedTerritory a owl:ObjectProperty ;
+    rdfs:label "permitted territory"@en ;
+    rdfs:domain gng:RestrictedExport ;
+    rdfs:range gng:Territory ;
+    skos:definition "A territory in which a licensee may sit when the technology is export-restricted."@en ;
+    gng:readByRule "R5" .
+
+gng:publishedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "published on"@en ;
+    rdfs:domain gng:ProposedGrant ;
+    rdfs:range xsd:date ;
+    skos:definition "The date the notice appeared in the Federal Register."@en .
+
+gng:readByRule a owl:AnnotationProperty ;
+    rdfs:label "read by rule"@en ;
+    skos:definition "Names the clearance rule (R1 to R7) whose SPARQL template reads this term."@en .
+
+gng:recordedAt a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "recorded at"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range xsd:dateTime ;
+    skos:definition "The moment the system recorded the fact. A rerun that uses a recording cutoff sees only facts recorded at or before the cutoff."@en ;
+    gng:modelingDecision "MD7" ;
+    gng:readByRule "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6" .
+
+gng:registeredAddress a owl:DatatypeProperty ;
+    rdfs:label "registered address"@en ;
+    rdfs:domain schema:Organization ;
+    rdfs:range xsd:string ;
+    skos:definition "The address as a document writes it."@en .
+
+gng:reinstatedOn a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "reinstated on"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:date ;
+    skos:definition "The date the registry accepted a late fee and revived a lapsed patent. Third parties may hold intervening rights for acts between the lapse date and this date."@en ;
+    gng:readByRule "R1" .
+
+gng:retrievedAt a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "retrieved at"@en ;
+    rdfs:domain gng:SourceDocument ;
+    rdfs:range xsd:dateTime ;
+    skos:definition "The moment the pipeline fetched the document."@en .
+
+gng:royaltyOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "royalty of"@en ;
+    rdfs:domain gng:RoyaltyTerm ;
+    rdfs:range gng:ExecutedGrant ;
+    skos:definition "The executed grant that a royalty term belongs to."@en .
+
+gng:royaltyPercent a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "royalty percent"@en ;
+    rdfs:domain gng:RoyaltyTerm ;
+    rdfs:range xsd:decimal ;
+    skos:definition "The running royalty as a percentage of net sales."@en .
+
+gng:seededFrom a owl:ObjectProperty ;
+    rdfs:label "seeded from"@en ;
+    rdfs:domain gng:LicenseAgreement ;
+    rdfs:range gng:LicenseNotice ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    skos:definition "Links a synthetic agreement to the real notice whose patents, exclusivity, field, and territory it copies."@en .
+
+gng:sourceClause a owl:ObjectProperty ;
+    rdfs:label "source clause"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range gng:Clause ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    skos:definition "The clause that a fact was read from. A fact can point to several clauses."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:spanEnd a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "span end"@en ;
+    rdfs:domain gng:Clause ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "Zero-based character offset where the clause ends, exclusive."@en .
+
+gng:spanStart a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "span start"@en ;
+    rdfs:domain gng:Clause ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "Zero-based character offset where the clause begins in the document's full text."@en .
+
+gng:spanText a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "span text"@en ;
+    rdfs:domain gng:Clause ;
+    rdfs:range xsd:string ;
+    skos:definition "The words in the span. A citation checker compares quoted text with this value."@en .
+
+gng:statusText a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "status text"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:string ;
+    skos:definition "The status as the registry words it."@en .
+
+gng:storedAt a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "stored at"@en ;
+    rdfs:domain gng:SourceDocument ;
+    rdfs:range xsd:string ;
+    skos:definition "The repository path of the stored copy of the document."@en .
+
+gng:sublicenseAllowed a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "sublicense allowed"@en ;
+    rdfs:domain gng:ExecutedGrant ;
+    rdfs:range xsd:boolean ;
+    skos:definition "True when the agreement lets the licensee grant sublicenses."@en .
+
+gng:supersededAt a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "superseded at"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range xsd:dateTime ;
+    skos:definition "The moment a correction replaced the fact. After a recording cutoff that falls on or after this moment, the fact no longer counts."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:supersedes a owl:AsymmetricProperty,
+        owl:ObjectProperty ;
+    rdfs:label "supersedes"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range gng:BitemporalFact ;
+    owl:inverseOf gng:supersededBy ;
+    skos:definition "A correction supersedes the fact it replaces. The replaced fact stays in the graph with a supersededAt time."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:t2Category a owl:DatatypeProperty ;
+    rdfs:label "T2 category"@en ;
+    rdfs:domain gng:Patent ;
+    rdfs:range xsd:string ;
+    skos:definition "The category that the NASA Technology Transfer portal assigns to the technology. The top level of the field-of-use scheme reuses these categories."@en .
+
+gng:technologyReadinessLevel a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "technology readiness level"@en ;
+    rdfs:domain gng:Patent ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:integer ;
+            owl:withRestrictions ( [ xsd:minInclusive 1 ] [ xsd:maxInclusive 9 ] ) ] ;
+    skos:definition "The NASA technology readiness level, from 1 to 9, when the portal's description states one."@en .
+
+gng:termAdjustmentDays a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "term adjustment (days)"@en ;
+    rdfs:domain gng:PatentLegalStatus ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "Days that the USPTO added to the 20-year term for its own delays."@en .
+
+gng:topsId a owl:DatatypeProperty ;
+    rdfs:label "TOPS identifier"@en ;
+    rdfs:domain gng:Patent ;
+    rdfs:range xsd:string ;
+    skos:definition "The technology record identifier on the NASA Technology Transfer portal, for example LEW-TOPS-161."@en .
+
+gng:validFrom a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "valid from"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range xsd:date ;
+    skos:definition "First day on which the fact holds in the world."@en ;
+    gng:modelingDecision "MD7" ;
+    gng:readByRule "R1",
+        "R2",
+        "R3" .
+
+gng:validTo a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "valid to"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range xsd:date ;
+    skos:definition "Last day on which the fact holds. Absent means the fact has no stated end."@en ;
+    gng:modelingDecision "MD7" ;
+    gng:readByRule "R1",
+        "R2",
+        "R3" .
+
+<https://w3id.org/gonogo/ontology/external-terms> a owl:Ontology ;
+    dct:title "External terms reused by the GoNoGo ontology"@en .
+
+<https://w3id.org/gonogo/policy/bulk-load-v1> a prov:Agent,
+        gng:ApprovalPolicy ;
+    rdfs:label "Bulk-load policy v1"@en ;
+    dct:description "Standing approval for public system-of-record data (NASA Patents dataset, USPTO Open Data Portal, Federal Register notices read by the deterministic extractor). It never approves a fact that a language model extracted."@en .
+
+<https://w3id.org/gonogo/policy/synthetic-load-v1> a prov:Agent,
+        gng:ApprovalPolicy ;
+    rdfs:label "Synthetic-load policy v1"@en ;
+    dct:description "Standing approval to load labeled synthetic evaluation data from the seeded generator."@en .
+
+skos:broaderTransitive a owl:ObjectProperty,
+        owl:TransitiveProperty ;
+    owl:inverseOf skos:narrowerTransitive .
+
+skos:narrower a owl:ObjectProperty ;
+    rdfs:subPropertyOf skos:narrowerTransitive .
+
+skos:topConceptOf a owl:ObjectProperty ;
+    rdfs:subPropertyOf skos:inScheme .
+
+prov:wasAttributedTo a owl:ObjectProperty ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Agent .
+
+excl:co-exclusive a skos:Concept,
+        gng:ExclusivityType ;
+    skos:definition "A fixed, small number of licensees share the rights, and the agreements state the cap."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:notation "co-exclusive" ;
+    skos:prefLabel "co-exclusive"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> .
+
+excl:exclusive a skos:Concept,
+        gng:ExclusivityType ;
+    skos:definition "One licensee holds the rights in the field and territory, and NASA grants no other license there."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:notation "exclusive" ;
+    skos:prefLabel "exclusive"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> .
+
+excl:non-exclusive a skos:Concept,
+        gng:ExclusivityType ;
+    skos:definition "Any number of licensees may hold the rights. NASA can grant more licenses at any time."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:notation "non-exclusive" ;
+    skos:prefLabel "non-exclusive"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> .
+
+excl:partially-exclusive a skos:Concept,
+        gng:ExclusivityType ;
+    skos:definition "One licensee holds exclusive rights in a narrowed field or territory, and NASA may license the rest."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/exclusivity> ;
+    skos:notation "partially-exclusive" ;
+    skos:prefLabel "partially exclusive"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/exclusivity> .
+
+state:abandoned a skos:Concept,
+        gng:LegalState ;
+    skos:definition "The application was abandoned before a patent issued."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:notation "abandoned" ;
+    skos:prefLabel "abandoned"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> .
+
+state:application a skos:Concept,
+        gng:LegalState ;
+    skos:definition "The NASA Patents snapshot lists the record as an application. The snapshot is old, so this state is weaker evidence than a USPTO state."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:notation "application" ;
+    skos:prefLabel "application"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> .
+
+state:in-force a skos:Concept,
+        gng:LegalState ;
+    skos:definition "The patent was granted, no maintenance-fee lapse stands, and its term has not ended."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:notation "in_force" ;
+    skos:prefLabel "in force"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> .
+
+state:lapsed a skos:Concept,
+        gng:LegalState ;
+    skos:definition "The patent expired early because the owner did not pay a maintenance fee, and no late payment reinstated it."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:notation "lapsed" ;
+    skos:prefLabel "lapsed"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> .
+
+state:not-granted a skos:Concept,
+        gng:LegalState ;
+    skos:definition "No patent has issued and the registry reports no abandonment."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:notation "not_granted" ;
+    skos:prefLabel "not granted"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> .
+
+state:term-ended a skos:Concept,
+        gng:LegalState ;
+    skos:definition "The statutory term ran out: earliest filing date plus 20 years plus any term adjustment."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/legal-state> ;
+    skos:notation "term_ended" ;
+    skos:prefLabel "term ended"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/legal-state> .
+
+gng:ApproveFact a owl:Class ;
+    rdfs:label "Approve fact"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:ApproveFact,
+        gng:FactGeneration ;
+    skos:definition "A steward promotes a candidate fact to the approved graph and records the reason."@en .
+
+gng:BulkLoad a owl:Class ;
+    rdfs:label "Bulk load"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:BulkLoad,
+        gng:FactGeneration ;
+    skos:definition "A run that loaded system-of-record data from a public registry or dataset under a standing approval policy."@en .
+
+gng:ClearanceRequest a owl:Class ;
+    rdfs:label "Clearance request"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:ClearanceRequest ;
+    skos:definition "A structured request for a verdict: patent, licensee, field of use, territory, term, and exclusivity type. Gate 2 adds its properties."@en .
+
+gng:CorrectFact a owl:Class ;
+    rdfs:label "Correct fact"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:CorrectFact,
+        gng:FactGeneration ;
+    skos:definition "A steward supersedes an approved fact with a new one. The original stays in the graph."@en .
+
+gng:Decision a owl:Class ;
+    rdfs:label "Decision"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:Decision ;
+    skos:definition "The stored result of one clearance request: the rule findings, the combiner policy, the release, the recording cutoff, and the verdict. Gate 2 adds its properties."@en .
+
+gng:Generator a owl:Class ;
+    rdfs:label "Generator"@en ;
+    rdfs:subClassOf prov:Agent,
+        prov:SoftwareAgent,
+        gng:Generator ;
+    skos:definition "The synthetic-data generator, as a software agent."@en .
+
+gng:LinkIdentity a owl:Class ;
+    rdfs:label "Link identity"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:FactGeneration,
+        gng:LinkIdentity ;
+    skos:definition "A steward approves a proposed identity link between two party nodes."@en .
+
+gng:OverrideVerdict a owl:Class ;
+    rdfs:label "Override verdict"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:OverrideVerdict ;
+    skos:definition "Counsel records a different outcome with a written justification. The original decision stays unchanged."@en .
+
+gng:ProposeFacts a owl:Class ;
+    rdfs:label "Propose facts"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:ProposeFacts ;
+    skos:definition "The ingestion pipeline writes candidate facts to the candidate graph."@en .
+
+gng:PublishRelease a owl:Class ;
+    rdfs:label "Publish release"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:PublishRelease ;
+    skos:definition "The ontology owner activates a release bundle after the release gate passes."@en .
+
+gng:RejectFact a owl:Class ;
+    rdfs:label "Reject fact"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:RejectFact ;
+    skos:definition "A steward discards a candidate fact and records the reason."@en .
+
+gng:Steward a owl:Class ;
+    rdfs:label "Steward"@en ;
+    rdfs:subClassOf prov:Agent,
+        prov:Person,
+        gng:Steward ;
+    skos:definition "A person who approves, edits, rejects, or corrects facts."@en .
+
+gng:SubmitClearanceRequest a owl:Class ;
+    rdfs:label "Submit clearance request"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:SubmitClearanceRequest ;
+    skos:definition "A licensing manager asks for a verdict."@en .
+
+gng:aboutPatent a owl:ObjectProperty ;
+    rdfs:label "about patent"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range gng:Patent ;
+    skos:definition "Relates a fact to a patent that it describes. A grant can cover several patents."@en ;
+    gng:readByRule "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6" .
+
+gng:coversField a owl:ObjectProperty ;
+    rdfs:label "covers field"@en ;
+    rdfs:comment "This property chain is the formal statement of the rule that broader means wider rights. The pipeline materializes it before load because Neptune does not reason at query time."@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range gng:FieldOfUse ;
+    owl:propertyChainAxiom ( gng:fieldOfUse skos:narrowerTransitive ) ;
+    skos:definition "Relates a grant to every field its rights reach: the named field and every narrower field beneath it. A reasoner derives this property from skos:narrower, so the hierarchy decides coverage."@en ;
+    gng:modelingDecision "MD13",
+        "MD4" ;
+    gng:readByRule "R2" .
+
+gng:coversTerritory a owl:ObjectProperty ;
+    rdfs:label "covers territory"@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range gng:Territory ;
+    owl:propertyChainAxiom ( gng:territory skos:narrowerTransitive ) ;
+    skos:definition "Relates a grant to every territory its rights reach: the named territory and every country beneath it."@en ;
+    gng:modelingDecision "MD13",
+        "MD4" ;
+    gng:readByRule "R2" .
+
+gng:exclusivityType a owl:ObjectProperty ;
+    rdfs:label "exclusivity type"@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range gng:ExclusivityType ;
+    skos:definition "How exclusive the grant is. An executed grant has exactly one. A proposed grant from a notice that offers several types has several."@en ;
+    gng:readByRule "R2",
+        "R3",
+        "R4",
+        "R7" .
+
+gng:licensee a owl:ObjectProperty ;
+    rdfs:label "licensee"@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range gng:Licensee ;
+    skos:definition "The party that holds or asks for the grant."@en ;
+    gng:readByRule "R2",
+        "R3" .
+
+gng:supersededBy a owl:ObjectProperty ;
+    rdfs:label "superseded by"@en ;
+    skos:definition "Inverse of supersedes."@en .
+
+prov:Person a owl:Class ;
+    rdfs:subClassOf prov:Agent,
+        prov:Person .
+
+prov:SoftwareAgent a owl:Class ;
+    rdfs:subClassOf prov:Agent,
+        prov:SoftwareAgent .
+
+field:additive-manufacturing a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:manufacturing ;
+    skos:broaderTransitive field:manufacturing ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "08.01" ;
+    skos:prefLabel "Additive manufacturing"@en .
+
+field:aerogels a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:materials-and-coatings ;
+    skos:broaderTransitive field:materials-and-coatings ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "09.03" ;
+    skos:prefLabel "Aerogels"@en .
+
+field:aircraft-structures a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:aerospace ;
+    skos:broaderTransitive field:aerospace ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "01.01" ;
+    skos:prefLabel "Aircraft structures"@en .
+
+field:alloys a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:materials-and-coatings ;
+    skos:broaderTransitive field:materials-and-coatings ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "09.04" ;
+    skos:prefLabel "Alloys"@en .
+
+field:batteries a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:power-generation-and-storage ;
+    skos:broaderTransitive field:power-generation-and-storage ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "12.01" ;
+    skos:prefLabel "Batteries"@en .
+
+field:biotechnology a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:health-medicine-and-biotechnology ;
+    skos:broaderTransitive field:health-medicine-and-biotechnology ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "05.03" ;
+    skos:prefLabel "Biotechnology"@en .
+
+field:chemical-sensors a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:sensors ;
+    skos:broaderTransitive field:sensors ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "15.01" ;
+    skos:prefLabel "Chemical sensors"@en .
+
+field:coatings a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:materials-and-coatings ;
+    skos:broaderTransitive field:materials-and-coatings ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "09.02" ;
+    skos:prefLabel "Coatings"@en .
+
+field:control-systems a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:robotics-automation-and-control ;
+    skos:broaderTransitive field:robotics-automation-and-control ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "14.02" ;
+    skos:prefLabel "Control systems"@en .
+
+field:cybersecurity a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:information-technology-and-software ;
+    skos:broaderTransitive field:information-technology-and-software ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "06.02" ;
+    skos:prefLabel "Cybersecurity"@en .
+
+field:damping-and-vibration a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:mechanical-and-fluid-systems ;
+    skos:broaderTransitive field:mechanical-and-fluid-systems ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "10.03" ;
+    skos:prefLabel "Damping and vibration"@en .
+
+field:data-analytics a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:information-technology-and-software ;
+    skos:broaderTransitive field:information-technology-and-software ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "06.01" ;
+    skos:prefLabel "Data analytics"@en .
+
+field:electric-propulsion a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:propulsion ;
+    skos:broaderTransitive field:propulsion ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "13.02" ;
+    skos:prefLabel "Electric propulsion"@en .
+
+field:emissions-monitoring a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:environment ;
+    skos:broaderTransitive field:environment ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "04.02" ;
+    skos:prefLabel "Emissions monitoring"@en .
+
+field:energy-generation a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:power-generation-and-storage ;
+    skos:broaderTransitive field:power-generation-and-storage ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "12.02" ;
+    skos:prefLabel "Energy generation"@en .
+
+field:joining-and-welding a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:manufacturing ;
+    skos:broaderTransitive field:manufacturing ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "08.02" ;
+    skos:prefLabel "Joining and welding"@en .
+
+field:lasers a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:optics ;
+    skos:broaderTransitive field:optics ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "11.01" ;
+    skos:prefLabel "Lasers"@en .
+
+field:lenses-and-mirrors a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:optics ;
+    skos:broaderTransitive field:optics ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "11.02" ;
+    skos:prefLabel "Lenses and mirrors"@en .
+
+field:magnetic-field-sensors a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:sensors ;
+    skos:broaderTransitive field:sensors ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "15.03" ;
+    skos:prefLabel "Magnetic field sensors"@en .
+
+field:medical-devices a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:health-medicine-and-biotechnology ;
+    skos:broaderTransitive field:health-medicine-and-biotechnology ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "05.02" ;
+    skos:prefLabel "Medical devices"@en .
+
+field:medical-imaging a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:health-medicine-and-biotechnology ;
+    skos:broaderTransitive field:health-medicine-and-biotechnology ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "05.01" ;
+    skos:prefLabel "Medical imaging"@en .
+
+field:nondestructive-evaluation a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:instrumentation ;
+    skos:broaderTransitive field:instrumentation ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "07.02" ;
+    skos:prefLabel "Nondestructive evaluation"@en .
+
+field:optical-communications a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:communications ;
+    skos:broaderTransitive field:communications ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "02.02" ;
+    skos:prefLabel "Optical communications"@en .
+
+field:polymers-and-composites a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:materials-and-coatings ;
+    skos:broaderTransitive field:materials-and-coatings ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "09.01" ;
+    skos:prefLabel "Polymers and composites"@en .
+
+field:power-electronics a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:electrical-and-electronics ;
+    skos:broaderTransitive field:electrical-and-electronics ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "03.01" ;
+    skos:prefLabel "Power electronics"@en .
+
+field:remediation a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:environment ;
+    skos:broaderTransitive field:environment ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "04.01" ;
+    skos:prefLabel "Environmental remediation"@en .
+
+field:rf-antennas a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:communications ;
+    skos:broaderTransitive field:communications ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "02.01" ;
+    skos:prefLabel "RF antennas"@en .
+
+field:robotics a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:robotics-automation-and-control ;
+    skos:broaderTransitive field:robotics-automation-and-control ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "14.01" ;
+    skos:prefLabel "Robotics"@en .
+
+field:rocket-propulsion a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:propulsion ;
+    skos:broaderTransitive field:propulsion ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "13.01" ;
+    skos:prefLabel "Rocket propulsion"@en .
+
+field:spacecraft-systems a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:aerospace ;
+    skos:broaderTransitive field:aerospace ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "01.02" ;
+    skos:prefLabel "Spacecraft systems"@en .
+
+field:structural-health-sensors a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:sensors ;
+    skos:broaderTransitive field:sensors ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "15.02" ;
+    skos:prefLabel "Structural health sensors"@en .
+
+field:test-and-measurement a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:instrumentation ;
+    skos:broaderTransitive field:instrumentation ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "07.01" ;
+    skos:prefLabel "Test and measurement"@en .
+
+field:tires-and-wheels a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:mechanical-and-fluid-systems ;
+    skos:broaderTransitive field:mechanical-and-fluid-systems ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "10.01" ;
+    skos:prefLabel "Tires and wheels"@en .
+
+field:unmanned-aircraft a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:aerospace ;
+    skos:broaderTransitive field:aerospace ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "01.03" ;
+    skos:prefLabel "Unmanned aircraft"@en .
+
+field:valves-and-pumps a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:mechanical-and-fluid-systems ;
+    skos:broaderTransitive field:mechanical-and-fluid-systems ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "10.02" ;
+    skos:prefLabel "Valves and pumps"@en .
+
+field:wiring-and-insulation a skos:Concept,
+        gng:FieldOfUse ;
+    skos:broader field:electrical-and-electronics ;
+    skos:broaderTransitive field:electrical-and-electronics ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:notation "03.02" ;
+    skos:prefLabel "Wiring and insulation"@en .
+
+gng:Extraction a owl:Class ;
+    rdfs:label "Extraction"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Extraction,
+        gng:FactGeneration ;
+    skos:definition "A run that read candidate facts out of document text. A language model or a deterministic extractor can perform it. A steward must approve its facts before they affect a verdict."@en .
+
+gng:FilingRecord a owl:Class ;
+    rdfs:label "Filing record"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:FilingRecord ;
+    skos:definition "The filing date of a patent application, used when no registry supplies an expiration date. A rule that uses it must label the resulting expiration as derived."@en ;
+    gng:readByRule "R1" .
+
+gng:RegistryRecord a owl:Class ;
+    rdfs:label "Registry record"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:RegistryRecord,
+        gng:SourceDocument ;
+    skos:definition "A record from a patent registry or dataset, such as a USPTO file wrapper or the NASA Patents snapshot."@en .
+
+gng:SyntheticGeneration a owl:Class ;
+    rdfs:label "Synthetic generation"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:FactGeneration,
+        gng:SyntheticGeneration ;
+    skos:definition "A run of the seeded synthetic generator. Every fact it produces is synthetic, and the prov:wasGeneratedBy link to this activity is the label that says so."@en ;
+    gng:modelingDecision "MD8" .
+
+gng:fieldOfUse a owl:ObjectProperty ;
+    rdfs:label "field of use"@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range gng:FieldOfUse ;
+    rdfs:subPropertyOf gng:coversField ;
+    skos:definition "The field that the grant names. A notice may name none."@en ;
+    gng:readByRule "R2" .
+
+gng:territory a owl:ObjectProperty ;
+    rdfs:label "territory"@en ;
+    rdfs:domain gng:Grant ;
+    rdfs:range gng:Territory ;
+    rdfs:subPropertyOf gng:coversTerritory ;
+    skos:definition "The territory that the grant names. A notice may name none."@en ;
+    gng:readByRule "R2" .
+
+gng:ApprovalPolicy a owl:Class ;
+    rdfs:label "Approval policy"@en ;
+    rdfs:subClassOf prov:Agent,
+        gng:ApprovalPolicy ;
+    skos:definition "A standing approval that stands in for a person. The bulk-load policy approves public system-of-record data. It never approves a fact that a language model extracted."@en .
+
+gng:CoOwner a owl:Class ;
+    rdfs:label "Co-owner"@en ;
+    rdfs:subClassOf schema:Organization,
+        gng:CoOwner ;
+    skos:definition "An organization, other than NASA, that the USPTO assignment records or an ownership record name as an owner of a patent."@en ;
+    gng:readByRule "R6" .
+
+gng:RestrictedExport a owl:Class ;
+    rdfs:label "Restricted export classification"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:ExportClassification,
+        gng:RestrictedExport ;
+    owl:disjointWith gng:UnrestrictedExport ;
+    skos:definition "Export controls apply. The classification lists the territories that a licensee may sit in."@en ;
+    gng:readByRule "R5" .
+
+gng:UnrestrictedExport a owl:Class ;
+    rdfs:label "Unrestricted export classification"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:ExportClassification,
+        gng:UnrestrictedExport ;
+    skos:definition "No export controls apply."@en ;
+    gng:readByRule "R5" .
+
+territory:AE a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:MIDDLE-EAST ;
+    skos:broaderTransitive territory:MIDDLE-EAST,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "AE" ;
+    skos:prefLabel "United Arab Emirates"@en ;
+    gng:iso3166Alpha2 "AE" .
+
+territory:AU a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:broaderTransitive territory:ASIA-PACIFIC,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "AU" ;
+    skos:prefLabel "Australia"@en ;
+    gng:iso3166Alpha2 "AU" .
+
+territory:CA a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:NORTH-AMERICA ;
+    skos:broaderTransitive territory:NORTH-AMERICA,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "CA" ;
+    skos:prefLabel "Canada"@en ;
+    gng:iso3166Alpha2 "CA" .
+
+territory:CN a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:broaderTransitive territory:ASIA-PACIFIC,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "CN" ;
+    skos:prefLabel "China"@en ;
+    gng:iso3166Alpha2 "CN" .
+
+territory:DE a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:EUROPE ;
+    skos:broaderTransitive territory:EUROPE,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "DE" ;
+    skos:prefLabel "Germany"@en ;
+    gng:iso3166Alpha2 "DE" .
+
+territory:FR a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:EUROPE ;
+    skos:broaderTransitive territory:EUROPE,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "FR" ;
+    skos:prefLabel "France"@en ;
+    gng:iso3166Alpha2 "FR" .
+
+territory:GB a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:EUROPE ;
+    skos:broaderTransitive territory:EUROPE,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "GB" ;
+    skos:prefLabel "United Kingdom"@en ;
+    gng:iso3166Alpha2 "GB" .
+
+territory:IL a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:MIDDLE-EAST ;
+    skos:broaderTransitive territory:MIDDLE-EAST,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "IL" ;
+    skos:prefLabel "Israel"@en ;
+    gng:iso3166Alpha2 "IL" .
+
+territory:IN a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:broaderTransitive territory:ASIA-PACIFIC,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "IN" ;
+    skos:prefLabel "India"@en ;
+    gng:iso3166Alpha2 "IN" .
+
+territory:IT a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:EUROPE ;
+    skos:broaderTransitive territory:EUROPE,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "IT" ;
+    skos:prefLabel "Italy"@en ;
+    gng:iso3166Alpha2 "IT" .
+
+territory:JP a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:broaderTransitive territory:ASIA-PACIFIC,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "JP" ;
+    skos:prefLabel "Japan"@en ;
+    gng:iso3166Alpha2 "JP" .
+
+territory:KR a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:broaderTransitive territory:ASIA-PACIFIC,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "KR" ;
+    skos:prefLabel "Republic of Korea"@en ;
+    gng:iso3166Alpha2 "KR" .
+
+territory:MX a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:NORTH-AMERICA ;
+    skos:broaderTransitive territory:NORTH-AMERICA,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "MX" ;
+    skos:prefLabel "Mexico"@en ;
+    gng:iso3166Alpha2 "MX" .
+
+territory:NL a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:EUROPE ;
+    skos:broaderTransitive territory:EUROPE,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "NL" ;
+    skos:prefLabel "Netherlands"@en ;
+    gng:iso3166Alpha2 "NL" .
+
+territory:SE a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:EUROPE ;
+    skos:broaderTransitive territory:EUROPE,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "SE" ;
+    skos:prefLabel "Sweden"@en ;
+    gng:iso3166Alpha2 "SE" .
+
+territory:SG a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:ASIA-PACIFIC ;
+    skos:broaderTransitive territory:ASIA-PACIFIC,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "SG" ;
+    skos:prefLabel "Singapore"@en ;
+    gng:iso3166Alpha2 "SG" .
+
+territory:US a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:NORTH-AMERICA ;
+    skos:broaderTransitive territory:NORTH-AMERICA,
+        territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:notation "US" ;
+    skos:prefLabel "United States"@en ;
+    gng:iso3166Alpha2 "US" .
+
+skos:narrowerTransitive a owl:ObjectProperty,
+        owl:TransitiveProperty .
+
+prov:wasDerivedFrom a owl:ObjectProperty ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Entity .
+
+gng:ConsentRecord a owl:Class ;
+    rdfs:label "Consent record"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:ConsentRecord ;
+    skos:definition "A co-owner's consent to license the patent."@en ;
+    gng:readByRule "R6" .
+
+gng:ExportClassification a owl:Class ;
+    rdfs:label "Export classification"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:ExportClassification ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:unionOf ( gng:RestrictedExport gng:UnrestrictedExport ) ] ;
+    skos:definition "The export-control status of the technology a patent covers. The class is abstract: a classification is either restricted or unrestricted."@en ;
+    gng:readByRule "R5" .
+
+gng:LicenseAgreement a owl:Class ;
+    rdfs:label "License agreement"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:LicenseAgreement,
+        gng:SourceDocument ;
+    skos:definition "A signed patent license agreement. Only an agreement creates an executed grant."@en ;
+    gng:modelingDecision "MD2" .
+
+gng:Licensee a owl:Class ;
+    rdfs:label "Licensee"@en ;
+    rdfs:subClassOf schema:Organization,
+        gng:Licensee ;
+    skos:definition "An organization that holds, or asks for, a license. Different documents name the same licensee in different ways, so each spelling can be a separate node until a steward links them with owl:sameAs."@en ;
+    gng:modelingDecision "MD9" .
+
+gng:OwnershipRecord a owl:Class ;
+    rdfs:label "Ownership record"@en ;
+    rdfs:comment "Without this record, the absence of co-owners proves nothing under the open world assumption."@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:OwnershipRecord ;
+    skos:definition "A statement about who co-owns a patent. The record says whether its co-owner list is exhaustive. An exhaustive list with no entries is an explicit negative fact: the patent has no co-owners."@en ;
+    gng:modelingDecision "MD5",
+        "MD6" ;
+    gng:readByRule "R6" .
+
+skos:inScheme a owl:ObjectProperty ;
+    rdfs:range skos:ConceptScheme .
+
+field:communications a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Communications."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:optical-communications,
+        field:rf-antennas ;
+    skos:narrowerTransitive field:optical-communications,
+        field:rf-antennas ;
+    skos:notation "02" ;
+    skos:prefLabel "Communications"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:electrical-and-electronics a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Electrical and Electronics."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:power-electronics,
+        field:wiring-and-insulation ;
+    skos:narrowerTransitive field:power-electronics,
+        field:wiring-and-insulation ;
+    skos:notation "03" ;
+    skos:prefLabel "Electrical and Electronics"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:environment a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Environment."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:emissions-monitoring,
+        field:remediation ;
+    skos:narrowerTransitive field:emissions-monitoring,
+        field:remediation ;
+    skos:notation "04" ;
+    skos:prefLabel "Environment"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:information-technology-and-software a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Information Technology and Software."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:cybersecurity,
+        field:data-analytics ;
+    skos:narrowerTransitive field:cybersecurity,
+        field:data-analytics ;
+    skos:notation "06" ;
+    skos:prefLabel "Information Technology and Software"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:instrumentation a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Instrumentation."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:nondestructive-evaluation,
+        field:test-and-measurement ;
+    skos:narrowerTransitive field:nondestructive-evaluation,
+        field:test-and-measurement ;
+    skos:notation "07" ;
+    skos:prefLabel "Instrumentation"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:manufacturing a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Manufacturing."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:additive-manufacturing,
+        field:joining-and-welding ;
+    skos:narrowerTransitive field:additive-manufacturing,
+        field:joining-and-welding ;
+    skos:notation "08" ;
+    skos:prefLabel "Manufacturing"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:optics a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Optics."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:lasers,
+        field:lenses-and-mirrors ;
+    skos:narrowerTransitive field:lasers,
+        field:lenses-and-mirrors ;
+    skos:notation "11" ;
+    skos:prefLabel "Optics"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:power-generation-and-storage a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Power Generation and Storage."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:batteries,
+        field:energy-generation ;
+    skos:narrowerTransitive field:batteries,
+        field:energy-generation ;
+    skos:notation "12" ;
+    skos:prefLabel "Power Generation and Storage"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:propulsion a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Propulsion."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:electric-propulsion,
+        field:rocket-propulsion ;
+    skos:narrowerTransitive field:electric-propulsion,
+        field:rocket-propulsion ;
+    skos:notation "13" ;
+    skos:prefLabel "Propulsion"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:robotics-automation-and-control a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Robotics, Automation, and Control."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:control-systems,
+        field:robotics ;
+    skos:narrowerTransitive field:control-systems,
+        field:robotics ;
+    skos:notation "14" ;
+    skos:prefLabel "Robotics, Automation, and Control"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+gng:IdentityLink a owl:Class ;
+    rdfs:label "Identity link"@en ;
+    rdfs:comment "A rule must never merge two companies on a guess. A link is a decision, so it carries provenance like any other fact."@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:IdentityLink ;
+    skos:definition "A steward-approved statement that two party nodes name the same organization. Approval writes an owl:sameAs statement and this node, which records the match score, the method, who approved the link, and when."@en ;
+    gng:modelingDecision "MD9" ;
+    gng:readByRule "R4" .
+
+gng:LicenseNotice a owl:Class ;
+    rdfs:label "License notice"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:LicenseNotice,
+        gng:SourceDocument ;
+    skos:definition "A Federal Register notice of NASA's intent to grant a patent license. A notice announces a proposed grant and opens an objection window. It never proves that a license exists."@en ;
+    gng:modelingDecision "MD2" ;
+    gng:readByRule "R4" .
+
+gng:RoyaltyTerm a owl:Class ;
+    rdfs:label "Royalty term"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:RoyaltyTerm ;
+    skos:definition "The confidential royalty terms of an executed grant. Royalty terms live in their own named graph, so graph-level access control can hide them from licensing managers."@en ;
+    gng:modelingDecision "MD11" .
+
+territory:MIDDLE-EAST a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:WORLD ;
+    skos:broaderTransitive territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:narrower territory:AE,
+        territory:IL ;
+    skos:narrowerTransitive territory:AE,
+        territory:IL ;
+    skos:notation "MIDDLE-EAST" ;
+    skos:prefLabel "Middle East"@en .
+
+schema:Organization a owl:Class ;
+    rdfs:subClassOf schema:Organization .
+
+field:aerospace a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Aerospace."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:aircraft-structures,
+        field:spacecraft-systems,
+        field:unmanned-aircraft ;
+    skos:narrowerTransitive field:aircraft-structures,
+        field:spacecraft-systems,
+        field:unmanned-aircraft ;
+    skos:notation "01" ;
+    skos:prefLabel "Aerospace"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:health-medicine-and-biotechnology a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Health, Medicine, and Biotechnology."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:biotechnology,
+        field:medical-devices,
+        field:medical-imaging ;
+    skos:narrowerTransitive field:biotechnology,
+        field:medical-devices,
+        field:medical-imaging ;
+    skos:notation "05" ;
+    skos:prefLabel "Health, Medicine, and Biotechnology"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:mechanical-and-fluid-systems a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Mechanical and Fluid Systems."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:damping-and-vibration,
+        field:tires-and-wheels,
+        field:valves-and-pumps ;
+    skos:narrowerTransitive field:damping-and-vibration,
+        field:tires-and-wheels,
+        field:valves-and-pumps ;
+    skos:notation "10" ;
+    skos:prefLabel "Mechanical and Fluid Systems"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+field:sensors a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Sensors."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:chemical-sensors,
+        field:magnetic-field-sensors,
+        field:structural-health-sensors ;
+    skos:narrowerTransitive field:chemical-sensors,
+        field:magnetic-field-sensors,
+        field:structural-health-sensors ;
+    skos:notation "15" ;
+    skos:prefLabel "Sensors"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+gng:Clause a owl:Class ;
+    rdfs:label "Clause"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:Clause ;
+    skos:definition "A character span inside a source document. A clause is the evidence that a fact points to, so a reader can open the document at the exact words."@en ;
+    gng:modelingDecision "MD7" .
+
+gng:ExecutedGrant a owl:Class ;
+    rdfs:label "Executed grant"@en ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty gng:licensee ;
+            owl:someValuesFrom gng:Licensee ],
+        [ a owl:Restriction ;
+            owl:onProperty gng:aboutPatent ;
+            owl:someValuesFrom gng:Patent ],
+        [ a owl:Restriction ;
+            owl:onProperty gng:fieldOfUse ;
+            owl:someValuesFrom gng:FieldOfUse ],
+        [ a owl:Restriction ;
+            owl:onProperty gng:territory ;
+            owl:someValuesFrom gng:Territory ],
+        [ a owl:Restriction ;
+            owl:onClass gng:ExclusivityType ;
+            owl:onProperty gng:exclusivityType ;
+            owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ],
+        prov:Entity,
+        gng:BitemporalFact,
+        gng:ExecutedGrant,
+        gng:Grant ;
+    owl:disjointWith gng:ProposedGrant ;
+    skos:definition "A grant that a signed agreement creates. It states one exclusivity type, a field of use, a territory, and a term."@en ;
+    gng:modelingDecision "MD2" ;
+    gng:readByRule "R2",
+        "R3" .
+
+gng:FactGeneration a owl:Class ;
+    rdfs:label "Fact generation"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:FactGeneration ;
+    skos:definition "An activity that produced facts: a bulk load of registry data, an extraction from a document, or a run of the synthetic generator."@en ;
+    gng:modelingDecision "MD8" .
+
+skos:ConceptScheme a owl:Class ;
+    rdfs:subClassOf skos:ConceptScheme .
+
+gng:ExclusivityType a owl:Class ;
+    rdfs:label "Exclusivity type"@en ;
+    rdfs:subClassOf skos:Concept,
+        gng:ExclusivityType ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( skos:Concept [ a owl:Restriction ;
+                        owl:hasValue <https://w3id.org/gonogo/scheme/exclusivity> ;
+                        owl:onProperty skos:inScheme ] ) ] ;
+    skos:definition "A concept in the exclusivity scheme: exclusive, partially exclusive, co-exclusive, or non-exclusive."@en ;
+    gng:readByRule "R2",
+        "R3",
+        "R4",
+        "R7" .
+
+gng:ProposedGrant a owl:Class ;
+    rdfs:label "Proposed grant"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:Grant,
+        gng:ProposedGrant ;
+    skos:definition "A grant that a license notice announces. It records intent. The objection window can end without a license."@en ;
+    gng:modelingDecision "MD2" ;
+    gng:readByRule "R2",
+        "R4" .
+
+gng:SourceDocument a owl:Class ;
+    rdfs:label "Source document"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:SourceDocument ;
+    skos:definition "A document or registry record from which a fact was read."@en .
+
+territory:NORTH-AMERICA a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:WORLD ;
+    skos:broaderTransitive territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:narrower territory:CA,
+        territory:MX,
+        territory:US ;
+    skos:narrowerTransitive territory:CA,
+        territory:MX,
+        territory:US ;
+    skos:notation "NORTH-AMERICA" ;
+    skos:prefLabel "North America"@en .
+
+field:materials-and-coatings a skos:Concept,
+        gng:FieldOfUse ;
+    skos:definition "NASA T2 portal category Materials and Coatings."@en ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/field-of-use> ;
+    skos:narrower field:aerogels,
+        field:alloys,
+        field:coatings,
+        field:polymers-and-composites ;
+    skos:narrowerTransitive field:aerogels,
+        field:alloys,
+        field:coatings,
+        field:polymers-and-composites ;
+    skos:notation "09" ;
+    skos:prefLabel "Materials and Coatings"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/field-of-use> .
+
+gng:LegalState a owl:Class ;
+    rdfs:label "Legal state"@en ;
+    rdfs:subClassOf skos:Concept,
+        gng:LegalState ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( skos:Concept [ a owl:Restriction ;
+                        owl:hasValue <https://w3id.org/gonogo/scheme/legal-state> ;
+                        owl:onProperty skos:inScheme ] ) ] ;
+    skos:definition "A concept in the legal-state scheme: in force, lapsed, term ended, abandoned, not granted, or application."@en ;
+    gng:readByRule "R1" .
+
+<https://w3id.org/gonogo/scheme/exclusivity> a skos:ConceptScheme ;
+    dct:description "How exclusive a license is. The scheme is flat on purpose."@en ;
+    dct:title "GoNoGo exclusivity-type scheme"@en ;
+    skos:hasTopConcept excl:co-exclusive,
+        excl:exclusive,
+        excl:non-exclusive,
+        excl:partially-exclusive .
+
+gng:Action a owl:Class ;
+    rdfs:label "Action"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action ;
+    skos:definition "A governed state change. Each action has typed inputs, a permission check, a validation step, a target named graph, and a queryable provenance record."@en ;
+    gng:modelingDecision "MD12" .
+
+gng:Patent a owl:Class ;
+    rdfs:label "Patent"@en ;
+    rdfs:comment "Keeping status out of the Patent node lets two sources disagree about the same patent without overwriting each other, and lets a later fact supersede an earlier one."@en ;
+    rdfs:subClassOf gng:Patent ;
+    skos:definition "A United States patent or patent application that NASA owns, alone or jointly. The class holds identity only. Legal status, ownership, and licenses are separate facts about the patent."@en ;
+    gng:modelingDecision "MD1" .
+
+prov:Agent a owl:Class ;
+    rdfs:subClassOf prov:Agent .
+
+gng:Grant a owl:Class ;
+    rdfs:label "Grant"@en ;
+    rdfs:comment "Modeled as a class, in the pattern of the W3C note on n-ary relations, because a binary property cannot carry six participants."@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:Grant ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:unionOf ( gng:ProposedGrant gng:ExecutedGrant ) ] ;
+    skos:definition "A license that relates a patent, a licensee, a field of use, a territory, a term, and an exclusivity type at once. The class is abstract: every grant is either proposed or executed."@en ;
+    gng:modelingDecision "MD1",
+        "MD2" ;
+    gng:readByRule "R2",
+        "R3" .
+
+gng:PatentLegalStatus a owl:Class ;
+    rdfs:label "Patent legal status"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:PatentLegalStatus ;
+    skos:definition "What a registry reports about whether a patent is alive: its legal state, its expiration date, and how that date was found. Two registries can each report a status for the same patent."@en ;
+    gng:modelingDecision "MD1",
+        "MD10" ;
+    gng:readByRule "R1" .
+
+<https://w3id.org/gonogo/scheme/legal-state> a skos:ConceptScheme ;
+    dct:description "The legal state of a patent or application, as a registry reports it."@en ;
+    dct:title "GoNoGo patent legal-state scheme"@en ;
+    skos:hasTopConcept state:abandoned,
+        state:application,
+        state:in-force,
+        state:lapsed,
+        state:not-granted,
+        state:term-ended .
+
+gng:NASACenter a owl:Class ;
+    rdfs:label "NASA center"@en ;
+    rdfs:subClassOf gng:NASACenter ;
+    skos:definition "A NASA field center or headquarters that holds patents."@en .
+
+territory:ASIA-PACIFIC a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:WORLD ;
+    skos:broaderTransitive territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:narrower territory:AU,
+        territory:CN,
+        territory:IN,
+        territory:JP,
+        territory:KR,
+        territory:SG ;
+    skos:narrowerTransitive territory:AU,
+        territory:CN,
+        territory:IN,
+        territory:JP,
+        territory:KR,
+        territory:SG ;
+    skos:notation "ASIA-PACIFIC" ;
+    skos:prefLabel "Asia Pacific"@en .
+
+territory:EUROPE a skos:Concept,
+        gng:Territory ;
+    skos:broader territory:WORLD ;
+    skos:broaderTransitive territory:WORLD ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:narrower territory:DE,
+        territory:FR,
+        territory:GB,
+        territory:IT,
+        territory:NL,
+        territory:SE ;
+    skos:narrowerTransitive territory:DE,
+        territory:FR,
+        territory:GB,
+        territory:IT,
+        territory:NL,
+        territory:SE ;
+    skos:notation "EUROPE" ;
+    skos:prefLabel "Europe"@en .
+
+prov:Activity a owl:Class ;
+    rdfs:subClassOf prov:Activity .
+
+gng:BitemporalFact a owl:Class ;
+    rdfs:label "Bitemporal fact"@en ;
+    rdfs:comment "Valid time answers whether a grant applies on a date. Recording time answers what the system knew when it decided. Reproducing a past verdict needs both."@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact ;
+    skos:definition "A statement that the system records with two times: the valid time, when the statement holds in the world, and the recording time, when the system learned it. A correction supersedes a fact and never deletes it."@en ;
+    gng:modelingDecision "MD7" .
+
+<https://w3id.org/gonogo/scheme/territory> a skos:ConceptScheme ;
+    dct:description "Territories that a license can name: the world, commercial regions, and ISO 3166 countries."@en ;
+    dct:source <https://www.iso.org/iso-3166-country-codes.html> ;
+    dct:title "GoNoGo territory scheme"@en ;
+    skos:hasTopConcept territory:WORLD .
+
+prov:Entity a owl:Class ;
+    rdfs:subClassOf prov:Entity .
+
+territory:WORLD a skos:Concept,
+        gng:Territory ;
+    skos:inScheme <https://w3id.org/gonogo/scheme/territory> ;
+    skos:narrower territory:ASIA-PACIFIC,
+        territory:EUROPE,
+        territory:MIDDLE-EAST,
+        territory:NORTH-AMERICA ;
+    skos:narrowerTransitive territory:AE,
+        territory:ASIA-PACIFIC,
+        territory:AU,
+        territory:CA,
+        territory:CN,
+        territory:DE,
+        territory:EUROPE,
+        territory:FR,
+        territory:GB,
+        territory:IL,
+        territory:IN,
+        territory:IT,
+        territory:JP,
+        territory:KR,
+        territory:MIDDLE-EAST,
+        territory:MX,
+        territory:NL,
+        territory:NORTH-AMERICA,
+        territory:SE,
+        territory:SG,
+        territory:US ;
+    skos:notation "WORLD" ;
+    skos:prefLabel "Worldwide"@en ;
+    skos:topConceptOf <https://w3id.org/gonogo/scheme/territory> .
+
+gng:Territory a owl:Class ;
+    rdfs:label "Territory"@en ;
+    rdfs:subClassOf skos:Concept,
+        gng:Territory ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( skos:Concept [ a owl:Restriction ;
+                        owl:hasValue <https://w3id.org/gonogo/scheme/territory> ;
+                        owl:onProperty skos:inScheme ] ) ] ;
+    skos:definition "A concept in the territory scheme: the world, a commercial region, or a country with an ISO 3166-1 alpha-2 code."@en ;
+    gng:modelingDecision "MD3",
+        "MD4" ;
+    gng:readByRule "R2",
+        "R5" .
+
+gng:FieldOfUse a owl:Class ;
+    rdfs:label "Field of use"@en ;
+    rdfs:comment "Fields of use are SKOS concepts, not OWL subclasses. Subclassing would assert that every instance of a narrow field is an instance of the broad field, which is a claim about sets that the business does not make. The business edits this hierarchy as a policy."@en ;
+    rdfs:subClassOf skos:Concept,
+        gng:FieldOfUse ;
+    owl:equivalentClass [ a owl:Class ;
+            owl:intersectionOf ( skos:Concept [ a owl:Restriction ;
+                        owl:hasValue <https://w3id.org/gonogo/scheme/field-of-use> ;
+                        owl:onProperty skos:inScheme ] ) ] ;
+    skos:definition "A concept in the field-of-use scheme. Broader means wider rights coverage."@en ;
+    gng:modelingDecision "MD3",
+        "MD4" ;
+    gng:readByRule "R2" .
+
+<https://w3id.org/gonogo/scheme/field-of-use> a skos:ConceptScheme ;
+    dct:description "Fields of use that a license can name. Broader means wider rights coverage, not logical subclassing."@en ;
+    dct:source <https://technology.nasa.gov/> ;
+    dct:title "GoNoGo field-of-use scheme"@en ;
+    skos:hasTopConcept field:aerospace,
+        field:communications,
+        field:electrical-and-electronics,
+        field:environment,
+        field:health-medicine-and-biotechnology,
+        field:information-technology-and-software,
+        field:instrumentation,
+        field:manufacturing,
+        field:materials-and-coatings,
+        field:mechanical-and-fluid-systems,
+        field:optics,
+        field:power-generation-and-storage,
+        field:propulsion,
+        field:robotics-automation-and-control,
+        field:sensors .
+
+skos:Concept a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    owl:disjointWith skos:ConceptScheme .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( gng:Grant gng:OwnershipRecord gng:ConsentRecord gng:ExportClassification gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm gng:IdentityLink ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( gng:LicenseNotice gng:LicenseAgreement gng:RegistryRecord ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( gng:FieldOfUse gng:Territory gng:ExclusivityType gng:LegalState ) .
+

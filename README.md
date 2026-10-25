@@ -1,18 +1,20 @@
 # GoNoGo
 
-GoNoGo answers patent license clearance questions for NASA's technology transfer office. A licensing
-manager asks whether a company can license a patent for a field of use and a territory. GoNoGo returns
-GO, NO GO, HOLD, COUNSEL, or NO DATA, and it shows the rule that decided, the evidence, and the source
-clause behind each fact.
+GoNoGo answers one question for NASA's technology transfer office: can this company license this patent,
+for this field of use, in this territory, for this term? It answers GO, NO GO, HOLD, COUNSEL, or NO DATA, and
+it shows the rule that decided, the facts that rule read, and the clause each fact came from.
 
-A deterministic rule engine decides every verdict from a W3C knowledge graph. A language model parses
-requests, proposes facts from legal text, and writes explanations, but it never decides a verdict and it
-never writes the queries that decide one.
+Seven deterministic rules decide every verdict by querying a W3C knowledge graph through fixed SPARQL
+templates. A missing fact gives NO DATA, never GO, and a proposed fact counts only after a person approves it.
+A language model may help parse a request, but it never decides a verdict and never writes a query that
+decides one; the public demo runs without one.
 
-> **Status:** Gate 1 of 4. The ontology, the SKOS vocabularies, the SHACL shapes, the competency questions,
-> and the knowledge graph load are complete, and so are the visualizations. The rules, the request screen,
-> and the verdict card arrive in Gate 2. The full README, with the business story, the architecture, and the
-> benchmark, arrives in Gate 4. See [docs/status.md](docs/status.md).
+**Try it:** [gonogo-livid.vercel.app](https://gonogo-livid.vercel.app/#/ask). Pick "No export classification
+yet", approve the proposed classification on the Steward page, and the verdict moves from NO DATA to GO, with
+R5 named as the rule that changed. [docs/rules.md](docs/rules.md) walks through that example.
+
+> **Status:** Gate 2 of 4 is complete: the rules, the combiner, entity resolution, the steward loop, and the
+> live demo. Gate 3 deploys to AWS, and Gate 4 adds the benchmark. See [docs/status.md](docs/status.md).
 
 ## The ontology, in four places
 
@@ -30,10 +32,12 @@ Generated reference documentation is in [docs/ontology/](docs/ontology/).
 
 The [ui/](ui/) folder holds a React app that draws the ontology as a graph, shows how a grant for a broader
 field covers the narrower ones, charts what the real data showed, and lets you drag a recording cutoff
-through the bitemporal model.
+through the bitemporal model. Its Ask, Steward, and History views call the API in [api/](api/), which runs
+the real rule engine over a snapshot of the graph.
 
 ```bash
-cd ui && npm install && npm run dev
+uv run uvicorn api.index:app --port 8000   # the API
+cd ui && npm install && npm run dev         # the app, with /api forwarded to port 8000
 ```
 
 [docs/public-demo.md](docs/public-demo.md) explains how the interactive demo keeps working after the AWS

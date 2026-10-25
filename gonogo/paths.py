@@ -13,3 +13,5 @@ DOCS = ROOT / "docs"
 ONTOLOGY = ROOT / "ontology"
 SHAPES = ROOT / "shapes"
 BUILD = ROOT / "build"
+# The frozen graphs that the public demo serves. Committed, because the Vercel function cannot run the build.
+SNAPSHOT = ROOT / "api" / "snapshot"

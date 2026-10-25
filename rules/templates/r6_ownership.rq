@@ -1,0 +1,9 @@
+# R6. The ownership record for the patent, and the co-owners that it lists.
+SELECT ?record ?complete ?coOwner ?name ?recorded
+{{FROM}}
+WHERE {
+  ?record a gng:OwnershipRecord ; gng:aboutPatent {{patent}} ; gng:coOwnerListIsComplete ?complete ; gng:recordedAt ?recorded .
+  {{ASOF ?record}}
+  OPTIONAL { ?record gng:coOwner ?coOwner . OPTIONAL { ?coOwner schema:legalName ?name } }
+}
+ORDER BY DESC(?recorded)

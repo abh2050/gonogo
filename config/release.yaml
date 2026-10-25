@@ -1,0 +1,6 @@
+# The release that the rules and the combiner run against. A decision record stores this version, and a
+# rerun uses the stored one. Gate 3 adds the release pipeline that publishes a new version.
+ontology_release: "0.1.0"
+# The demo clock. Every decision and every steward action takes its time from here plus a sequence offset,
+# so a run is reproducible and the data's own dates (some of them in the near future) stay consistent.
+demo_now: "2026-11-01T00:00:00Z"

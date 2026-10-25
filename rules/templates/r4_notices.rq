@@ -1,0 +1,13 @@
+# R4. The requester's own notices for the patent, with the objection deadline of each.
+SELECT DISTINCT ?grant ?notice ?published ?deadline ?basis ?licensee
+{{FROM}}
+WHERE {
+  VALUES ?mine { {{mine}} }
+  ?grant a gng:ProposedGrant ; gng:aboutPatent {{patent}} ; gng:licensee ?mine ; gng:announcedIn ?notice ;
+         gng:publishedOn ?published .
+  BIND(?mine AS ?licensee)
+  {{ASOF ?grant}}
+  OPTIONAL { ?grant gng:objectionDeadline ?deadline }
+  OPTIONAL { ?grant gng:objectionDeadlineBasis ?basis }
+}
+ORDER BY DESC(?published)

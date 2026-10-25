@@ -1,0 +1,37 @@
+@prefix gng: <https://w3id.org/gonogo/ontology#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/gonogo/id/export/LAR-17317-2/candidate> a prov:Entity,
+        gng:BitemporalFact,
+        gng:ExportClassification,
+        gng:UnrestrictedExport ;
+    rdfs:comment "Proposed from a synthetic export control review."@en ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;
+    gng:aboutPatent <https://w3id.org/gonogo/id/patent/LAR-17317-2> ;
+    gng:recordedAt "2026-10-16T00:00:00+00:00"^^xsd:dateTime ;
+    gng:validFrom "2000-01-01"^^xsd:date .
+
+<https://w3id.org/gonogo/id/ownership/LAR-17381-1/candidate> a prov:Entity,
+        gng:BitemporalFact,
+        gng:OwnershipRecord ;
+    rdfs:comment "Proposed from a synthetic licensee-supplied ownership summary."@en ;
+    skos:note "Conflicts with the recorded assignment, which lists co-owner COO-001."@en ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;
+    gng:aboutPatent <https://w3id.org/gonogo/id/patent/LAR-17381-1> ;
+    gng:coOwnerListIsComplete true ;
+    gng:recordedAt "2026-10-17T00:00:00+00:00"^^xsd:dateTime ;
+    gng:validFrom "2000-01-01"^^xsd:date .
+
+<https://w3id.org/gonogo/id/ownership/LEW-18605-2/candidate> a prov:Entity,
+        gng:BitemporalFact,
+        gng:OwnershipRecord ;
+    rdfs:comment "Proposed from a synthetic assignment record."@en ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;
+    gng:aboutPatent <https://w3id.org/gonogo/id/patent/LEW-18605-2> ;
+    gng:coOwnerListIsComplete true ;
+    gng:recordedAt "2026-10-15T00:00:00+00:00"^^xsd:dateTime ;
+    gng:validFrom "2000-01-01"^^xsd:date .
+

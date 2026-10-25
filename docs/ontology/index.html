@@ -460,12 +460,6 @@
               <a href="#Action">Action</a>
               <ul class="hierarchy">
                 <li>
-                  <a href="#ApproveFact">Approve fact</a>
-                </li>
-                <li>
-                  <a href="#CorrectFact">Correct fact</a>
-                </li>
-                <li>
                   <a href="#OverrideVerdict">Override verdict</a>
                 </li>
                 <li>
@@ -517,6 +511,9 @@
                   </ul>
                 </li>
                 <li>
+                  <a href="#IdentityLink">Identity link</a>
+                </li>
+                <li>
                   <a href="#OwnershipRecord">Ownership record</a>
                 </li>
                 <li>
@@ -546,10 +543,19 @@
               <a href="#FactGeneration">Fact generation</a>
               <ul class="hierarchy">
                 <li>
+                  <a href="#ApproveFact">Approve fact</a>
+                </li>
+                <li>
                   <a href="#BulkLoad">Bulk load</a>
                 </li>
                 <li>
+                  <a href="#CorrectFact">Correct fact</a>
+                </li>
+                <li>
                   <a href="#Extraction">Extraction</a>
+                </li>
+                <li>
+                  <a href="#LinkIdentity">Link identity</a>
                 </li>
                 <li>
                   <a href="#SyntheticGeneration">Synthetic generation</a>
@@ -627,6 +633,17 @@
             </tr>
             <tr>
               <th>
+                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/inDomainOf" title="Inverse of rdfs:domain. Defined in Ontology Documentation Profile">In Domain Of</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#actionReason">action reason</a>
+                  <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
                 <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/superClassOf" title="Inverse of RDFS' subClassOf. Defined in Ontology Documentation Profile">Super Class Of</a>
               </th>
               <td>
@@ -640,6 +657,12 @@
                   <li>
                     <span>
                       <a href="#CorrectFact">Correct fact</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#LinkIdentity">Link identity</a>
                       <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                     </span>
                   </li>
@@ -736,10 +759,20 @@
                 <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subClassOf" title="The subject is a subclass of a class. Defined in The RDF Schema vocabulary (RDFS)">Sub Class Of</a>
               </th>
               <td>
-                <span>
-                  <a href="#Action">Action</a>
-                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                </span>
+                <ul class="pylodelitlist">
+                  <li>
+                    <span>
+                      <a href="#Action">Action</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#FactGeneration">Fact generation</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                </ul>
               </td>
             </tr>
           </table>
@@ -878,6 +911,12 @@
                   <li>
                     <span>
                       <a href="#Grant">Grant</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#IdentityLink">Identity link</a>
                       <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                     </span>
                   </li>
@@ -1189,10 +1228,20 @@
                 <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subClassOf" title="The subject is a subclass of a class. Defined in The RDF Schema vocabulary (RDFS)">Sub Class Of</a>
               </th>
               <td>
-                <span>
-                  <a href="#Action">Action</a>
-                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
-                </span>
+                <ul class="pylodelitlist">
+                  <li>
+                    <span>
+                      <a href="#Action">Action</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#FactGeneration">Fact generation</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                </ul>
               </td>
             </tr>
           </table>
@@ -1654,13 +1703,31 @@
                 <ul class="pylodelitlist">
                   <li>
                     <span>
+                      <a href="#ApproveFact">Approve fact</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
                       <a href="#BulkLoad">Bulk load</a>
                       <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                     </span>
                   </li>
                   <li>
                     <span>
+                      <a href="#CorrectFact">Correct fact</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
                       <a href="#Extraction">Extraction</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#LinkIdentity">Link identity</a>
                       <sup class="sup-c" title="OWL/RDFS Class">c</sup>
                     </span>
                   </li>
@@ -1989,6 +2056,80 @@
             </tr>
           </table>
         </div>
+        <div class="property entity" id="IdentityLink">
+          <h3>Identity link
+            <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#IdentityLink</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li><p>A rule must never merge two companies on a guess. A link is a decision, so it carries provenance like any other fact.</p></li>
+                  <li><p>A steward-approved statement that two party nodes name the same organization. Approval writes an owl:sameAs statement and this node, which records the match score, the method, who approved the link, and when.</p></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subClassOf" title="The subject is a subclass of a class. Defined in The RDF Schema vocabulary (RDFS)">Sub Class Of</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#BitemporalFact">Bitemporal fact</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://linked.data.gov.au/def/ontpub/inDomainOf" title="Inverse of rdfs:domain. Defined in Ontology Documentation Profile">In Domain Of</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li>
+                    <span>
+                      <a href="#linksParty">links party</a>
+                      <sup class="sup-op" title="OWL Object Property">op</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#matchMethod">match method</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#matchScore">match score</a>
+                      <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+                    </span>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://w3id.org/gonogo/ontology#modelingDecision" title="Names the entry in docs/modeling-decisions.md that explains why this term is modeled this way. Defined in None">Modeling Decision</a>
+              </th>
+              <td><p>MD9</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://w3id.org/gonogo/ontology#readByRule" title="Names the clearance rule (R1 to R7) whose SPARQL template reads this term. Defined in None">Read By Rule</a>
+              </th>
+              <td><p>R4</p></td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="LegalState">
           <h3>Legal state
             <sup class="sup-c" title="OWL/RDFS Class">c</sup>
@@ -2238,6 +2379,46 @@
                 <a class="hover_property" href="https://w3id.org/gonogo/ontology#modelingDecision" title="Names the entry in docs/modeling-decisions.md that explains why this term is modeled this way. Defined in None">Modeling Decision</a>
               </th>
               <td><p>MD9</p></td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="LinkIdentity">
+          <h3>Link identity
+            <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#LinkIdentity</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>A steward approves a proposed identity link between two party nodes.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#subClassOf" title="The subject is a subclass of a class. Defined in The RDF Schema vocabulary (RDFS)">Sub Class Of</a>
+              </th>
+              <td>
+                <ul class="pylodelitlist">
+                  <li>
+                    <span>
+                      <a href="#Action">Action</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <a href="#FactGeneration">Fact generation</a>
+                      <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                    </span>
+                  </li>
+                </ul>
+              </td>
             </tr>
           </table>
         </div>
@@ -3322,6 +3503,9 @@
               <a href="#licensee">licensee</a>
             </li>
             <li>
+              <a href="#linksParty">links party</a>
+            </li>
+            <li>
               <a href="#permittedTerritory">permitted territory</a>
             </li>
             <li>
@@ -4108,6 +4292,50 @@
             </tr>
           </table>
         </div>
+        <div class="property entity" id="linksParty">
+          <h3>links party
+            <sup class="sup-op" title="OWL Object Property">op</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#linksParty</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>A party that an identity link says is the same organization as another party. An identity link names exactly two.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#IdentityLink">Identity link</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="https://schema.org/Organization">schema:Organization</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://w3id.org/gonogo/ontology#readByRule" title="Names the clearance rule (R1 to R7) whose SPARQL template reads this term. Defined in None">Read By Rule</a>
+              </th>
+              <td><p>R4</p></td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="permittedTerritory">
           <h3>permitted territory
             <sup class="sup-op" title="OWL Object Property">op</sup>
@@ -4446,6 +4674,50 @@
       <span class="cardinality">,</span>
       <div class="section" id="datatypeproperties">
         <h2>Datatype Properties</h2>
+        <div class="property entity" id="actionReason">
+          <h3>action reason
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#actionReason</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>The reason that the person who performed the action gave for it.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Action">Action</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://w3id.org/gonogo/ontology#modelingDecision" title="Names the entry in docs/modeling-decisions.md that explains why this term is modeled this way. Defined in None">Modeling Decision</a>
+              </th>
+              <td><p>MD12</p></td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="applicationSerial">
           <h3>application serial number
             <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
@@ -5409,6 +5681,82 @@
                 <a class="hover_property" href="https://w3id.org/gonogo/ontology#modelingDecision" title="Names the entry in docs/modeling-decisions.md that explains why this term is modeled this way. Defined in None">Modeling Decision</a>
               </th>
               <td><p>MD9</p></td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="matchMethod">
+          <h3>match method
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#matchMethod</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>The resolver and version that proposed the link.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#IdentityLink">Identity link</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="matchScore">
+          <h3>match score
+            <sup class="sup-dp" title="OWL Datatype Property">dp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#matchScore</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>The resolver's similarity score for the two names, from 0 to 1.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#IdentityLink">Identity link</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#decimal">xsd:decimal</a>
+              </td>
             </tr>
           </table>
         </div>
@@ -6488,6 +6836,50 @@
       </div>
       <div class="section" id="functionalproperties">
         <h2>Functional Properties</h2>
+        <div class="property entity" id="actionReason">
+          <h3>action reason
+            <sup class="sup-fp" title="OWL Functional Property">fp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#actionReason</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>The reason that the person who performed the action gave for it.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#Action">Action</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="https://w3id.org/gonogo/ontology#modelingDecision" title="Names the entry in docs/modeling-decisions.md that explains why this term is modeled this way. Defined in None">Modeling Decision</a>
+              </th>
+              <td><p>MD12</p></td>
+            </tr>
+          </table>
+        </div>
         <div class="property entity" id="center">
           <h3>center
             <sup class="sup-fp" title="OWL Functional Property">fp</sup>
@@ -7256,6 +7648,82 @@
                 <a class="hover_property" href="https://w3id.org/gonogo/ontology#readByRule" title="Names the clearance rule (R1 to R7) whose SPARQL template reads this term. Defined in None">Read By Rule</a>
               </th>
               <td><p>R1</p></td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="matchMethod">
+          <h3>match method
+            <sup class="sup-fp" title="OWL Functional Property">fp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#matchMethod</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>The resolver and version that proposed the link.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#IdentityLink">Identity link</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="property entity" id="matchScore">
+          <h3>match score
+            <sup class="sup-fp" title="OWL Functional Property">fp</sup>
+          </h3>
+          <table>
+            <tr>
+              <th>IRI</th>
+              <td>
+                <code>https://w3id.org/gonogo/ontology#matchScore</code>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://purl.org/dc/terms/description" title="An account of the resource. Defined in DCMI Metadata Terms">Description</a>
+              </th>
+              <td><p>The resolver's similarity score for the two names, from 0 to 1.</p></td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#domain" title="A domain of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Domain</a>
+              </th>
+              <td>
+                <span>
+                  <a href="#IdentityLink">Identity link</a>
+                  <sup class="sup-c" title="OWL/RDFS Class">c</sup>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <a class="hover_property" href="http://www.w3.org/2000/01/rdf-schema#range" title="A range of the subject property. Defined in The RDF Schema vocabulary (RDFS)">Range</a>
+              </th>
+              <td>
+                <a href="http://www.w3.org/2001/XMLSchema#decimal">xsd:decimal</a>
+              </td>
             </tr>
           </table>
         </div>
@@ -8279,6 +8747,9 @@
               <a href="#Grant">Grant</a>
             </li>
             <li style="margin-left:10px;">
+              <a href="#IdentityLink">Identity link</a>
+            </li>
+            <li style="margin-left:10px;">
               <a href="#LegalState">Legal state</a>
             </li>
             <li style="margin-left:10px;">
@@ -8289,6 +8760,9 @@
             </li>
             <li style="margin-left:10px;">
               <a href="#Licensee">Licensee</a>
+            </li>
+            <li style="margin-left:10px;">
+              <a href="#LinkIdentity">Link identity</a>
             </li>
             <li style="margin-left:10px;">
               <a href="#NASACenter">NASA center</a>
@@ -8400,6 +8874,9 @@
               <a href="#licensee">licensee</a>
             </li>
             <li style="margin-left:10px;">
+              <a href="#linksParty">links party</a>
+            </li>
+            <li style="margin-left:10px;">
               <a href="#permittedTerritory">permitted territory</a>
             </li>
             <li style="margin-left:10px;">
@@ -8427,6 +8904,9 @@
             <a href="#datatypeproperties">Datatype Properties</a>
           </h4>
           <ul class="second">
+            <li>
+              <a href="#actionReason">action reason</a>
+            </li>
             <li>
               <a href="#applicationSerial">application serial number</a>
             </li>
@@ -8495,6 +8975,12 @@
             </li>
             <li>
               <a href="#licenseeNameAsWritten">licensee name as written</a>
+            </li>
+            <li>
+              <a href="#matchMethod">match method</a>
+            </li>
+            <li>
+              <a href="#matchScore">match score</a>
             </li>
             <li>
               <a href="#minimumAnnualRoyaltyUSD">minimum annual royalty (USD)</a>
@@ -8592,6 +9078,9 @@
           </h4>
           <ul class="second">
             <li>
+              <a href="#actionReason">action reason</a>
+            </li>
+            <li>
               <a href="#center">center</a>
             </li>
             <li>
@@ -8644,6 +9133,12 @@
             </li>
             <li>
               <a href="#lapseDate">lapse date</a>
+            </li>
+            <li>
+              <a href="#matchMethod">match method</a>
+            </li>
+            <li>
+              <a href="#matchScore">match score</a>
             </li>
             <li>
               <a href="#minimumAnnualRoyaltyUSD">minimum annual royalty (USD)</a>

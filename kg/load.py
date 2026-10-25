@@ -7,7 +7,7 @@ import os
 import httpx
 from rdflib import Graph
 
-from gonogo.paths import BUILD
+from gonogo.paths import BUILD, SNAPSHOT
 from kg.ns import GRAPH_APPROVED, GRAPH_CANDIDATE, GRAPH_RELEASE, GRAPH_ROYALTY
 
 OUT_DIR = BUILD / "kg"
@@ -23,7 +23,11 @@ def write_files(graphs: dict[str, Graph]) -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for name, g in graphs.items():
         g.namespace_manager.bind("gng", "https://w3id.org/gonogo/ontology#")
-        (OUT_DIR / FILES[name]).write_bytes(g.serialize(format="turtle").encode())
+        body = g.serialize(format="turtle").encode()
+        (OUT_DIR / FILES[name]).write_bytes(body)
+        if name != GRAPH_ROYALTY:  # royalty terms never ship to the public demo (MD11)
+            SNAPSHOT.mkdir(parents=True, exist_ok=True)
+            (SNAPSHOT / FILES[name]).write_bytes(body)
 
 
 def _auth() -> tuple[str, str]:

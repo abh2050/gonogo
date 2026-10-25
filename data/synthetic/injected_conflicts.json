@@ -529,6 +529,19 @@
       "type": "r5_restricted_country_permitted"
     },
     {
+      "after_approval": {
+        "candidate_id": "CAND-EXP-LAR-17317-2",
+        "expected_statuses": {
+          "R1": "PASS",
+          "R2": "PASS",
+          "R3": "NOT_APPLICABLE",
+          "R4": "NOT_APPLICABLE",
+          "R5": "PASS",
+          "R6": "PASS",
+          "R7": "NOT_APPLICABLE"
+        },
+        "expected_verdict": "GO"
+      },
       "as_of": "2026-11-01",
       "case_id": "INJ-025",
       "description": "No export classification exists for the patent.",

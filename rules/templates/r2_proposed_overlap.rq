@@ -1,0 +1,17 @@
+# R2. Proposed grants on the patent. A notice often names no field or no territory, so the rule keeps those
+# and flags the missing dimension: an unstated field could overlap anything.
+SELECT DISTINCT ?grant ?exclusivity ?field ?territory ?licensee ?name ?notice ?deadline ?fieldOverlap ?territoryOverlap
+{{FROM}}
+WHERE {
+  ?grant a gng:ProposedGrant ; gng:aboutPatent {{patent}} .
+  {{ASOF ?grant}}
+  OPTIONAL { ?grant gng:exclusivityType ?exclusivity }
+  OPTIONAL { ?grant gng:fieldOfUse ?field }
+  OPTIONAL { ?grant gng:territory ?territory }
+  OPTIONAL { ?grant gng:licensee ?licensee . OPTIONAL { ?licensee schema:legalName ?name } }
+  OPTIONAL { ?grant gng:announcedIn ?notice }
+  OPTIONAL { ?grant gng:objectionDeadline ?deadline }
+  BIND(!BOUND(?field) || EXISTS { ?grant gng:coversField {{field}} } || EXISTS { ?field skos:broaderTransitive {{field}} } AS ?fieldOverlap)
+  BIND(!BOUND(?territory) || EXISTS { ?grant gng:coversTerritory {{territory}} } || EXISTS { ?territory skos:broaderTransitive {{territory}} } AS ?territoryOverlap)
+}
+ORDER BY ?grant

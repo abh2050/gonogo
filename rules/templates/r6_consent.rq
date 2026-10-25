@@ -1,0 +1,7 @@
+# R6. The consent records for the patent.
+SELECT ?consent ?coOwner
+{{FROM}}
+WHERE {
+  ?consent a gng:ConsentRecord ; gng:aboutPatent {{patent}} ; gng:consentBy ?coOwner .
+  {{ASOF ?consent}}
+}

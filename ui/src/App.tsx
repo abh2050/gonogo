@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import Ask from "./pages/Ask";
 import Findings from "./pages/Findings";
+import History from "./pages/History";
 import OntologyMap from "./pages/OntologyMap";
+import Steward from "./pages/Steward";
 import Overview from "./pages/Overview";
 import TimeTravel from "./pages/TimeTravel";
 import Vocabularies from "./pages/Vocabularies";
@@ -8,6 +11,9 @@ import { useTheme } from "./theme";
 
 const PAGES = [
   { path: "overview", label: "Overview", element: <Overview /> },
+  { path: "ask", label: "Ask", element: <Ask /> },
+  { path: "steward", label: "Steward", element: <Steward /> },
+  { path: "history", label: "History", element: <History /> },
   { path: "ontology", label: "Ontology", element: <OntologyMap /> },
   { path: "vocabularies", label: "Vocabularies", element: <Vocabularies /> },
   { path: "findings", label: "Data findings", element: <Findings /> },

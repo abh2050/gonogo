@@ -40,7 +40,14 @@ Each view has a hash route, and some take a parameter:
 
 ## Hosting
 
-`vercel.json` configures a Vercel static deployment with `ui/` as the root directory. The build needs no
-server and no AWS account. Gate 3 adds a snapshot mode in which the same rule engine runs on a Vercel function,
-so the request, steward, and release views keep working after the AWS stack is torn down. See
-[docs/public-demo.md](../docs/public-demo.md).
+The repository-root `vercel.json` builds this app as the static site and deploys [api/index.py](../api/index.py)
+as one Python function. The function runs the real rule engine over a committed snapshot of the graph
+(`api/snapshot/`), so the Ask, Steward, and History views work with no AWS account. The browser holds the
+steward's event log and sends it with each call. See [docs/public-demo.md](../docs/public-demo.md).
+
+For local work, run the API beside the dev server; Vite forwards `/api` to it:
+
+```bash
+uv run uvicorn api.index:app --port 8000   # from the repository root
+cd ui && npm run dev
+```

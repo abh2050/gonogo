@@ -1,0 +1,11 @@
+.venv
+.mypy_cache
+.ruff_cache
+.pytest_cache
+**/__pycache__
+build
+data/raw
+ui/node_modules
+ui/dist
+cdk.out
+.env

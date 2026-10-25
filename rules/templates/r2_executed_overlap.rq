@@ -1,0 +1,17 @@
+# R2 and R3. Executed grants on the patent whose field, territory, and term overlap the request. The field and
+# territory tests run in both directions along the hierarchy: the grant covers the request, or the request
+# covers the grant.
+SELECT DISTINCT ?grant ?exclusivity ?field ?territory ?from ?to ?cap ?licensee ?name ?written
+{{FROM}}
+WHERE {
+  ?grant a gng:ExecutedGrant ; gng:aboutPatent {{patent}} ; gng:validFrom ?from ; gng:validTo ?to ;
+         gng:exclusivityType ?exclusivity ; gng:fieldOfUse ?field ; gng:territory ?territory .
+  {{ASOF ?grant}}
+  FILTER(?from <= {{end}} && ?to >= {{start}})
+  { ?grant gng:coversField {{field}} } UNION { ?field skos:broaderTransitive {{field}} }
+  { ?grant gng:coversTerritory {{territory}} } UNION { ?territory skos:broaderTransitive {{territory}} }
+  OPTIONAL { ?grant gng:coExclusiveCap ?cap }
+  OPTIONAL { ?grant gng:licensee ?licensee . OPTIONAL { ?licensee schema:legalName ?name } }
+  OPTIONAL { ?grant gng:licenseeNameAsWritten ?written }
+}
+ORDER BY ?grant

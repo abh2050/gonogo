@@ -1,0 +1,11 @@
+# The exact words behind each fact: the clause span, its text, and the document that holds it.
+SELECT DISTINCT ?fact ?clause ?kind ?text ?start ?end ?doc ?title ?url
+{{FROM}}
+WHERE {
+  VALUES ?fact { {{facts}} }
+  ?fact gng:sourceClause ?clause .
+  ?clause gng:inDocument ?doc ; gng:clauseKind ?kind ; gng:spanText ?text ; gng:spanStart ?start ; gng:spanEnd ?end .
+  OPTIONAL { ?doc dct:title ?title }
+  OPTIONAL { ?doc schema:url ?url }
+}
+ORDER BY ?fact ?start

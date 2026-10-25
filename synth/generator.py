@@ -817,6 +817,21 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
     )
     k, f = clean()
     del w.export[k]
+    # A proposed classification waits in the candidate graph. Until a steward approves it, R5 stays UNKNOWN.
+    w.candidates.append(
+        label(
+            {
+                "candidate_id": f"CAND-EXP-{k}",
+                "fact_type": "ExportClassification",
+                "patent_key": k,
+                "classification": "unrestricted",
+                "permitted_countries": [],
+                "status": "proposed",
+                "source": "synthetic export control review",
+                "proposed_at": "2026-10-16T00:00:00Z",
+            }
+        )
+    )
     r = w.request(k, nx, f)
     w.case(
         "r5_missing_classification",
@@ -824,11 +839,33 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
         r,
         expect(nx, R5=UNKNOWN),
         NO_DATA,
+        after_approval={
+            "candidate_id": f"CAND-EXP-{k}",
+            "expected_statuses": expect(nx),
+            "expected_verdict": GO,
+        },
     )
 
     # R6 co-owner consent.
     k, f = clean()
     w.set_ownership(k, "complete", ["COO-001"])
+    # A decoy: a proposed record that leaves out the co-owner. Approving it would hide the missing consent, so
+    # the demo shows a steward rejecting it against the recorded assignment.
+    w.candidates.append(
+        label(
+            {
+                "candidate_id": f"CAND-OWN-{k}",
+                "fact_type": "OwnershipRecord",
+                "patent_key": k,
+                "completeness": "complete",
+                "co_owners": [],
+                "status": "proposed",
+                "source": "synthetic licensee-supplied ownership summary",
+                "proposed_at": "2026-10-17T00:00:00Z",
+                "conflicts_with": "the recorded assignment, which lists co-owner COO-001",
+            }
+        )
+    )
     r = w.request(k, nx, f)
     w.case(
         "r6_coowner_without_consent",

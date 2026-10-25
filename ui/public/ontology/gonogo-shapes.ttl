@@ -101,7 +101,7 @@ shp:ClauseShape a sh:NodeShape ;
 
 shp:BitemporalFactShape a sh:NodeShape ;
     sh:targetClass gng:BitemporalFact ;
-    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ; sh:class gng:Patent ] ;
+    sh:property [ sh:path gng:aboutPatent ; sh:class gng:Patent ] ;
     sh:property [ sh:path gng:validFrom ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
                   sh:lessThanOrEquals gng:validTo ] ;
     sh:property [ sh:path gng:validTo ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
@@ -113,6 +113,7 @@ shp:BitemporalFactShape a sh:NodeShape ;
 
 shp:GrantShape a sh:NodeShape ;
     sh:targetClass gng:Grant ;
+    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ] ;
     sh:property [ sh:path gng:licensee ; sh:maxCount 1 ; sh:class gng:Licensee ] ;
     sh:property [ sh:path gng:exclusivityType ; sh:minCount 1 ; sh:class gng:ExclusivityType ] ;
     sh:property [ sh:path gng:fieldOfUse ; sh:class gng:FieldOfUse ] ;
@@ -216,6 +217,7 @@ shp:FilingRecordShape a sh:NodeShape ;
 
 shp:RoyaltyTermShape a sh:NodeShape ;
     sh:targetClass gng:RoyaltyTerm ;
+    sh:property [ sh:path gng:aboutPatent ; sh:minCount 1 ] ;
     sh:property [ sh:path gng:royaltyOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:ExecutedGrant ] ;
     sh:property [ sh:path gng:royaltyPercent ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
                   sh:minInclusive 0 ; sh:maxInclusive 100 ] ;
@@ -253,3 +255,27 @@ shp:ConceptShape a sh:NodeShape ;
         sh:message "A concept cannot be its own ancestor. A cycle in skos:broader would make coverage undefined." ;
         sh:select """
             SELECT $this WHERE { $this skos:broaderTransitive $this }""" ] .
+
+shp:IdentityLinkShape a sh:NodeShape ;
+    sh:targetClass gng:IdentityLink ;
+    sh:property [ sh:path gng:linksParty ; sh:minCount 2 ; sh:maxCount 2 ; sh:class schema:Organization ] ;
+    sh:property [ sh:path gng:aboutPatent ; sh:maxCount 0 ] ;
+    sh:property [ sh:path gng:matchScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+                  sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path gng:matchMethod ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:prefixes <https://w3id.org/gonogo/shapes> ;
+        sh:message "An identity link needs a matching owl:sameAs statement between its two parties." ;
+        sh:select """
+            SELECT $this WHERE {
+              $this gng:linksParty ?a , ?b . FILTER (str(?a) < str(?b))
+              FILTER NOT EXISTS { ?a <http://www.w3.org/2002/07/owl#sameAs> ?b }
+            }""" ] .
+
+shp:ActionShape a sh:NodeShape ;
+    sh:targetClass gng:Action ;
+    sh:property [ sh:path prov:startedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [ sh:path gng:actionReason ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path prov:wasAssociatedWith ; sh:minCount 1 ; sh:class prov:Agent ] .
+

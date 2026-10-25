@@ -192,9 +192,17 @@ gng:RoyaltyTerm a owl:Class ;
     skos:definition "The confidential royalty terms of an executed grant. Royalty terms live in their own named graph, so graph-level access control can hide them from licensing managers."@en ;
     gng:modelingDecision "MD11" .
 
+gng:IdentityLink a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    rdfs:label "Identity link"@en ;
+    skos:definition "A steward-approved statement that two party nodes name the same organization. Approval writes an owl:sameAs statement and this node, which records the match score, the method, who approved the link, and when."@en ;
+    rdfs:comment "A rule must never merge two companies on a guess. A link is a decision, so it carries provenance like any other fact."@en ;
+    gng:readByRule "R4" ;
+    gng:modelingDecision "MD9" .
+
 [] a owl:AllDisjointClasses ;
     owl:members ( gng:Grant gng:OwnershipRecord gng:ConsentRecord gng:ExportClassification
-                  gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm ) .
+                  gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm gng:IdentityLink ) .
 
 [] a owl:AllDisjointClasses ;
     owl:members ( gng:LicenseNotice gng:LicenseAgreement gng:RegistryRecord ) .
@@ -283,15 +291,18 @@ gng:SubmitClearanceRequest a owl:Class ; rdfs:subClassOf gng:Action ;
 gng:ProposeFacts a owl:Class ; rdfs:subClassOf gng:Action ;
     rdfs:label "Propose facts"@en ;
     skos:definition "The ingestion pipeline writes candidate facts to the candidate graph."@en .
-gng:ApproveFact a owl:Class ; rdfs:subClassOf gng:Action ;
+gng:ApproveFact a owl:Class ; rdfs:subClassOf gng:Action , gng:FactGeneration ;
     rdfs:label "Approve fact"@en ;
     skos:definition "A steward promotes a candidate fact to the approved graph and records the reason."@en .
 gng:RejectFact a owl:Class ; rdfs:subClassOf gng:Action ;
     rdfs:label "Reject fact"@en ;
     skos:definition "A steward discards a candidate fact and records the reason."@en .
-gng:CorrectFact a owl:Class ; rdfs:subClassOf gng:Action ;
+gng:CorrectFact a owl:Class ; rdfs:subClassOf gng:Action , gng:FactGeneration ;
     rdfs:label "Correct fact"@en ;
     skos:definition "A steward supersedes an approved fact with a new one. The original stays in the graph."@en .
+gng:LinkIdentity a owl:Class ; rdfs:subClassOf gng:Action , gng:FactGeneration ;
+    rdfs:label "Link identity"@en ;
+    skos:definition "A steward approves a proposed identity link between two party nodes."@en .
 gng:OverrideVerdict a owl:Class ; rdfs:subClassOf gng:Action ;
     rdfs:label "Override verdict"@en ;
     skos:definition "Counsel records a different outcome with a written justification. The original decision stays unchanged."@en .
@@ -755,3 +766,30 @@ gng:storedAt a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain gng:SourceDocument ; rdfs:range xsd:string ;
     rdfs:label "stored at"@en ;
     skos:definition "The repository path of the stored copy of the document."@en .
+
+# -----------------------------------------------------------------------------------------------------
+# Identity links and governed actions
+# -----------------------------------------------------------------------------------------------------
+
+gng:linksParty a owl:ObjectProperty ;
+    rdfs:domain gng:IdentityLink ; rdfs:range schema:Organization ;
+    rdfs:label "links party"@en ;
+    skos:definition "A party that an identity link says is the same organization as another party. An identity link names exactly two."@en ;
+    gng:readByRule "R4" .
+
+gng:matchScore a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:IdentityLink ; rdfs:range xsd:decimal ;
+    rdfs:label "match score"@en ;
+    skos:definition "The resolver's similarity score for the two names, from 0 to 1."@en .
+
+gng:matchMethod a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:IdentityLink ; rdfs:range xsd:string ;
+    rdfs:label "match method"@en ;
+    skos:definition "The resolver and version that proposed the link."@en .
+
+gng:actionReason a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Action ; rdfs:range xsd:string ;
+    rdfs:label "action reason"@en ;
+    skos:definition "The reason that the person who performed the action gave for it."@en ;
+    gng:modelingDecision "MD12" .
+

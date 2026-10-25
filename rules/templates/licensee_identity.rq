@@ -1,0 +1,8 @@
+# Every licensee node that a steward linked to the requester's node, directly or through other links.
+# The requester's own nodes come back too, because the property path matches zero steps.
+SELECT DISTINCT ?same
+{{FROM}}
+WHERE {
+  VALUES ?me { {{ids}} }
+  ?same (^owl:sameAs|owl:sameAs)* ?me .
+}

@@ -1,0 +1,20 @@
+# Decision combiner policy. This file is part of the release bundle, so a change to it goes through the
+# release pipeline like a change to the ontology. Bump `version` with every edit.
+version: "1.0.0"
+description: >-
+  Turns the statuses of rules R1 to R7 into one verdict. Any FAIL gives NO GO. Otherwise any PENDING gives
+  HOLD, any REVIEW gives COUNSEL, and any UNKNOWN gives NO DATA. When every applicable rule passes, the
+  verdict is GO. A rule that returns NOT_APPLICABLE takes no part. The combiner runs every rule, so no rule
+  can skip another, and the verdict card shows every finding beneath the verdict.
+# Checked from the top. The first status that appears among the rule results decides the verdict.
+precedence:
+  - status: FAIL
+    verdict: NO GO
+  - status: PENDING
+    verdict: HOLD
+  - status: REVIEW
+    verdict: COUNSEL
+  - status: UNKNOWN
+    verdict: NO DATA
+default_verdict: GO
+ignored_statuses: [NOT_APPLICABLE]
