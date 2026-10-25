@@ -21,8 +21,8 @@ GENH2 = (
 
 
 @pytest.fixture(scope="module")
-def vocab(kg_graphs: Any) -> Vocabulary:
-    return Vocabulary.from_store(Store.from_build())
+def vocab(store: Store) -> Vocabulary:
+    return Vocabulary.from_store(store)
 
 
 @pytest.mark.parametrize("row", jsonl("requests.jsonl"), ids=lambda r: r["request_id"])
