@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { api, type Decision, type Diff, type GEvent } from "./api";
+import { api, type ActResult, type Decision, type Diff, type GEvent, type Role } from "./api";
 
 // The browser holds the session: the steward's event log and the decisions made so far. The server replays
 // the log on every call. Session storage keeps the session across a page change, not across browser tabs.
@@ -16,22 +16,24 @@ interface SessionValue {
   history: Entry[];
   steward: string;
   setSteward: (name: string) => void;
+  role: Role;
+  setRole: (role: Role) => void;
   record: (entry: Entry) => void;
-  act: (event: GEvent) => Promise<{ sparql: string[]; affected: Entry[]; newFacts: string[] }>;
+  act: (event: GEvent) => Promise<{ sparql: string[]; affected: Entry[]; result: ActResult }>;
   reset: () => void;
 }
 
 const KEY = "gonogo-session-v1";
 const SessionContext = createContext<SessionValue | null>(null);
 
-function load(): { events: GEvent[]; history: Entry[]; steward: string } {
+function load(): { events: GEvent[]; history: Entry[]; steward: string; role: Role } {
   try {
     const raw = sessionStorage.getItem(KEY);
     if (raw) return JSON.parse(raw);
   } catch {
     // Storage can be blocked or hold an older shape. Start fresh.
   }
-  return { events: [], history: [], steward: "Demo Steward" };
+  return { events: [], history: [], steward: "Demo Steward", role: "steward" };
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -39,14 +41,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [events, setEvents] = useState<GEvent[]>(initial.events);
   const [history, setHistory] = useState<Entry[]>(initial.history);
   const [steward, setSteward] = useState(initial.steward);
+  const [role, setRole] = useState<Role>(initial.role ?? "steward");
 
   useEffect(() => {
     try {
-      sessionStorage.setItem(KEY, JSON.stringify({ events, history, steward }));
+      sessionStorage.setItem(KEY, JSON.stringify({ events, history, steward, role }));
     } catch {
       // The session still works for this page view.
     }
-  }, [events, history, steward]);
+  }, [events, history, steward, role]);
 
   const record = useCallback((entry: Entry) => setHistory((h) => [entry, ...h].slice(0, 40)), []);
 
@@ -54,7 +57,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   // verdicts the new evidence changed.
   const act = useCallback(
     async (event: GEvent) => {
-      const out = await api.act(events, { ...event, steward });
+      // The questions asked so far travel with the action, so the server can tell whether it moves one to GO.
+      const asked = [...new Map(history.map((e) => [e.decision.id, e])).values()].slice(0, 20).map((e) =>
+        e.decision.parse?.text ? { text: e.decision.parse.text } : { request: requestOf(e.decision) },
+      );
+      const out = await api.act(events, { ...event, steward, role }, asked);
       setEvents(out.events);
       const seen = new Set<string>();
       const affected: Entry[] = [];
@@ -71,9 +78,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         if (res.diff && (res.diff.verdict_changed || res.diff.changes.length)) affected.push(entry);
       }
       if (affected.length) setHistory((h) => [...affected, ...h].slice(0, 40));
-      return { sparql: out.sparql_update, affected, newFacts: out.result.new_facts };
+      return { sparql: out.sparql_update, affected, result: out.result };
     },
-    [events, history, steward],
+    [events, history, steward, role],
   );
 
   const reset = useCallback(() => {
@@ -82,8 +89,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ events, history, steward, setSteward, record, act, reset }),
-    [events, history, steward, record, act, reset],
+    () => ({ events, history, steward, setSteward, role, setRole, record, act, reset }),
+    [events, history, steward, role, record, act, reset],
   );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

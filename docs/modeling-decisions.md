@@ -230,3 +230,51 @@ than either does alone.
 
 **Evidence.** `test_a_territory_used_as_a_field_of_use_fails_the_consistency_check`, and the ROBOT and HermiT
 tests in `tests/unit/test_robot.py`, which reject three deliberately inconsistent datasets.
+
+### MD14. A model proposes a field of use as a candidate fact, with its prompt, model, and quote
+
+**Problem.** Of the 41 real notices in scope, 24 state no field of use. The 18 marked `limited_unspecified` say
+only that "the fields of use may be limited". A model asked to name a field would name one anyway.
+
+**Choice.** The extractor may answer "none stated". When it names a field, the field must be a concept in the
+SKOS scheme, and its quote must appear word for word in the notice. Code checks both, so a failed check drops
+the proposal. A passing proposal becomes a `gng:FieldOfUseAssignment` in the candidate graph, with its own property
+`gng:assignsField`, so an approved assignment never edits the grant. (The first draft reused `gng:fieldOfUse`,
+whose domain is `gng:Grant`, and the build's disjointness check rejected it.) It points at the
+grant it describes (`gng:aboutGrant`), at a clause that holds the quote, and at a `gng:Extraction` run that
+records the model ID and the prompt version. No rule reads the candidate graph. A steward approves an
+assignment, and only then does R2 see the field.
+
+**Why.** The model contributes a reading of the words and nothing else. The prompt version and model ID let a
+reader reproduce or challenge the proposal, and the verbatim quote lets a steward check it in seconds.
+
+**Cost.** An assignment narrows what a notice leaves open, so a wrong approval can hide a real overlap. Gate 3
+adds a second reviewer for any approval that would move a verdict to GO (ADR 0002).
+
+**Evidence.** `tests/agent/test_field_extractor.py` runs the checks against a fake client, including a quote
+that is not in the notice and a concept that is not in the scheme.
+
+### MD15. Who proposed a fact is recorded, and a fact that changes a verdict needs a second person
+
+**Problem.** The engine let one steward approve a fact that contradicted an approved fact, and that approval
+turned COUNSEL into GO without anyone else seeing it. The record showed who approved the fact, but nothing
+stopped the approver from being the proposer.
+
+**Choice.** Every candidate carries `gng:proposedBy`: a steward, a licensee, a feed, or a model agent. The
+engine computes two flags for each approval. The first says the fact conflicts with an approved fact
+(`kg/governance.py`). The second says that approving it would move a verdict from COUNSEL or NO GO to GO,
+found by rerunning the questions on the same patent before and after. Cedar policies read the flags and
+decide. An approval with no flag takes effect at once. A flagged approval waits in `PENDING_SECOND_REVIEW`
+and changes nothing until counsel approves it, and counsel is never the first approver. Nobody approves a
+fact that they proposed. The approved fact records both approvers (`gng:approvedBy`, `gng:secondApprovedBy`).
+
+**Why.** The graph keeps what happened, and the policy decides who may make it happen. Cedar holds the rules
+as text that a reviewer can read, and the same text runs in Verified Permissions.
+
+**Cost.** A flagged approval takes two people, so it is slower. Real stewards will meet the flag on facts that
+legitimately correct an older record, and counsel's queue will grow. Counting the flags per month shows
+whether the threshold is right.
+
+**Evidence.** ADR 0002, `tests/authz/test_policies.py` (every role against every action), and
+`tests/rules/test_separation.py`, which runs the decoy through the whole sequence.
+

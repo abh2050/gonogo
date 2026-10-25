@@ -47,9 +47,11 @@ def evaluate(ctx: Context) -> Finding:
             continue  # the requester's own notice is R4's business
         if not (value(r, "fieldOverlap") and value(r, "territoryOverlap")):
             continue
-        entry = review.setdefault(str(r["grant"]), {"row": r, "options": set()})
+        entry = review.setdefault(str(r["grant"]), {"row": r, "options": set(), "assignments": set()})
         if "exclusivity" in r:
             entry["options"].add(local(text(r, "exclusivity")))
+        if "assignment" in r:
+            entry["assignments"].add(str(r["assignment"]))
     flagged = {
         g: e for g, e in review.items() if requested == "exclusive" or not e["options"] or "exclusive" in e["options"]
     }
@@ -59,6 +61,8 @@ def evaluate(ctx: Context) -> Finding:
     for g, e in flagged.items():
         who = text(e["row"], "name") or "an unnamed party"
         ctx.note_fact(g, "Proposed grant", f"{local(g)} proposed to {who}")
+        for a in e["assignments"]:
+            ctx.note_fact(a, "Field of use assignment", f"{local(g)} limited to {local(text(e['row'], 'field'))}")
 
     if conflicts:
         f.status = Status.FAIL
@@ -77,6 +81,8 @@ def evaluate(ctx: Context) -> Finding:
         for g, e in flagged.items():
             if "field" not in e["row"]:
                 f.notes.append(f"{local(g)}: the notice states no field of use, so GoNoGo cannot rule out an overlap.")
+            elif e["assignments"]:
+                f.notes.append(f"{local(g)}: the field of use comes from an approved assignment, not from the notice.")
             f.details.setdefault("proposed", []).append(local(g))
     else:
         f.summary = "No executed grant conflicts with the request, and no other party's proposed grant overlaps it."
@@ -85,7 +91,11 @@ def evaluate(ctx: Context) -> Finding:
             f"{len(harmless)} overlapping grant(s) do not conflict with a {requested.replace('-', ' ')} request."
         )
 
-    iris = [str(r["grant"]) for r in conflicts] + list(flagged)
+    iris = (
+        [str(r["grant"]) for r in conflicts]
+        + list(flagged)
+        + [a for e in flagged.values() for a in sorted(e["assignments"])]
+    )
     f.facts = ctx.collect(iris)
     f.clauses = ctx.clauses_for(iris, GRANT_CLAUSES)
     return f

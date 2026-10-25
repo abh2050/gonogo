@@ -1,7 +1,6 @@
 @prefix gng: <https://w3id.org/gonogo/ontology#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://w3id.org/gonogo/id/export/LAR-17317-2/candidate> a prov:Entity,
@@ -11,17 +10,47 @@
     rdfs:comment "Proposed from a synthetic export control review."@en ;
     prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;
     gng:aboutPatent <https://w3id.org/gonogo/id/patent/LAR-17317-2> ;
+    gng:proposedBy <https://w3id.org/gonogo/id/agent/feed/export-control-review-desk> ;
     gng:recordedAt "2026-10-16T00:00:00+00:00"^^xsd:dateTime ;
     gng:validFrom "2000-01-01"^^xsd:date .
+
+<https://w3id.org/gonogo/id/field-claim/fr-2020-05383/candidate> a prov:Entity,
+        gng:BitemporalFact,
+        gng:FieldOfUseAssignment ;
+    rdfs:comment "Proposed by us.anthropic.claude-sonnet-4-6 with prompt field-extract/1."@en ;
+    prov:wasDerivedFrom <https://w3id.org/gonogo/id/clause/fr-2020-05383/field-claim> ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/run/field-extract/1> ;
+    gng:aboutGrant <https://w3id.org/gonogo/id/grant/proposed/fr-2020-05383> ;
+    gng:aboutPatent <https://w3id.org/gonogo/id/patent/KSC-12631> ;
+    gng:assignsField <https://w3id.org/gonogo/field/coatings> ;
+    gng:proposedBy <https://w3id.org/gonogo/id/agent/model/us-anthropic-claude-sonnet-4-6> ;
+    gng:recordedAt "2026-10-25T04:48:42+00:00"^^xsd:dateTime ;
+    gng:sourceClause <https://w3id.org/gonogo/id/clause/fr-2020-05383/field-claim> ;
+    gng:validFrom "2020-03-17"^^xsd:date .
+
+<https://w3id.org/gonogo/id/field-claim/fr-2020-15641/candidate> a prov:Entity,
+        gng:BitemporalFact,
+        gng:FieldOfUseAssignment ;
+    rdfs:comment "Proposed by us.anthropic.claude-sonnet-4-6 with prompt field-extract/1."@en ;
+    prov:wasDerivedFrom <https://w3id.org/gonogo/id/clause/fr-2020-15641/field-claim> ;
+    prov:wasGeneratedBy <https://w3id.org/gonogo/run/field-extract/1> ;
+    gng:aboutGrant <https://w3id.org/gonogo/id/grant/proposed/fr-2020-15641> ;
+    gng:aboutPatent <https://w3id.org/gonogo/id/patent/KSC-12890>,
+        <https://w3id.org/gonogo/id/patent/KSC-12890-2-DIV> ;
+    gng:assignsField <https://w3id.org/gonogo/field/aerogels> ;
+    gng:proposedBy <https://w3id.org/gonogo/id/agent/model/us-anthropic-claude-sonnet-4-6> ;
+    gng:recordedAt "2026-10-25T04:48:42+00:00"^^xsd:dateTime ;
+    gng:sourceClause <https://w3id.org/gonogo/id/clause/fr-2020-15641/field-claim> ;
+    gng:validFrom "2020-07-20"^^xsd:date .
 
 <https://w3id.org/gonogo/id/ownership/LAR-17381-1/candidate> a prov:Entity,
         gng:BitemporalFact,
         gng:OwnershipRecord ;
     rdfs:comment "Proposed from a synthetic licensee-supplied ownership summary."@en ;
-    skos:note "Conflicts with the recorded assignment, which lists co-owner COO-001."@en ;
     prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;
     gng:aboutPatent <https://w3id.org/gonogo/id/patent/LAR-17381-1> ;
     gng:coOwnerListIsComplete true ;
+    gng:proposedBy <https://w3id.org/gonogo/id/licensee/LIC-001> ;
     gng:recordedAt "2026-10-17T00:00:00+00:00"^^xsd:dateTime ;
     gng:validFrom "2000-01-01"^^xsd:date .
 
@@ -32,6 +61,23 @@
     prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;
     gng:aboutPatent <https://w3id.org/gonogo/id/patent/LEW-18605-2> ;
     gng:coOwnerListIsComplete true ;
+    gng:proposedBy <https://w3id.org/gonogo/id/agent/feed/uspto-assignment-feed> ;
     gng:recordedAt "2026-10-15T00:00:00+00:00"^^xsd:dateTime ;
     gng:validFrom "2000-01-01"^^xsd:date .
+
+<https://w3id.org/gonogo/id/clause/fr-2020-05383/field-claim> a prov:Entity,
+        gng:Clause ;
+    gng:clauseKind "field" ;
+    gng:inDocument <https://w3id.org/gonogo/id/notice/fr-2020-05383> ;
+    gng:spanEnd "1055"^^xsd:nonNegativeInteger ;
+    gng:spanStart "1021"^^xsd:nonNegativeInteger ;
+    gng:spanText "a new type of corrosion prevention" .
+
+<https://w3id.org/gonogo/id/clause/fr-2020-15641/field-claim> a prov:Entity,
+        gng:Clause ;
+    gng:clauseKind "field" ;
+    gng:inDocument <https://w3id.org/gonogo/id/notice/fr-2020-15641> ;
+    gng:spanEnd "897"^^xsd:nonNegativeInteger ;
+    gng:spanStart "862"^^xsd:nonNegativeInteger ;
+    gng:spanText "Aerogel/Polymer Composite Materials" .
 

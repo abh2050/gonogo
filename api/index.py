@@ -102,6 +102,9 @@ class TextBody(Session):
 
 class ActBody(Session):
     event: dict[str, Any]
+    # The questions this session has asked. An approval is checked against them, so a steward cannot approve a
+    # fact that moves one of their own questions to GO without counsel.
+    requests: list[dict[str, Any]] = Field(default_factory=list, max_length=20)
 
 
 class RecordBody(Session):
@@ -124,6 +127,7 @@ def health() -> dict[str, Any]:
         "release": release_config()["ontology_release"],
         "demo_now": release_config()["demo_now"],
         "combiner_policy": policy_version(),
+        "authz_policies": len(_authz_matrix()["policies"]),
         "rules": rule_versions(),
         "graphs": {name: store.graph_size(iri) for name, iri in GRAPH_NAMES.items()},
     }
@@ -278,24 +282,85 @@ def rerun_decision(body: RecordBody) -> dict[str, Any]:
 @app.post("/api/queue")
 def queue(body: Session) -> dict[str, Any]:
     store = world(body.events)
-    links = [p for p in propose_links(index_parties(store)) if p["id"] not in store.decided]
+
+    def open_link(p: dict[str, Any]) -> bool:
+        """A pair is open until a steward has decided it, and a pair held for counsel is still open."""
+        return str(store.decided.get(p["id"], {}).get("decision", "pending_second_review")) == "pending_second_review"
+
+    links = [
+        {
+            **p,
+            "state": "pending_second_review" if p["id"] in store.pending else "proposed",
+            "first_approver": store.decided.get(p["id"], {}).get("first_approver"),
+        }
+        for p in propose_links(index_parties(store))
+        if open_link(p)
+    ]
     return {
         "facts": [describe_candidate(store, c) for c in pending_candidates(store)],
         "links": links,
         "decided": store.decided,
+        "why": {k: v.get("why", []) for k, v in store.decided.items() if v["decision"] == "pending_second_review"},
     }
 
 
 @app.post("/api/act")
 def act(body: ActBody) -> dict[str, Any]:
     store = world(body.events).copy()  # the cached world stays as it was
+    event = {**body.event, "params": {**(body.event.get("params") or {}), "requests": body.requests}}
     try:
-        result = apply_event(store, body.event)
+        result = apply_event(store, event)
     except ActionRejectedError as e:
         raise HTTPException(422, str(e)) from e
     events = [*body.events, result["event"]]
     _WORLDS[hashlib.sha256(json.dumps(events, sort_keys=True).encode()).hexdigest()] = store
     return {"events": events, "result": result, "sparql_update": sparql_updates(store)[-1:]}
+
+
+@app.get("/api/authz")
+def authz_matrix() -> dict[str, Any]:
+    """Who may do what, as the Cedar policies answer it. The steward page draws this as a grid."""
+    return _authz_matrix()
+
+
+@cache
+def _authz_matrix() -> dict[str, Any]:
+    from authz import cedar
+
+    clean = {"proposer": "feed", "firstApprover": "", "conflict": False, "upgradesToGo": False}
+    flagged = clean | {"conflict": True}
+    second = clean | {"firstApprover": "someone else", "conflict": True}
+    release = {"proposer": "someone else", "gatePassed": True, "counselApproved": True}
+    cases: list[tuple[str, str, tuple[str, str], dict[str, Any] | None]] = [
+        ("Ask a clearance question", "AskClearance", ("Request", "r"), None),
+        ("Read a decision", "ViewDecision", ("Decision", "d"), None),
+        ("Read the approved graph", "ReadGraph", ("Graph", "approved"), None),
+        ("Read the candidate graph", "ReadGraph", ("Graph", "candidate"), None),
+        ("Read the royalty graph", "ReadGraph", ("Graph", "royalty"), None),
+        ("Read royalty terms in Snowflake", "ReadRoyaltyTable", ("Decision", "d"), None),
+        ("Propose a fact", "ProposeFact", ("Candidate", "c"), None),
+        ("Approve a clean fact", "ApproveFact", ("Candidate", "c"), clean),
+        ("Approve a conflicting fact alone", "ApproveFact", ("Candidate", "c"), flagged),
+        ("Submit a flagged approval", "SubmitForSecondReview", ("Candidate", "c"), flagged),
+        ("Second review", "SecondReview", ("Candidate", "c"), second),
+        ("Reject a fact", "RejectFact", ("Candidate", "c"), None),
+        ("Link two companies", "LinkIdentity", ("IdentityPair", "p"), clean),
+        ("Override a verdict", "OverrideVerdict", ("Decision", "d"), None),
+        ("Read release history", "ReadReleaseHistory", ("Release", "r"), None),
+        ("Propose a release", "ProposeRelease", ("Release", "r"), None),
+        ("Publish a release", "PublishRelease", ("Release", "r"), release),
+    ]
+    rows = [
+        {
+            "label": label,
+            "action": action,
+            "allowed": {
+                role: cedar.authorize(cedar.Principal("pat", role), action, res, ctx).allowed for role in cedar.ROLES
+            },
+        }
+        for label, action, res, ctx in cases
+    ]
+    return {"roles": list(cedar.ROLES), "rows": rows, "policies": [i for i, _ in cedar._policy_meta()]}
 
 
 # ---- provenance graph for the UI ----------------------------------------------------------------------------

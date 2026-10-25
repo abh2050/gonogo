@@ -1,0 +1,8 @@
+{
+  "ran_at": "2026-10-25T04:48:42Z",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "prompt_version": "field-extract/1",
+  "calls": 3,
+  "input_tokens": 129848,
+  "output_tokens": 3433
+}

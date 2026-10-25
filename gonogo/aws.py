@@ -80,11 +80,8 @@ def profile_version(profile_id: str) -> tuple[str, int, int] | None:
     return m.group(1), int(m.group(2)), int(m.group(3) or 0)
 
 
-def pick_claude_profile(profiles: list[dict[str, Any]], family: str | None = None) -> str:
-    """Choose the newest active Claude inference profile in the family, preferring us. over global."""
-    override = os.environ.get("GONOGO_CLAUDE_PROFILE")
-    if override:
-        return override
+def ranked_claude_profiles(profiles: list[dict[str, Any]], family: str | None = None) -> list[str]:
+    """Active us. and global. Claude profiles in the family, newest first, preferring us. over global."""
     family = family or load_settings().claude_family
     candidates: list[tuple[int, int, bool, str]] = []
     for p in profiles:
@@ -95,9 +92,21 @@ def pick_claude_profile(profiles: list[dict[str, Any]], family: str | None = Non
         if pid.split(".", 1)[0] not in {"us", "global"}:
             continue
         candidates.append((version[1], version[2], pid.startswith("us."), pid))
-    if not candidates:
-        raise LookupError(f"No us. or global. Claude {family} inference profile is available in {ALLOWED_REGION}")
-    return max(candidates)[3]
+    return [c[3] for c in sorted(candidates, reverse=True)]
+
+
+def pick_claude_profile(profiles: list[dict[str, Any]], family: str | None = None) -> str:
+    """Choose the newest listed profile. A listing does not prove the account may invoke it; see invocable."""
+    override = os.environ.get("GONOGO_CLAUDE_PROFILE")
+    if override:
+        return override
+    ranked = ranked_claude_profiles(profiles, family)
+    if not ranked:
+        raise LookupError(
+            f"No us. or global. Claude {family or load_settings().claude_family} inference profile is available "
+            f"in {ALLOWED_REGION}"
+        )
+    return ranked[0]
 
 
 def list_inference_profiles() -> list[dict[str, Any]]:
@@ -113,4 +122,37 @@ def list_inference_profiles() -> list[dict[str, Any]]:
 
 
 def claude_profile() -> str:
+    """The newest listed profile. Use invocable_claude_profile when the call will really be made."""
     return pick_claude_profile(list_inference_profiles())
+
+
+_INVOCABLE: dict[str, str] = {}
+
+
+def invocable_claude_profile(family: str | None = None) -> str:
+    """The newest profile in the family that this account can invoke, found by a one-token call.
+
+    Bedrock lists profiles that the account has no access to. The probe costs a few tokens and runs once.
+    """
+    override = os.environ.get("GONOGO_CLAUDE_PROFILE")
+    if override:
+        return override
+    family = family or load_settings().claude_family
+    if family in _INVOCABLE:
+        return _INVOCABLE[family]
+    runtime = session().client("bedrock-runtime")
+    for pid in ranked_claude_profiles(list_inference_profiles(), family):
+        try:
+            runtime.converse(
+                modelId=pid,
+                messages=[{"role": "user", "content": [{"text": "ok"}]}],
+                inferenceConfig={"maxTokens": 1, "temperature": 0},
+            )
+        except Exception as exc:
+            raise_if_expired(exc)
+            if type(exc).__name__ in {"AccessDeniedException", "ResourceNotFoundException", "ValidationException"}:
+                continue
+            raise
+        _INVOCABLE[family] = pid
+        return pid
+    raise LookupError(f"This account can invoke no Claude {family} inference profile in {ALLOWED_REGION}")

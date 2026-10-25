@@ -17,6 +17,7 @@ dependencies = [
   "pyshacl>=0.26",
   "owlrl>=7.1",
   "fastapi>=0.115",
+  "cedarpy>=4.12.2",
 ]
 
 [dependency-groups]

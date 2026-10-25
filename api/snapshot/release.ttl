@@ -119,6 +119,14 @@ center:SSC a gng:NASACenter ;
     owl:versionIRI <https://w3id.org/gonogo/ontology/0.1.0> ;
     owl:versionInfo "0.1.0" .
 
+gng:aboutGrant a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "about grant"@en ;
+    rdfs:domain gng:FieldOfUseAssignment ;
+    rdfs:range gng:ProposedGrant ;
+    skos:definition "The proposed grant that a field of use assignment describes."@en ;
+    gng:modelingDecision "MD14" .
+
 gng:actionReason a owl:DatatypeProperty,
         owl:FunctionalProperty ;
     rdfs:label "action reason"@en ;
@@ -148,6 +156,14 @@ gng:approvedBy a owl:ObjectProperty ;
     rdfs:subPropertyOf prov:wasAttributedTo ;
     skos:definition "The steward, or the standing approval policy, that approved the fact."@en ;
     gng:modelingDecision "MD8" .
+
+gng:assignsField a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:label "assigns field"@en ;
+    rdfs:domain gng:FieldOfUseAssignment ;
+    rdfs:range gng:FieldOfUse ;
+    skos:definition "The field of use that an assignment gives to a proposed grant. It is separate from gng:fieldOfUse, which belongs to the grant itself, so an approved assignment never edits a grant."@en ;
+    gng:modelingDecision "MD14" .
 
 gng:caseNumber a owl:DatatypeProperty ;
     rdfs:label "NASA case number"@en ;
@@ -433,6 +449,21 @@ gng:permittedTerritory a owl:ObjectProperty ;
     skos:definition "A territory in which a licensee may sit when the technology is export-restricted."@en ;
     gng:readByRule "R5" .
 
+gng:promptVersion a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:label "prompt version"@en ;
+    rdfs:domain gng:Extraction ;
+    rdfs:range xsd:string ;
+    skos:definition "The version of the instructions and output schema that a model extraction used, so a reader can find the exact prompt."@en ;
+    gng:modelingDecision "MD14" .
+
+gng:proposedBy a owl:ObjectProperty ;
+    rdfs:label "proposed by"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range prov:Agent ;
+    skos:definition "The person, organization, or software that put a candidate fact forward. A steward who proposed a fact cannot approve it."@en ;
+    gng:modelingDecision "MD15" .
+
 gng:publishedOn a owl:DatatypeProperty,
         owl:FunctionalProperty ;
     rdfs:label "published on"@en ;
@@ -492,6 +523,14 @@ gng:royaltyPercent a owl:DatatypeProperty,
     rdfs:domain gng:RoyaltyTerm ;
     rdfs:range xsd:decimal ;
     skos:definition "The running royalty as a percentage of net sales."@en .
+
+gng:secondApprovedBy a owl:ObjectProperty ;
+    rdfs:label "second approved by"@en ;
+    rdfs:domain gng:BitemporalFact ;
+    rdfs:range prov:Agent ;
+    rdfs:subPropertyOf prov:wasAttributedTo ;
+    skos:definition "The counsel who made the second approval that a conflicting fact, or a fact that moves a verdict to GO, needs before it takes effect."@en ;
+    gng:modelingDecision "MD15" .
 
 gng:seededFrom a owl:ObjectProperty ;
     rdfs:label "seeded from"@en ;
@@ -640,10 +679,6 @@ skos:narrower a owl:ObjectProperty ;
 skos:topConceptOf a owl:ObjectProperty ;
     rdfs:subPropertyOf skos:inScheme .
 
-prov:wasAttributedTo a owl:ObjectProperty ;
-    rdfs:domain prov:Entity ;
-    rdfs:range prov:Agent .
-
 excl:co-exclusive a skos:Concept,
         gng:ExclusivityType ;
     skos:definition "A fixed, small number of licensees share the rights, and the agreements state the cap."@en ;
@@ -774,6 +809,14 @@ gng:LinkIdentity a owl:Class ;
         gng:LinkIdentity ;
     skos:definition "A steward approves a proposed identity link between two party nodes."@en .
 
+gng:ModelAgent a owl:Class ;
+    rdfs:label "Model agent"@en ;
+    rdfs:subClassOf prov:Agent,
+        prov:SoftwareAgent,
+        gng:ModelAgent ;
+    skos:definition "A language model, identified by its model ID, as the software agent that proposed a fact. A model agent cannot approve anything."@en ;
+    gng:modelingDecision "MD15" .
+
 gng:OverrideVerdict a owl:Class ;
     rdfs:label "Override verdict"@en ;
     rdfs:subClassOf prov:Activity,
@@ -785,6 +828,7 @@ gng:ProposeFacts a owl:Class ;
     rdfs:label "Propose facts"@en ;
     rdfs:subClassOf prov:Activity,
         gng:Action,
+        gng:FactGeneration,
         gng:ProposeFacts ;
     skos:definition "The ingestion pipeline writes candidate facts to the candidate graph."@en .
 
@@ -802,6 +846,14 @@ gng:RejectFact a owl:Class ;
         gng:RejectFact ;
     skos:definition "A steward discards a candidate fact and records the reason."@en .
 
+gng:SecondReview a owl:Class ;
+    rdfs:label "Second review"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:SecondReview ;
+    skos:definition "Counsel approves or denies a steward's submitted approval. Counsel is never the proposer or the first approver."@en ;
+    gng:modelingDecision "MD15" .
+
 gng:Steward a owl:Class ;
     rdfs:label "Steward"@en ;
     rdfs:subClassOf prov:Agent,
@@ -815,6 +867,14 @@ gng:SubmitClearanceRequest a owl:Class ;
         gng:Action,
         gng:SubmitClearanceRequest ;
     skos:definition "A licensing manager asks for a verdict."@en .
+
+gng:SubmitForSecondReview a owl:Class ;
+    rdfs:label "Submit for second review"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action,
+        gng:SubmitForSecondReview ;
+    skos:definition "A steward's approval that conflicts with an approved fact, or that would move a verdict from COUNSEL or NO GO to GO, waits for counsel. The submission changes no fact."@en ;
+    gng:modelingDecision "MD15" .
 
 gng:aboutPatent a owl:ObjectProperty ;
     rdfs:label "about patent"@en ;
@@ -875,9 +935,9 @@ prov:Person a owl:Class ;
     rdfs:subClassOf prov:Agent,
         prov:Person .
 
-prov:SoftwareAgent a owl:Class ;
-    rdfs:subClassOf prov:Agent,
-        prov:SoftwareAgent .
+prov:wasAttributedTo a owl:ObjectProperty ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Agent .
 
 field:additive-manufacturing a skos:Concept,
         gng:FieldOfUse ;
@@ -1167,13 +1227,6 @@ field:wiring-and-insulation a skos:Concept,
     skos:notation "03.02" ;
     skos:prefLabel "Wiring and insulation"@en .
 
-gng:Extraction a owl:Class ;
-    rdfs:label "Extraction"@en ;
-    rdfs:subClassOf prov:Activity,
-        gng:Extraction,
-        gng:FactGeneration ;
-    skos:definition "A run that read candidate facts out of document text. A language model or a deterministic extractor can perform it. A steward must approve its facts before they affect a verdict."@en .
-
 gng:FilingRecord a owl:Class ;
     rdfs:label "Filing record"@en ;
     rdfs:subClassOf prov:Entity,
@@ -1213,6 +1266,10 @@ gng:territory a owl:ObjectProperty ;
     skos:definition "The territory that the grant names. A notice may name none."@en ;
     gng:readByRule "R2" .
 
+prov:SoftwareAgent a owl:Class ;
+    rdfs:subClassOf prov:Agent,
+        prov:SoftwareAgent .
+
 gng:ApprovalPolicy a owl:Class ;
     rdfs:label "Approval policy"@en ;
     rdfs:subClassOf prov:Agent,
@@ -1225,6 +1282,13 @@ gng:CoOwner a owl:Class ;
         gng:CoOwner ;
     skos:definition "An organization, other than NASA, that the USPTO assignment records or an ownership record name as an owner of a patent."@en ;
     gng:readByRule "R6" .
+
+gng:Extraction a owl:Class ;
+    rdfs:label "Extraction"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Extraction,
+        gng:FactGeneration ;
+    skos:definition "A run that read candidate facts out of document text. A language model or a deterministic extractor can perform it. A steward must approve its facts before they affect a verdict."@en .
 
 gng:RestrictedExport a owl:Class ;
     rdfs:label "Restricted export classification"@en ;
@@ -1439,6 +1503,15 @@ gng:ExportClassification a owl:Class ;
             owl:unionOf ( gng:RestrictedExport gng:UnrestrictedExport ) ] ;
     skos:definition "The export-control status of the technology a patent covers. The class is abstract: a classification is either restricted or unrestricted."@en ;
     gng:readByRule "R5" .
+
+gng:FieldOfUseAssignment a owl:Class ;
+    rdfs:label "Field of use assignment"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:FieldOfUseAssignment ;
+    skos:definition "A statement that a proposed grant covers one field of use, read from the words of its notice. A notice often says only that the field may be limited. A model proposes the assignment, and it counts only after a steward approves it."@en ;
+    gng:modelingDecision "MD14" ;
+    gng:readByRule "R2" .
 
 gng:LicenseAgreement a owl:Class ;
     rdfs:label "License agreement"@en ;
@@ -1722,13 +1795,6 @@ gng:ExecutedGrant a owl:Class ;
     gng:readByRule "R2",
         "R3" .
 
-gng:FactGeneration a owl:Class ;
-    rdfs:label "Fact generation"@en ;
-    rdfs:subClassOf prov:Activity,
-        gng:FactGeneration ;
-    skos:definition "An activity that produced facts: a bulk load of registry data, an extraction from a document, or a run of the synthetic generator."@en ;
-    gng:modelingDecision "MD8" .
-
 skos:ConceptScheme a owl:Class ;
     rdfs:subClassOf skos:ConceptScheme .
 
@@ -1746,16 +1812,12 @@ gng:ExclusivityType a owl:Class ;
         "R4",
         "R7" .
 
-gng:ProposedGrant a owl:Class ;
-    rdfs:label "Proposed grant"@en ;
-    rdfs:subClassOf prov:Entity,
-        gng:BitemporalFact,
-        gng:Grant,
-        gng:ProposedGrant ;
-    skos:definition "A grant that a license notice announces. It records intent. The objection window can end without a license."@en ;
-    gng:modelingDecision "MD2" ;
-    gng:readByRule "R2",
-        "R4" .
+gng:FactGeneration a owl:Class ;
+    rdfs:label "Fact generation"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:FactGeneration ;
+    skos:definition "An activity that produced facts: a bulk load of registry data, an extraction from a document, or a run of the synthetic generator."@en ;
+    gng:modelingDecision "MD8" .
 
 gng:SourceDocument a owl:Class ;
     rdfs:label "Source document"@en ;
@@ -1804,6 +1866,17 @@ gng:LegalState a owl:Class ;
     skos:definition "A concept in the legal-state scheme: in force, lapsed, term ended, abandoned, not granted, or application."@en ;
     gng:readByRule "R1" .
 
+gng:ProposedGrant a owl:Class ;
+    rdfs:label "Proposed grant"@en ;
+    rdfs:subClassOf prov:Entity,
+        gng:BitemporalFact,
+        gng:Grant,
+        gng:ProposedGrant ;
+    skos:definition "A grant that a license notice announces. It records intent. The objection window can end without a license."@en ;
+    gng:modelingDecision "MD2" ;
+    gng:readByRule "R2",
+        "R4" .
+
 <https://w3id.org/gonogo/scheme/exclusivity> a skos:ConceptScheme ;
     dct:description "How exclusive a license is. The scheme is flat on purpose."@en ;
     dct:title "GoNoGo exclusivity-type scheme"@en ;
@@ -1812,13 +1885,6 @@ gng:LegalState a owl:Class ;
         excl:non-exclusive,
         excl:partially-exclusive .
 
-gng:Action a owl:Class ;
-    rdfs:label "Action"@en ;
-    rdfs:subClassOf prov:Activity,
-        gng:Action ;
-    skos:definition "A governed state change. Each action has typed inputs, a permission check, a validation step, a target named graph, and a queryable provenance record."@en ;
-    gng:modelingDecision "MD12" .
-
 gng:Patent a owl:Class ;
     rdfs:label "Patent"@en ;
     rdfs:comment "Keeping status out of the Patent node lets two sources disagree about the same patent without overwriting each other, and lets a later fact supersede an earlier one."@en ;
@@ -1826,8 +1892,12 @@ gng:Patent a owl:Class ;
     skos:definition "A United States patent or patent application that NASA owns, alone or jointly. The class holds identity only. Legal status, ownership, and licenses are separate facts about the patent."@en ;
     gng:modelingDecision "MD1" .
 
-prov:Agent a owl:Class ;
-    rdfs:subClassOf prov:Agent .
+gng:Action a owl:Class ;
+    rdfs:label "Action"@en ;
+    rdfs:subClassOf prov:Activity,
+        gng:Action ;
+    skos:definition "A governed state change. Each action has typed inputs, a permission check, a validation step, a target named graph, and a queryable provenance record."@en ;
+    gng:modelingDecision "MD12" .
 
 gng:Grant a owl:Class ;
     rdfs:label "Grant"@en ;
@@ -1862,6 +1932,9 @@ gng:PatentLegalStatus a owl:Class ;
         state:lapsed,
         state:not-granted,
         state:term-ended .
+
+prov:Agent a owl:Class ;
+    rdfs:subClassOf prov:Agent .
 
 gng:NASACenter a owl:Class ;
     rdfs:label "NASA center"@en ;
@@ -1911,6 +1984,12 @@ territory:EUROPE a skos:Concept,
 prov:Activity a owl:Class ;
     rdfs:subClassOf prov:Activity .
 
+<https://w3id.org/gonogo/scheme/territory> a skos:ConceptScheme ;
+    dct:description "Territories that a license can name: the world, commercial regions, and ISO 3166 countries."@en ;
+    dct:source <https://www.iso.org/iso-3166-country-codes.html> ;
+    dct:title "GoNoGo territory scheme"@en ;
+    skos:hasTopConcept territory:WORLD .
+
 gng:BitemporalFact a owl:Class ;
     rdfs:label "Bitemporal fact"@en ;
     rdfs:comment "Valid time answers whether a grant applies on a date. Recording time answers what the system knew when it decided. Reproducing a past verdict needs both."@en ;
@@ -1918,15 +1997,6 @@ gng:BitemporalFact a owl:Class ;
         gng:BitemporalFact ;
     skos:definition "A statement that the system records with two times: the valid time, when the statement holds in the world, and the recording time, when the system learned it. A correction supersedes a fact and never deletes it."@en ;
     gng:modelingDecision "MD7" .
-
-<https://w3id.org/gonogo/scheme/territory> a skos:ConceptScheme ;
-    dct:description "Territories that a license can name: the world, commercial regions, and ISO 3166 countries."@en ;
-    dct:source <https://www.iso.org/iso-3166-country-codes.html> ;
-    dct:title "GoNoGo territory scheme"@en ;
-    skos:hasTopConcept territory:WORLD .
-
-prov:Entity a owl:Class ;
-    rdfs:subClassOf prov:Entity .
 
 territory:WORLD a skos:Concept,
         gng:Territory ;
@@ -1959,6 +2029,9 @@ territory:WORLD a skos:Concept,
     skos:notation "WORLD" ;
     skos:prefLabel "Worldwide"@en ;
     skos:topConceptOf <https://w3id.org/gonogo/scheme/territory> .
+
+prov:Entity a owl:Class ;
+    rdfs:subClassOf prov:Entity .
 
 gng:Territory a owl:Class ;
     rdfs:label "Territory"@en ;
@@ -2013,7 +2086,7 @@ skos:Concept a owl:Class ;
     owl:disjointWith skos:ConceptScheme .
 
 [] a owl:AllDisjointClasses ;
-    owl:members ( gng:Grant gng:OwnershipRecord gng:ConsentRecord gng:ExportClassification gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm gng:IdentityLink ) .
+    owl:members ( gng:Grant gng:OwnershipRecord gng:ConsentRecord gng:ExportClassification gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm gng:IdentityLink gng:FieldOfUseAssignment ) .
 
 [] a owl:AllDisjointClasses ;
     owl:members ( gng:LicenseNotice gng:LicenseAgreement gng:RegistryRecord ) .

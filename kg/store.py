@@ -37,6 +37,8 @@ class Store:
         self.overlay: dict[str, Graph] = {iri: Graph() for iri in graphs}
         self.decided: dict[str, dict[str, Any]] = {}  # candidate IRI -> the event that decided it
         self.events: list[dict[str, Any]] = []
+        # Approvals that a steward made and that wait for counsel: key -> the steward's event. They change nothing.
+        self.pending: dict[str, dict[str, Any]] = {}
 
     # ---- loading ------------------------------------------------------------------------------
 
@@ -63,9 +65,14 @@ class Store:
                 other.overlay[iri].add(t)
         other.decided = dict(self.decided)
         other.events = list(self.events)
+        other.pending = dict(self.pending)
         return other
 
     # ---- querying -----------------------------------------------------------------------------
+
+    def view(self, iris: Iterable[str]) -> ReadOnlyGraphAggregate:
+        """A read-only union of the named graphs, with the overlay that actions wrote."""
+        return self._union(iris)
 
     def _union(self, iris: Iterable[str]) -> ReadOnlyGraphAggregate:
         parts: list[Graph] = []

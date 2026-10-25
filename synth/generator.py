@@ -828,6 +828,7 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
                 "permitted_countries": [],
                 "status": "proposed",
                 "source": "synthetic export control review",
+                "proposed_by": {"kind": "feed", "name": "Export control review desk"},
                 "proposed_at": "2026-10-16T00:00:00Z",
             }
         )
@@ -861,12 +862,15 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
                 "co_owners": [],
                 "status": "proposed",
                 "source": "synthetic licensee-supplied ownership summary",
+                "proposed_by": {"kind": "licensee", "id": "LIC-001", "name": "Orbital Lens Works, Inc."},
                 "proposed_at": "2026-10-17T00:00:00Z",
+                # The oracle for tests: the engine must find this conflict by itself, from the graph.
                 "conflicts_with": "the recorded assignment, which lists co-owner COO-001",
             }
         )
     )
     r = w.request(k, nx, f)
+    decoy_request = r
     w.case(
         "r6_coowner_without_consent",
         "A co-owner exists and no consent record exists.",
@@ -913,6 +917,7 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
                 "co_owners": [],
                 "status": "proposed",
                 "source": "synthetic assignment record",
+                "proposed_by": {"kind": "feed", "name": "USPTO assignment feed"},
                 "proposed_at": "2026-10-15T00:00:00Z",
             }
         )
@@ -1102,6 +1107,32 @@ def build_cases(w: World, pools: dict[str, list[str]]) -> None:
             NO_GO,
             conflicting_agreements=[a["agreement_id"]],
         )
+
+    # The decoy. A licensee-supplied ownership summary leaves out the recorded co-owner. One steward's approval
+    # would turn COUNSEL into GO, so the engine must hold it for counsel. The case passes only when the approval
+    # cannot produce GO without a second approver. `governance` is the script that the test replays.
+    w.case(
+        "decoy_approval_needs_second_approver",
+        "A proposed ownership record omits a co-owner that the approved record lists. A steward's approval alone "
+        "must not produce GO.",
+        decoy_request,
+        expect(nx, R6=REVIEW),
+        COUNSEL,
+        governance={
+            "candidate_id": f"CAND-OWN-{decoy_request['patent_key']}",
+            "proposed_by": "Orbital Lens Works, Inc.",
+            "first_approver": {"name": "Ann Steward", "role": "steward"},
+            "after_first_approval": {"route": "pending_second_review", "verdict": COUNSEL},
+            "second_reviewer": {"name": "Cy Counsel", "role": "counsel"},
+            "refused": [
+                {"name": "Ann Steward", "role": "counsel", "action": "second_review"},
+                {"name": "Orbital Lens Works, Inc.", "role": "steward", "action": "approve_fact"},
+                {"name": "Pat Manager", "role": "licensing_manager", "action": "approve_fact"},
+                {"name": "Cy Counsel", "role": "counsel", "action": "approve_fact"},
+            ],
+            "after_second_review": {"verdict": GO},
+        },
+    )
 
 
 def build_background(w: World, notices: list[dict[str, Any]], free: list[str]) -> None:

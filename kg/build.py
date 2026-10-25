@@ -40,7 +40,6 @@ from kg.ns import (
     PROV,
     RUN,
     SCHEMA,
-    SKOS,
     STATE,
     TERRITORY,
     iri_part,
@@ -546,14 +545,63 @@ class Builder:
             )
             self.candidate.remove((node, GNG.approvedBy, None))
             self.candidate.add((node, RDFS.comment, Literal(f"Proposed from a {cand['source']}.", lang="en")))
-            if cand.get("conflicts_with"):
-                self.candidate.add((node, SKOS.note, Literal(f"Conflicts with {cand['conflicts_with']}.", lang="en")))
+            self.candidate.add((node, GNG.proposedBy, self.proposer(cand["proposed_by"])))
             if cls == GNG.OwnershipRecord:
                 self.candidate.add((node, GNG.coOwnerListIsComplete, boolean(cand["completeness"] == "complete")))
                 for ref in cand["co_owners"]:
                     self.candidate.add((node, GNG.coOwner, co_owner_node(ref)))
             for code in cand.get("permitted_countries", []):
                 self.candidate.add((node, GNG.permittedTerritory, TERRITORY[code]))
+
+    def proposer(self, who: dict[str, str]) -> URIRef:
+        """The agent that put a candidate fact forward. A licensee is its own node; a feed is a software agent."""
+        if who["kind"] == "licensee":
+            return ID["licensee/" + who["id"]]
+        node = ID["agent/feed/" + slug(who["name"])]
+        self.approved.add((node, RDF.type, PROV.SoftwareAgent))
+        self.approved.add((node, RDFS.label, Literal(who["name"])))
+        return node
+
+    def build_field_proposals(self) -> None:
+        """Model-proposed fields of use become candidate facts. Nothing here is approved."""
+        rows = jsonl(PROCESSED / "field_proposals.jsonl") if (PROCESSED / "field_proposals.jsonl").exists() else []
+        spend = json.loads((PROCESSED / "field_proposals.spend.json").read_text()) if rows else {}
+        proposed = [r for r in rows if r["status"] == "proposed"]
+        if not proposed:
+            return
+        run = self.activity(
+            RUN["field-extract/" + spend["prompt_version"].split("/")[-1]],
+            GNG.Extraction,
+            spend["ran_at"],
+            extractionModel=Literal(spend["model"]),
+            promptVersion=Literal(spend["prompt_version"]),
+        )
+        for r in proposed:
+            grant = ID["grant/proposed/" + r["notice"]]
+            if (grant, RDF.type, GNG.ProposedGrant) not in self.approved:
+                continue  # the notice is outside the 41 in scope, so it has no grant node to describe
+            doc = ID["notice/" + r["notice"]]
+            clause = self.clause(
+                self.candidate, ID[f"clause/{r['notice']}/field-claim"], doc, "field", r["start"], r["end"], r["quote"]
+            )
+            node = ID[f"field-claim/{r['notice']}/candidate"]
+            patents = [str(p).rsplit("/", 1)[-1] for p in self.approved.objects(grant, GNG.aboutPatent)]
+            published = str(self.approved.value(grant, GNG.publishedOn))
+            self.fact(self.candidate, node, GNG.FieldOfUseAssignment, patents, spend["ran_at"], published, run, None)
+            self.candidate.add((node, GNG.aboutGrant, grant))
+            self.candidate.add((node, GNG.assignsField, FIELD[r["field"]]))
+            agent = ID["agent/model/" + slug(spend["model"])]
+            self.approved.add((agent, RDF.type, GNG.ModelAgent))
+            self.approved.add((agent, RDFS.label, Literal(spend["model"])))
+            self.candidate.add((node, GNG.proposedBy, agent))
+            self.candidate.add((node, GNG.sourceClause, clause))
+            self.candidate.add(
+                (
+                    node,
+                    RDFS.comment,
+                    Literal(f"Proposed by {spend['model']} with prompt {spend['prompt_version']}.", lang="en"),
+                )
+            )
 
     # ---- orchestration -----------------------------------------------------------------------
 
@@ -563,6 +611,7 @@ class Builder:
         self.build_patents()
         self.build_legal_status()
         self.build_notices()
+        self.build_field_proposals()
         self.build_synthetic()
         return {
             GRAPH_RELEASE: self.release,

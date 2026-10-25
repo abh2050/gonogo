@@ -126,6 +126,13 @@ gng:ProposedGrant a owl:Class ;
     gng:readByRule "R2", "R4" ;
     gng:modelingDecision "MD2" .
 
+gng:FieldOfUseAssignment a owl:Class ;
+    rdfs:subClassOf gng:BitemporalFact ;
+    rdfs:label "Field of use assignment"@en ;
+    skos:definition "A statement that a proposed grant covers one field of use, read from the words of its notice. A notice often says only that the field may be limited. A model proposes the assignment, and it counts only after a steward approves it."@en ;
+    gng:readByRule "R2" ;
+    gng:modelingDecision "MD14" .
+
 gng:ExecutedGrant a owl:Class ;
     rdfs:subClassOf gng:Grant ,
         [ a owl:Restriction ; owl:onProperty gng:licensee ; owl:someValuesFrom gng:Licensee ] ,
@@ -202,7 +209,7 @@ gng:IdentityLink a owl:Class ;
 
 [] a owl:AllDisjointClasses ;
     owl:members ( gng:Grant gng:OwnershipRecord gng:ConsentRecord gng:ExportClassification
-                  gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm gng:IdentityLink ) .
+                  gng:PatentLegalStatus gng:FilingRecord gng:RoyaltyTerm gng:IdentityLink gng:FieldOfUseAssignment ) .
 
 [] a owl:AllDisjointClasses ;
     owl:members ( gng:LicenseNotice gng:LicenseAgreement gng:RegistryRecord ) .
@@ -288,12 +295,20 @@ gng:Action a owl:Class ;
 gng:SubmitClearanceRequest a owl:Class ; rdfs:subClassOf gng:Action ;
     rdfs:label "Submit clearance request"@en ;
     skos:definition "A licensing manager asks for a verdict."@en .
-gng:ProposeFacts a owl:Class ; rdfs:subClassOf gng:Action ;
+gng:ProposeFacts a owl:Class ; rdfs:subClassOf gng:Action , gng:FactGeneration ;
     rdfs:label "Propose facts"@en ;
     skos:definition "The ingestion pipeline writes candidate facts to the candidate graph."@en .
 gng:ApproveFact a owl:Class ; rdfs:subClassOf gng:Action , gng:FactGeneration ;
     rdfs:label "Approve fact"@en ;
     skos:definition "A steward promotes a candidate fact to the approved graph and records the reason."@en .
+gng:SubmitForSecondReview a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Submit for second review"@en ;
+    skos:definition "A steward's approval that conflicts with an approved fact, or that would move a verdict from COUNSEL or NO GO to GO, waits for counsel. The submission changes no fact."@en ;
+    gng:modelingDecision "MD15" .
+gng:SecondReview a owl:Class ; rdfs:subClassOf gng:Action ;
+    rdfs:label "Second review"@en ;
+    skos:definition "Counsel approves or denies a steward's submitted approval. Counsel is never the proposer or the first approver."@en ;
+    gng:modelingDecision "MD15" .
 gng:RejectFact a owl:Class ; rdfs:subClassOf gng:Action ;
     rdfs:label "Reject fact"@en ;
     skos:definition "A steward discards a candidate fact and records the reason."@en .
@@ -319,6 +334,12 @@ gng:ApprovalPolicy a owl:Class ;
     rdfs:subClassOf prov:Agent ;
     rdfs:label "Approval policy"@en ;
     skos:definition "A standing approval that stands in for a person. The bulk-load policy approves public system-of-record data. It never approves a fact that a language model extracted."@en .
+
+gng:ModelAgent a owl:Class ;
+    rdfs:subClassOf prov:SoftwareAgent ;
+    rdfs:label "Model agent"@en ;
+    skos:definition "A language model, identified by its model ID, as the software agent that proposed a fact. A model agent cannot approve anything."@en ;
+    gng:modelingDecision "MD15" .
 
 gng:Generator a owl:Class ;
     rdfs:subClassOf prov:SoftwareAgent ;
@@ -441,6 +462,19 @@ gng:approvedBy a owl:ObjectProperty ;
     rdfs:label "approved by"@en ;
     skos:definition "The steward, or the standing approval policy, that approved the fact."@en ;
     gng:modelingDecision "MD8" .
+
+gng:proposedBy a owl:ObjectProperty ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range prov:Agent ;
+    rdfs:label "proposed by"@en ;
+    skos:definition "The person, organization, or software that put a candidate fact forward. A steward who proposed a fact cannot approve it."@en ;
+    gng:modelingDecision "MD15" .
+
+gng:secondApprovedBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasAttributedTo ;
+    rdfs:domain gng:BitemporalFact ; rdfs:range prov:Agent ;
+    rdfs:label "second approved by"@en ;
+    skos:definition "The counsel who made the second approval that a conflicting fact, or a fact that moves a verdict to GO, needs before it takes effect."@en ;
+    gng:modelingDecision "MD15" .
 
 gng:coOwner a owl:ObjectProperty ;
     rdfs:domain gng:OwnershipRecord ; rdfs:range gng:CoOwner ;
@@ -718,6 +752,24 @@ gng:clauseKind a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain gng:Clause ; rdfs:range xsd:string ;
     rdfs:label "clause kind"@en ;
     skos:definition "What the clause states, for example grant, field, territory, term, or exclusivity."@en .
+
+gng:aboutGrant a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:FieldOfUseAssignment ; rdfs:range gng:ProposedGrant ;
+    rdfs:label "about grant"@en ;
+    skos:definition "The proposed grant that a field of use assignment describes."@en ;
+    gng:modelingDecision "MD14" .
+
+gng:assignsField a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:FieldOfUseAssignment ; rdfs:range gng:FieldOfUse ;
+    rdfs:label "assigns field"@en ;
+    skos:definition "The field of use that an assignment gives to a proposed grant. It is separate from gng:fieldOfUse, which belongs to the grant itself, so an approved assignment never edits a grant."@en ;
+    gng:modelingDecision "MD14" .
+
+gng:promptVersion a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Extraction ; rdfs:range xsd:string ;
+    rdfs:label "prompt version"@en ;
+    skos:definition "The version of the instructions and output schema that a model extraction used, so a reader can find the exact prompt."@en ;
+    gng:modelingDecision "MD14" .
 
 gng:extractionModel a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain gng:Extraction ; rdfs:range xsd:string ;

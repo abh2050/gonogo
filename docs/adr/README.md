@@ -6,6 +6,7 @@ gets the next number, and a record that a later one replaces stays in place with
 | Number | Title | Status |
 |---|---|---|
 | [0001](0001-upper-ontology-alignment.md) | Upper ontology alignment | Accepted |
+| [0002](0002-separation-of-duties.md) | Separation of duties for approvals | Accepted |
 
-Gate 4 adds ADR 0002 on RDF versus a labeled property graph.
+Gate 4 adds ADR 0003 on RDF versus a labeled property graph.
 The decisions about the ontology's shape live in [../modeling-decisions.md](../modeling-decisions.md).

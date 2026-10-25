@@ -7,7 +7,7 @@ import os
 import httpx
 from rdflib import Graph
 
-from gonogo.paths import BUILD, SNAPSHOT
+from gonogo.paths import BUILD, SNAPSHOT, SYNTHETIC
 from kg.ns import GRAPH_APPROVED, GRAPH_CANDIDATE, GRAPH_RELEASE, GRAPH_ROYALTY
 
 OUT_DIR = BUILD / "kg"
@@ -21,6 +21,9 @@ FILES = {
 
 def write_files(graphs: dict[str, Graph]) -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    SNAPSHOT.mkdir(parents=True, exist_ok=True)
+    # The request book lets a deployment without data/ check which verdicts an approval would change.
+    (SNAPSHOT / "requests.jsonl").write_bytes((SYNTHETIC / "requests.jsonl").read_bytes())
     for name, g in graphs.items():
         g.namespace_manager.bind("gng", "https://w3id.org/gonogo/ontology#")
         body = g.serialize(format="turtle").encode()

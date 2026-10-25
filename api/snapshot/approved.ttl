@@ -5,6 +5,19 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<https://w3id.org/gonogo/id/agent/feed/export-control-review-desk> a prov:Agent,
+        prov:SoftwareAgent ;
+    rdfs:label "Export control review desk" .
+
+<https://w3id.org/gonogo/id/agent/feed/uspto-assignment-feed> a prov:Agent,
+        prov:SoftwareAgent ;
+    rdfs:label "USPTO assignment feed" .
+
+<https://w3id.org/gonogo/id/agent/model/us-anthropic-claude-sonnet-4-6> a prov:Agent,
+        prov:SoftwareAgent,
+        gng:ModelAgent ;
+    rdfs:label "us.anthropic.claude-sonnet-4-6" .
+
 <https://w3id.org/gonogo/id/clause/AGR-0001/export> a prov:Entity,
         gng:Clause ;
     prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;
@@ -28095,6 +28108,13 @@
     gng:termAdjustmentDays "0"^^xsd:nonNegativeInteger ;
     gng:validFrom "2017-12-27"^^xsd:date .
 
+<https://w3id.org/gonogo/run/field-extract/1> a prov:Activity,
+        gng:Extraction,
+        gng:FactGeneration ;
+    prov:startedAtTime "2026-10-25T04:48:42+00:00"^^xsd:dateTime ;
+    gng:extractionModel "us.anthropic.claude-sonnet-4-6" ;
+    gng:promptVersion "field-extract/1" .
+
 <https://w3id.org/gonogo/id/coowner/COO-006> a prov:Entity,
         schema:Organization,
         gng:CoOwner ;
@@ -42689,7 +42709,8 @@
         gng:CoOwner ;
     schema:legalName "Ohio Aerospace Institute" .
 
-<https://w3id.org/gonogo/id/licensee/LIC-001> a prov:Entity,
+<https://w3id.org/gonogo/id/licensee/LIC-001> a prov:Agent,
+        prov:Entity,
         schema:Organization,
         gng:Licensee ;
     prov:wasGeneratedBy <https://w3id.org/gonogo/synth/generator/v0.1> ;

@@ -104,15 +104,44 @@ export interface Diff {
   changes: Change[];
 }
 
+export type Role = "licensing_manager" | "steward" | "counsel" | "ontology_owner" | "finance_analyst" | "auditor";
+export const ROLES: Role[] = ["steward", "counsel", "licensing_manager", "ontology_owner", "finance_analyst", "auditor"];
+export const ROLE_LABEL: Record<Role, string> = {
+  licensing_manager: "Licensing manager",
+  steward: "Data steward",
+  counsel: "Patent counsel",
+  ontology_owner: "Ontology owner",
+  finance_analyst: "Finance analyst",
+  auditor: "Auditor",
+};
+
+export interface Flags {
+  conflicts: { fact: string; reason: string }[];
+  upgrades: { patent: string; field: string; from: string; to: string }[];
+}
+
 export interface QueueFact {
   id: string;
   kind: string;
   summary: string;
   patent_key: string | null;
   proposed_at: string;
-  origin: string;
+  proposed_by: string;
+  origin: "real" | "synthetic" | "model";
   source: string;
+  conflicts: { fact: string; reason: string }[];
   warning: string | null;
+  state: "proposed" | "pending_second_review";
+  first_approver: string | null;
+  needs: "steward" | "counsel";
+  quote?: string;
+  grant?: string;
+}
+
+export interface AuthzMatrix {
+  roles: Role[];
+  rows: { label: string; action: string; allowed: Record<Role, boolean> }[];
+  policies: string[];
 }
 
 export interface Party {
@@ -130,12 +159,26 @@ export interface QueueLink {
   score: number;
   basis: string;
   address: string;
+  state: "proposed" | "pending_second_review";
+  first_approver: string | null;
 }
 
 export interface Queue {
   facts: QueueFact[];
   links: QueueLink[];
   decided: Record<string, { decision: string; event: string }>;
+  why: Record<string, string[]>;
+}
+
+export interface ActResult {
+  action: string;
+  route: "immediate" | "pending_second_review" | "approved" | "denied" | "rejected" | "proposed";
+  flags?: Flags;
+  policies?: string[];
+  new_facts: string[];
+  superseded: string[];
+  patents: string[];
+  candidate?: string;
 }
 
 export interface Concept {
@@ -204,11 +247,9 @@ export const api = {
     call<{ parse: Parse | null; decision: Decision | null; diff?: Diff }>("decide", { events, ...input }),
   rerun: (events: GEvent[], record: Decision) => call<{ decision: Decision; reproduced: boolean }>("rerun", { events, record }),
   queue: (events: GEvent[]) => call<Queue>("queue", { events }),
-  act: (events: GEvent[], event: GEvent) =>
-    call<{ events: GEvent[]; result: { action: string; new_facts: string[]; superseded: string[]; patents: string[] }; sparql_update: string[] }>(
-      "act",
-      { events, event },
-    ),
+  act: (events: GEvent[], event: GEvent, requests: Record<string, unknown>[] = []) =>
+    call<{ events: GEvent[]; result: ActResult; sparql_update: string[] }>("act", { events, event, requests }),
+  authz: () => call<AuthzMatrix>("authz"),
   provenance: (events: GEvent[], iri: string) => call<ProvGraph>("provenance", { events, iri }),
 };
 

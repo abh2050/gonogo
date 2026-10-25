@@ -124,3 +124,84 @@ def test_vocabulary_trees() -> None:
     v = client.get("/api/vocabulary").json()
     assert len(v["fields"]) == 51 and len(v["territories"]) == 22
     assert any(f["id"] == "lasers" and f["broader"] == "optics" for f in v["fields"])
+
+
+# ---- Separation of duties over HTTP -------------------------------------------------------------------------
+
+DECOY = "https://w3id.org/gonogo/id/ownership/LAR-17381-1/candidate"
+
+
+def event(who: str, role: str, action: str, **params: Any) -> dict[str, Any]:
+    return {"steward": who, "role": role, "action": action, "reason": "Checked the record.", "params": params}
+
+
+def test_the_decoy_is_held_for_counsel_over_http() -> None:
+    held = post("/api/act", event=event("Ann", "steward", "approve_fact", candidate=DECOY))
+    assert held["result"]["route"] == "pending_second_review" and held["result"]["new_facts"] == []
+    events = held["events"]
+
+    queue = post("/api/queue", events=events)
+    waiting = next(f for f in queue["facts"] if f["id"] == DECOY)
+    assert waiting["state"] == "pending_second_review" and waiting["needs"] == "counsel"
+    assert waiting["first_approver"] == "Ann" and waiting["conflicts"]
+    assert queue["why"][DECOY], "the queue says why the approval waits"
+
+    text = next(e["text"] for e in EXAMPLES if e["id"] == "coowner")
+    assert post("/api/decide", text=text, events=events)["decision"]["verdict"] == "COUNSEL"
+
+    r = client.post(
+        "/api/act", json={"events": events, "event": event("Ann", "counsel", "second_review", candidate=DECOY)}
+    )
+    assert r.status_code == 422 and "different counsel" in r.json()["detail"]
+
+    done = post("/api/act", events=events, event=event("Cy", "counsel", "second_review", candidate=DECOY))
+    assert done["result"]["route"] == "approved"
+    assert post("/api/decide", text=text, events=done["events"])["decision"]["verdict"] == "GO"
+
+
+def test_the_sessions_own_questions_are_checked_before_an_approval_stands_alone() -> None:
+    """A clean-looking link that would move this visitor's question to GO still waits for counsel."""
+    link = post("/api/queue")["links"][0]
+    ask = (
+        "Can GenH2 Corporation get a non-exclusive license to US Patent 10,431,355 for energy generation "
+        "in the USA for five years starting January 1, 2027?"
+    )
+    params = {"a": link["a"]["iri"], "b": link["b"]["iri"], "score": link["score"]}
+    alone = post("/api/act", event=event("Ann", "steward", "link_identity", **params))
+    assert alone["result"]["route"] == "immediate", "with no session question, nothing moves to GO"
+    held = post("/api/act", event=event("Ann", "steward", "link_identity", **params), requests=[{"text": ask}])
+    assert held["result"]["route"] == "pending_second_review"
+    assert held["result"]["flags"]["upgrades"]
+
+
+def test_a_refused_role_is_a_422_with_the_reason() -> None:
+    r = client.post("/api/act", json={"event": event("Pat", "licensing_manager", "approve_fact", candidate=DECOY)})
+    assert r.status_code == 422 and "licensing manager role may not" in r.json()["detail"]
+
+
+def test_a_stewards_own_proposal_goes_to_someone_else() -> None:
+    proposed = post(
+        "/api/act",
+        event=event(
+            "Ann", "steward", "propose_fact", kind="export", patent_key="LAR-17317-2", classification="unrestricted"
+        ),
+    )
+    candidate = proposed["result"]["candidate"]
+    own = client.post(
+        "/api/act",
+        json={"events": proposed["events"], "event": event("Ann", "steward", "approve_fact", candidate=candidate)},
+    )
+    assert own.status_code == 422 and "You proposed this fact" in own.json()["detail"]
+    other = post(
+        "/api/act", events=proposed["events"], event=event("Ben", "steward", "approve_fact", candidate=candidate)
+    )
+    assert other["result"]["route"] == "immediate"
+
+
+def test_the_authz_matrix_comes_from_the_policies() -> None:
+    m = client.get("/api/authz").json()
+    assert m["roles"] == ["licensing_manager", "steward", "counsel", "ontology_owner", "finance_analyst", "auditor"]
+    row = {r["label"]: r["allowed"] for r in m["rows"]}
+    assert row["Read the royalty graph"] == {r: r == "counsel" for r in m["roles"]}
+    assert row["Approve a conflicting fact alone"] == {r: False for r in m["roles"]}
+    assert row["Second review"]["counsel"] and not row["Second review"]["steward"]

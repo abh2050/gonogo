@@ -5,14 +5,12 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from rdflib import URIRef
 
 from er.resolver import compare, index_parties, pair_id, propose_links
 from kg.actions import (
     ActionRejectedError,
     apply_event,
     clock,
-    describe_candidate,
     pending_candidates,
     replay,
     to_sparql_update,
@@ -85,22 +83,6 @@ def test_an_approved_ownership_record_supersedes_the_incomplete_one(fresh: Store
 
 def steward_case_key() -> str:
     return steward_case()["after_approval"]["candidate_id"].split("-", 2)[2]
-
-
-def test_approving_the_decoy_would_hide_a_co_owner_so_the_queue_warns_about_it(fresh: Store) -> None:
-    """A candidate is evidence, not truth: the decoy turns COUNSEL into GO, which is why a steward decides."""
-    case = next(c for c in injected_cases() if c["type"] == "r6_coowner_without_consent")
-    request = to_request(requests_by_id()[case["request_id"]])
-    key = request.patent_key
-    decoy = f"https://w3id.org/gonogo/id/ownership/{key}/candidate"
-    info = describe_candidate(fresh, URIRef(decoy))
-    assert info["warning"] and "co-owner" in info["warning"]
-    assert evaluate_now(fresh, request).verdict == "COUNSEL"
-    wrong = fresh.copy()
-    apply_event(wrong, approve(decoy))
-    assert evaluate_now(wrong, request).verdict == "GO", "a wrong approval is acted on like a right one"
-    apply_event(fresh, {**approve(decoy), "action": "reject_fact", "reason": "Conflicts with the recorded assignment."})
-    assert evaluate_now(fresh, request).verdict == "COUNSEL"
 
 
 def test_the_approved_fact_carries_full_provenance(fresh: Store) -> None:

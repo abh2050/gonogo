@@ -56,7 +56,7 @@ and the data disagree.
 | Synthetic | export classifications | 265 |
 | Synthetic | filing dates | 15 |
 | Synthetic | clearance requests | 43 |
-| Synthetic | injected cases with expected verdicts | 44 |
+| Synthetic | injected cases with expected verdicts | 45 |
 <!-- counts:end -->
 
 ## 1. NASA Patents dataset (data.nasa.gov, gquh-watm)

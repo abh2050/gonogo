@@ -1,0 +1,83 @@
+{
+  "": {
+    "entityTypes": {
+      "Role": {},
+      "User": {
+        "memberOfTypes": ["Role"],
+        "shape": { "type": "Record", "attributes": { "name": { "type": "String", "required": true } } }
+      },
+      "Candidate": {},
+      "IdentityPair": {},
+      "Graph": {},
+      "Decision": {},
+      "Request": {},
+      "Release": {}
+    },
+    "actions": {
+      "AskClearance": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Request"] } },
+      "ViewDecision": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Decision"] } },
+      "RerunDecision": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Decision"] } },
+      "ReadGraph": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Graph"] } },
+      "ReadRoyaltyTable": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Decision"] } },
+      "ReadReleaseHistory": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Release"] } },
+      "OverrideVerdict": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Decision"] } },
+      "ProposeFact": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Candidate"] } },
+      "RejectFact": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Candidate"] } },
+      "RejectLink": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["IdentityPair"] } },
+      "ApproveFact": {
+        "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Candidate"], "context": { "type": "ReviewContext" } }
+      },
+      "LinkIdentity": {
+        "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["IdentityPair"], "context": { "type": "ReviewContext" } }
+      },
+      "SubmitForSecondReview": {
+        "appliesTo": {
+          "principalTypes": ["User"],
+          "resourceTypes": ["Candidate", "IdentityPair"],
+          "context": { "type": "ReviewContext" }
+        }
+      },
+      "SecondReview": {
+        "appliesTo": {
+          "principalTypes": ["User"],
+          "resourceTypes": ["Candidate", "IdentityPair"],
+          "context": { "type": "ReviewContext" }
+        }
+      },
+      "ProposeRelease": { "appliesTo": { "principalTypes": ["User"], "resourceTypes": ["Release"] } },
+      "ApproveImpactReport": {
+        "appliesTo": {
+          "principalTypes": ["User"],
+          "resourceTypes": ["Release"],
+          "context": { "type": "ReleaseContext" }
+        }
+      },
+      "PublishRelease": {
+        "appliesTo": {
+          "principalTypes": ["User"],
+          "resourceTypes": ["Release"],
+          "context": { "type": "ReleaseContext" }
+        }
+      }
+    },
+    "commonTypes": {
+      "ReviewContext": {
+        "type": "Record",
+        "attributes": {
+          "proposer": { "type": "String", "required": true },
+          "firstApprover": { "type": "String", "required": true },
+          "conflict": { "type": "Boolean", "required": true },
+          "upgradesToGo": { "type": "Boolean", "required": true }
+        }
+      },
+      "ReleaseContext": {
+        "type": "Record",
+        "attributes": {
+          "proposer": { "type": "String", "required": true },
+          "gatePassed": { "type": "Boolean", "required": true },
+          "counselApproved": { "type": "Boolean", "required": true }
+        }
+      }
+    }
+  }
+}
