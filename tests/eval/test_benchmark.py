@@ -88,11 +88,11 @@ def test_the_rule_pipeline_never_makes_a_false_go(name: str) -> None:
     assert result["errors"] == 0
 
 
-def test_answerer_c_reproduces_its_committed_answers() -> None:
+def test_answerer_c_reproduces_its_committed_answers(store: Any) -> None:
     """The rules are deterministic, so a rerun gives the same verdicts as the committed run."""
     from eval.answer import RuleAnswerer
 
-    run = RuleAnswerer()
+    run = RuleAnswerer(store)
     qs = {q["qid"]: q for q in golden()}
     saved = {a["qid"]: a for a in committed("C")}
     sample = sorted(qs)[::7]
