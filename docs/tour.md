@@ -20,9 +20,13 @@ review that a risky approval needs. Find it in the app under **Ontology**, or op
 ![A guided walk through provenance: a decision, the approved fact behind it, who proposed it and who approved it](screenshots/provenance-walk.gif)
 
 Start at a decision and follow its edges back: the fact it used, the event that approved it, the person who proposed
-it, and the second reviewer. Every node is a real record in the graph. A one-minute video that joins both walks is
-at [media/gonogo-overview.mp4](media/gonogo-overview.mp4). Its title clip was generated with Higgsfield from a text
-prompt with no words in it, and the title text was added afterward.
+it, and the second reviewer. Every node is a real record in the graph.
+
+A narrated four-minute video joins the ontology walk, this provenance walk, the Architecture page, and the AWS diagram: [media/gonogo-overview.mp4](media/gonogo-overview.mp4), with subtitles in
+[media/gonogo-overview.srt](media/gonogo-overview.srt). The title clip was generated with Higgsfield from a text
+prompt with no words in it, and the title was added afterward. The voice is ElevenLabs text-to-speech reading
+[media/narration.json](media/narration.json). Each walk holds a step for exactly as long as its line, and
+`scripts/assemble_video.py` places every line at the moment its step appears.
 
 ## How a verdict is made
 

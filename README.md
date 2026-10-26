@@ -19,7 +19,9 @@ R5 named as the rule that changed. [docs/rules.md](docs/rules.md) walks through 
 
 ![Provenance: a decision, the fact behind it, and who proposed and approved it](docs/screenshots/provenance-walk.gif)
 
-A one-minute video of both walks: [docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4).
+A narrated four-minute tour of the ontology, provenance, the verdict path, and the AWS architecture:
+[docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4) (subtitles in
+[gonogo-overview.srt](docs/media/gonogo-overview.srt)).
 
 > **Status:** Gate 3 of 4 is complete: the two-person rule enforced by Cedar, the leakage and prompt-injection
 > suites, the AWS deployment (built and checked on Neptune; the public demo does not depend on it), the Ontop mapping, and the release
