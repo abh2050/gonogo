@@ -22,7 +22,7 @@ R5 named as the rule that changed. [docs/rules.md](docs/rules.md) walks through 
 A one-minute video of both walks: [docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4).
 
 > **Status:** Gate 3 of 4 is complete: the two-person rule enforced by Cedar, the leakage and prompt-injection
-> suites, the AWS deployment (built, checked on Neptune, and torn down), the Ontop mapping, and the release
+> suites, the AWS deployment (built and checked on Neptune; the public demo does not depend on it), the Ontop mapping, and the release
 > workflow. Gate 4 adds the benchmark. See [docs/status.md](docs/status.md).
 
 ## Read next
