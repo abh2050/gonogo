@@ -11,6 +11,7 @@ built.
 | Piece | What it did in the session |
 |---|---|
 | Neptune Serverless | Held the four graphs, 46,276 triples, with IAM authentication and a customer key. Decisions ran as SPARQL through the same templates as the in-memory engine. |
+| CloudFront and S3 | Where the UI lives on AWS. A private bucket holds the built app, and one CloudFront address serves it and passes `/api/*`, `/decide`, `/query`, and `/health` to the gateway, so the API needs no CORS. The app reads a `config.json` that the deploy writes, shows a sign-in page, and sends the token with each call. |
 | Query Lambda, in the VPC | The only path to Neptune. It validates each query, asks Cedar which graphs the caller may read, and puts those graphs in the `FROM` clauses. It holds read-only Neptune permissions. |
 | Loader Lambda, in the VPC | Wrote the graphs to Neptune. It alone holds write permissions. |
 | Engine Lambda | The FastAPI app that serves the demo, with the caller's identity taken from the token. It runs the steward loop, writes each decision to DynamoDB and to an Object Lock bucket, and publishes an event. |
@@ -18,6 +19,9 @@ built.
 | Cognito | Six groups, one per role. A user in more than one group is refused. |
 | Verified Permissions | The 21 Cedar policies, validated in strict mode against a schema. |
 | KMS, S3, DynamoDB | Encryption at rest, an audit bucket in governance-mode Object Lock, and a point-in-time-recovery table. |
+
+Every resource, with its cost while idle, is in [aws-resources.md](aws-resources.md), and the pictures are in
+[architecture.md](architecture.md).
 
 The VPC has no NAT gateway, no internet gateway, and no interface endpoint. The Lambdas inside it reach Neptune
 and S3 and nothing else.

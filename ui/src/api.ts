@@ -1,3 +1,5 @@
+import { authHeader } from "./auth";
+
 // Types and calls for the GoNoGo API (api/index.py). The server keeps no session: every call carries the
 // steward's event log, and the server replays it over the frozen graphs.
 
@@ -220,10 +222,10 @@ export class ApiError extends Error {
   }
 }
 
-async function call<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`/api/${path}`, {
+async function call<T>(path: string, body?: unknown, root = "/api/"): Promise<T> {
+  const res = await fetch(`${root}${path}`, {
     method: body === undefined ? "GET" : "POST",
-    headers: body === undefined ? undefined : { "Content-Type": "application/json" },
+    headers: { ...(body === undefined ? {} : { "Content-Type": "application/json" }), ...authHeader() },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   if (!res.ok) {
@@ -250,6 +252,10 @@ export const api = {
   act: (events: GEvent[], event: GEvent, requests: Record<string, unknown>[] = []) =>
     call<{ events: GEvent[]; result: ActResult; sparql_update: string[] }>("act", { events, event, requests }),
   authz: () => call<AuthzMatrix>("authz"),
+  // The same request, decided over Neptune by the query Lambda. It exists only in the AWS deployment.
+  neptuneDecide: (request: Record<string, unknown>) =>
+    call<{ decision: Decision; backend: string }>("decide", { request }, "/"),
+  neptuneHealth: () => call<{ status: string; role: string; user: string; graphs: string[] }>("health", undefined, "/"),
   provenance: (events: GEvent[], iri: string) => call<ProvGraph>("provenance", { events, iri }),
 };
 

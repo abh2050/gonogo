@@ -15,6 +15,12 @@ no model.
 yet", approve the proposed classification on the Steward page, and the verdict moves from NO DATA to GO, with
 R5 named as the rule that changed. [docs/rules.md](docs/rules.md) walks through that example.
 
+![The ontology graph: select a class and its relationships flow along their arrows](docs/screenshots/ontology-walk.gif)
+
+![Provenance: a decision, the fact behind it, and who proposed and approved it](docs/screenshots/provenance-walk.gif)
+
+A one-minute video of both walks: [docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4).
+
 > **Status:** Gate 3 of 4 is complete: the two-person rule enforced by Cedar, the leakage and prompt-injection
 > suites, the AWS deployment (built, checked on Neptune, and torn down), the Ontop mapping, and the release
 > workflow. Gate 4 adds the benchmark. See [docs/status.md](docs/status.md).
@@ -23,6 +29,9 @@ R5 named as the rule that changed. [docs/rules.md](docs/rules.md) walks through 
 
 | Read | What it gives you |
 |---|---|
+| [docs/tour.md](docs/tour.md) | The app in pictures: the ontology in motion, a question, a held approval, the policy grid, and the provenance graph |
+| [docs/architecture.md](docs/architecture.md) | Six diagrams: the path to a verdict, the two places it runs, the AWS deployment, the two-person rule, the data and who reads it, and the release process. The demo has the same pictures on its Architecture page. |
+| [docs/aws-resources.md](docs/aws-resources.md) | All 106 AWS resources, generated from the CDK templates, with what each is for and what it costs while idle |
 | [docs/rules.md](docs/rules.md) | The seven rules, the combiner, the decision record, the steward loop, and when one person is not enough |
 | [docs/adr/0002-separation-of-duties.md](docs/adr/0002-separation-of-duties.md) | Why a conflicting or verdict-changing approval needs counsel, and how Cedar enforces it |
 | [docs/security-tests.md](docs/security-tests.md) | What the leakage and prompt-injection suites attack, what they found, and what they do not prove |

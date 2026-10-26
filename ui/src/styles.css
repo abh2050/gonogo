@@ -1480,3 +1480,150 @@ mark.part-end {
 .authz thead th.me {
   color: var(--accent-ink);
 }
+
+/* ---- AWS mode ---------------------------------------------------------------------------------------------- */
+
+.who {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.signin {
+  max-width: 560px;
+}
+.span-all {
+  grid-column: 1 / -1;
+}
+.neptune-compare .compare {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0 0;
+}
+.neptune-compare dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  font-weight: 700;
+}
+.neptune-compare dd {
+  margin: 3px 0 0;
+  font-weight: 600;
+}
+@media (max-width: 800px) {
+  .neptune-compare .compare {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Architecture diagrams --------------------------------------------------------------------------------- */
+
+.diagram {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 14px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .diagram {
+    grid-template-columns: 1fr;
+  }
+}
+.diagram-viz svg {
+  width: 100%;
+  height: auto;
+}
+.dnode {
+  cursor: pointer;
+  outline: none;
+}
+.dnode:focus-visible rect {
+  stroke-width: 3.5px;
+}
+.dnode-label {
+  font-size: 13px;
+  font-weight: 650;
+  fill: var(--ink);
+}
+.dnode-sub {
+  font-size: 10.5px;
+  fill: var(--muted);
+}
+.edge-note {
+  font-size: 10px;
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+}
+.group-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  fill: var(--faint);
+}
+.diagram-panel {
+  position: sticky;
+  top: 80px;
+}
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.timeline li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.timeline .num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 700;
+  font-size: 13px;
+}
+.timeline .who {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.timeline li.refuse .num {
+  background: var(--nogo-soft);
+  color: var(--nogo);
+}
+
+/* The relationships of the selected ontology class move along their arrows. */
+.flow {
+  stroke-dasharray: 8 6 !important;
+  animation: flow 0.8s linear infinite;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow {
+    animation: none;
+  }
+}

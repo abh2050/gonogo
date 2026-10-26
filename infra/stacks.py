@@ -29,6 +29,12 @@ from aws_cdk import (
     aws_budgets as budgets,
 )
 from aws_cdk import (
+    aws_cloudfront as cloudfront,
+)
+from aws_cdk import (
+    aws_cloudfront_origins as origins,
+)
+from aws_cdk import (
     aws_cognito as cognito,
 )
 from aws_cdk import (
@@ -57,6 +63,9 @@ from aws_cdk import (
 )
 from aws_cdk import (
     aws_s3 as s3,
+)
+from aws_cdk import (
+    aws_s3_deployment as s3deploy,
 )
 from aws_cdk import (
     aws_verifiedpermissions as avp,
@@ -139,7 +148,8 @@ class CoreStack(Stack):
             cognito.CfnUserPoolGroup(self, f"Group-{role}", user_pool_id=self.pool.user_pool_id, group_name=role)
         self.client = self.pool.add_client(
             "Client",
-            auth_flows=cognito.AuthFlow(admin_user_password=True),
+            # The browser signs in with a user name and password. The evidence script uses the admin flow.
+            auth_flows=cognito.AuthFlow(admin_user_password=True, user_password=True),
             generate_secret=False,
             access_token_validity=Duration.hours(1),
             id_token_validity=Duration.hours(1),
@@ -216,11 +226,15 @@ class ApiStack(Stack):
             self,
             "Api",
             rest_api_name="gonogo",
+            endpoint_types=[
+                apigw.EndpointType.REGIONAL
+            ],  # CloudFront fronts it, so it needs no edge network of its own
             deploy_options=apigw.StageOptions(
                 stage_name="prod", throttling_rate_limit=20, throttling_burst_limit=40, metrics_enabled=True
             ),
             cloud_watch_role=False,  # the account-wide CloudWatch role is not this project's to change
         )
+        self.rest_api = api
         authorizer = apigw.CognitoUserPoolsAuthorizer(self, "Auth", cognito_user_pools=[core.pool])
         secured = dict(authorizer=authorizer, authorization_type=apigw.AuthorizationType.COGNITO)
 
@@ -358,6 +372,112 @@ class ApiStack(Stack):
         cdk.CfnOutput(self, "NeptuneEndpoint", value=cluster.attr_endpoint)
         cdk.CfnOutput(self, "QueryFunction", value=self.query.function_name)
         cdk.CfnOutput(self, "LoaderFunction", value=self.loader.function_name)
+
+
+DIST = Path(__file__).resolve().parent.parent / "ui" / "dist"
+API_PATHS = ["/api/*", "/query", "/decide", "/health"]
+
+
+class UiStack(Stack):
+    """Where the UI lives on AWS: a private bucket behind CloudFront, with the API on the same origin.
+
+    The browser loads the app from CloudFront and calls /api/*, /query, /decide, and /health on the same host, so the
+    API needs no CORS. CloudFront forwards the Authorization header, and API Gateway checks the Cognito token.
+    """
+
+    def __init__(self, scope: Construct, id: str, *, core: CoreStack, api: ApiStack, neptune: bool, **kw: Any) -> None:
+        super().__init__(scope, id, **kw)
+        tag(self)
+        bucket = s3.Bucket(
+            self,
+            "Site",
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            enforce_ssl=True,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+        )
+        cognito_host = f"https://cognito-idp.{self.region}.amazonaws.com"
+        secure = cloudfront.ResponseHeadersPolicy(
+            self,
+            "Headers",
+            security_headers_behavior=cloudfront.ResponseSecurityHeadersBehavior(
+                content_security_policy=cloudfront.ResponseHeadersContentSecurityPolicy(
+                    override=True,
+                    content_security_policy=(
+                        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+                        f"img-src 'self' data:; font-src 'self' data:; connect-src 'self' {cognito_host}; "
+                        "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+                    ),
+                ),
+                strict_transport_security=cloudfront.ResponseHeadersStrictTransportSecurity(
+                    access_control_max_age=Duration.days(365), include_subdomains=True, override=True
+                ),
+                content_type_options=cloudfront.ResponseHeadersContentTypeOptions(override=True),
+                frame_options=cloudfront.ResponseHeadersFrameOptions(
+                    frame_option=cloudfront.HeadersFrameOption.DENY, override=True
+                ),
+                referrer_policy=cloudfront.ResponseHeadersReferrerPolicy(
+                    referrer_policy=cloudfront.HeadersReferrerPolicy.SAME_ORIGIN, override=True
+                ),
+            ),
+        )
+        # The generated reference documentation carries inline scripts, so its path gets everything but the CSP.
+        docs = cloudfront.ResponseHeadersPolicy(
+            self,
+            "DocsHeaders",
+            security_headers_behavior=cloudfront.ResponseSecurityHeadersBehavior(
+                content_type_options=cloudfront.ResponseHeadersContentTypeOptions(override=True),
+                frame_options=cloudfront.ResponseHeadersFrameOptions(
+                    frame_option=cloudfront.HeadersFrameOption.DENY, override=True
+                ),
+            ),
+        )
+        site = origins.S3BucketOrigin.with_origin_access_control(bucket)
+        api_origin = origins.RestApiOrigin(api.rest_api)
+        passthrough = cloudfront.BehaviorOptions(
+            origin=api_origin,
+            viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
+            allowed_methods=cloudfront.AllowedMethods.ALLOW_ALL,
+            cache_policy=cloudfront.CachePolicy.CACHING_DISABLED,
+            origin_request_policy=cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        )
+        self.distribution = cloudfront.Distribution(
+            self,
+            "Cdn",
+            comment="GoNoGo UI and API",
+            default_root_object="index.html",
+            default_behavior=cloudfront.BehaviorOptions(
+                origin=site,
+                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                response_headers_policy=secure,
+            ),
+            additional_behaviors={
+                **{path: passthrough for path in API_PATHS},
+                "/ontology/*": cloudfront.BehaviorOptions(
+                    origin=site,
+                    viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                    response_headers_policy=docs,
+                ),
+            },
+        )
+        config = {
+            "mode": "aws",
+            "region": self.region,
+            "userPoolClientId": core.client.user_pool_client_id,
+            "neptune": neptune,
+        }
+        s3deploy.BucketDeployment(
+            self,
+            "Deploy",
+            sources=[s3deploy.Source.asset(str(DIST)), s3deploy.Source.json_data("config.json", config)],
+            destination_bucket=bucket,
+            distribution=self.distribution,
+            distribution_paths=["/*"],
+            prune=True,
+        )
+        cdk.CfnOutput(self, "UiUrl", value=f"https://{self.distribution.distribution_domain_name}")
+        cdk.CfnOutput(self, "DistributionId", value=self.distribution.distribution_id)
 
 
 # The services that GoNoGo uses and that nothing else in the shared account does. The account is a linked account of

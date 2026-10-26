@@ -23,7 +23,7 @@ from gonogo import aws
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORT = ROOT / "docs" / "aws-teardown.json"
-STACKS = ["gonogo-api", "gonogo-core"]
+STACKS = ["gonogo-ui", "gonogo-api", "gonogo-core"]
 KEPT_ON_PURPOSE = {
     "AWS::Budgets::Budget gonogo-monthly": "Free. It emails at 50, 80, and 100 percent of the monthly limit."
 }
@@ -49,6 +49,7 @@ def clients() -> dict[str, Any]:
             "budgets",
             "sts",
             "ecs",
+            "cloudfront",
         )
     }
 
@@ -92,6 +93,7 @@ def destroy(c: dict[str, Any]) -> list[str]:
     for key in ("AuditBucket", "GraphBucket"):
         if bucket := out.get(key):
             log.append(f"emptied {bucket}: {empty_bucket(c, bucket)} objects")
+    # The UI stack's bucket empties itself on delete, and its distribution takes a few minutes to disable.
     env = {
         **os.environ,
         "AWS_PROFILE": "awsnew",
@@ -183,6 +185,9 @@ def leftovers(c: dict[str, Any]) -> list[dict[str, str]]:
             add("AWS::KMS::Key", k["KeyId"], why)
     for v in c["ec2"].describe_vpcs(Filters=[{"Name": "tag:project", "Values": ["gonogo"]}])["Vpcs"]:
         add("AWS::EC2::VPC", v["VpcId"], "no idle cost")
+    for d in c["cloudfront"].list_distributions().get("DistributionList", {}).get("Items", []):
+        if d.get("Comment") == "GoNoGo UI and API":
+            add("AWS::CloudFront::Distribution", d["Id"], "no idle cost, but a disabled distribution lingers")
     for bus in c["events"].list_event_buses(NamePrefix="gonogo")["EventBuses"]:
         add("AWS::Events::EventBus", bus["Name"], "no idle cost")
     for ecs in c["ecs"].list_clusters()["clusterArns"]:

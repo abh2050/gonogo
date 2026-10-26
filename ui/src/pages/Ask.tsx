@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { api, VERDICT_CLASS, type Decision, type Diff, type Example, type Parse, type Vocabulary } from "../api";
 import ProvenanceGraph from "../components/ProvenanceGraph";
 import VerdictCard from "../components/VerdictCard";
-import { useSession } from "../session";
+import { useAuth } from "../auth";
+import { requestOf, useSession } from "../session";
 
 const PART_LABEL: Record<string, string> = {
   licensee: "Licensee",
@@ -173,7 +174,69 @@ function StructuredForm({ vocab, initial, onSubmit, busy }: { vocab: Vocabulary;
   );
 }
 
+/** AWS only: decide the same request over Neptune and compare signatures with the engine's answer. */
+function NeptuneCompare({ decision, held }: { decision: Decision; held: number }) {
+  const [state, setState] = useState<{ ms: number; remote: Decision } | { error: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function run() {
+    setBusy(true);
+    setState(null);
+    const started = performance.now();
+    try {
+      const { decision: remote } = await api.neptuneDecide(requestOf(decision));
+      setState({ remote, ms: Math.round(performance.now() - started) });
+    } catch (e) {
+      setState({ error: (e as Error).message });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const ok = state && "remote" in state;
+  return (
+    <section className="card neptune-compare">
+      <div className="eyebrow">Second backend · Amazon Neptune</div>
+      <p className="muted">
+        The answer above came from the engine Lambda over a snapshot of the graph. Decide the same request on Neptune,
+        where the rules run the same SPARQL templates against the graph database, and compare the signatures.
+      </p>
+      <button className="button" onClick={run} disabled={busy}>
+        {busy ? "Asking Neptune…" : "Decide on Neptune"}
+      </button>
+      {state && "error" in state ? <p className="callout warn">{state.error}</p> : null}
+      {ok ? (
+        <dl className="compare">
+          <div>
+            <dt>Engine</dt>
+            <dd>
+              {decision.verdict} <span className="mono faint">{decision.signature.slice(0, 12)}</span>
+            </dd>
+          </div>
+          <div>
+            <dt>Neptune</dt>
+            <dd>
+              {state.remote.verdict} <span className="mono faint">{state.remote.signature.slice(0, 12)}</span> · {state.ms} ms
+            </dd>
+          </div>
+          <div>
+            <dt>Same findings?</dt>
+            <dd>
+              {state.remote.signature === decision.signature
+                ? "Yes. The signatures are identical."
+                : held
+                  ? `No, and expected: your ${held} steward action${held === 1 ? "" : "s"} changed the engine's graph, and Neptune holds the frozen one.`
+                  : "No. This is a bug."}
+            </dd>
+          </div>
+        </dl>
+      ) : null}
+    </section>
+  );
+}
+
 export default function Ask() {
+  const { config, identity } = useAuth();
   const { events, record, history } = useSession();
   const [examples, setExamples] = useState<Example[]>([]);
   const [vocab, setVocab] = useState<Vocabulary | null>(null);
@@ -294,6 +357,7 @@ export default function Ask() {
           </div>
         </>
       ) : null}
+      {decision && config?.neptune && identity ? <NeptuneCompare decision={decision} held={events.length} /> : null}
       {fact ? <ProvenanceGraph iri={fact} onClose={() => setFact(null)} /> : null}
     </div>
   );

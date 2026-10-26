@@ -10,9 +10,7 @@ two-person rule holds with two different people. It records counts and timings, 
 
 from __future__ import annotations
 
-import contextlib
 import json
-import secrets
 import sys
 import time
 from datetime import UTC, datetime
@@ -25,6 +23,9 @@ from rdflib import Literal
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "infra"))
+
+import users  # noqa: E402
 
 from authz import avp, cedar, matrix  # noqa: E402
 from gonogo import aws  # noqa: E402
@@ -40,16 +41,6 @@ from tests.leakage.test_query_service import (  # noqa: E402
 )
 
 OUT = ROOT / "docs" / "aws-evidence.json"
-USERS = {  # name -> role
-    "pat-manager": "licensing_manager",
-    "ann-steward": "steward",
-    "ben-steward": "steward",
-    "cy-counsel": "counsel",
-    "dee-counsel": "counsel",
-    "owen-owner": "ontology_owner",
-    "fin-analyst": "finance_analyst",
-    "aud-auditor": "auditor",
-}
 DECOY = "https://w3id.org/gonogo/id/ownership/LAR-17381-1/candidate"
 NOW, AS_OF = "2026-11-01T00:00:00Z", "2026-11-01"
 checks: list[dict[str, Any]] = []
@@ -135,17 +126,15 @@ def main() -> None:
     # ---- 3. Cognito users and tokens ------------------------------------------------------------------------
     idp = session.client("cognito-idp")
     tokens: dict[str, str] = {}
-    for name, role in USERS.items():
-        password = secrets.token_urlsafe(18) + "aA1!"
-        with contextlib.suppress(idp.exceptions.UsernameExistsException):  # a repeat run reuses the user
-            idp.admin_create_user(UserPoolId=core["UserPoolId"], Username=name, MessageAction="SUPPRESS")
-        idp.admin_set_user_password(UserPoolId=core["UserPoolId"], Username=name, Password=password, Permanent=True)
-        idp.admin_add_user_to_group(UserPoolId=core["UserPoolId"], Username=name, GroupName=role)
+    saved = users.ensure_users(
+        session, core["UserPoolId"]
+    )  # the passwords live in infra/users.json, so a rerun keeps them
+    for name, who in saved.items():
         auth = idp.admin_initiate_auth(
             UserPoolId=core["UserPoolId"],
             ClientId=core["UserPoolClientId"],
             AuthFlow="ADMIN_USER_PASSWORD_AUTH",
-            AuthParameters={"USERNAME": name, "PASSWORD": password},
+            AuthParameters={"USERNAME": name, "PASSWORD": who["password"]},
         )
         tokens[name] = auth["AuthenticationResult"]["IdToken"]
     client = httpx.Client(timeout=40.0)
@@ -177,7 +166,7 @@ def main() -> None:
         )
         assert marks and ROYALTY_PATTERNS
         attacks = refused = leaked = disagree = 0
-        for user, role in USERS.items():
+        for user, role in ((n, u["role"]) for n, u in saved.items()):
             who = cedar.Principal(user, role)
             suite = list(ALWAYS_REFUSED.values()) + [
                 f"SELECT * FROM <{iri}> WHERE {{ ?s ?p ?o }} LIMIT 5" for iri in FAKE_GRAPHS
@@ -213,7 +202,7 @@ def main() -> None:
         record(
             "No role reads a graph it may not, and Neptune never sees a refused query",
             leaked == 0 and disagree == 0,
-            f"{attacks} queries across {len(USERS)} users: {refused} refused, {leaked} leaked royalty text, "
+            f"{attacks} queries across {len(saved)} users: {refused} refused, {leaked} leaked royalty text, "
             f"{disagree} where the deployment and the local service disagreed",
             attacks=attacks,
             refused=refused,

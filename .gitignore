@@ -18,3 +18,4 @@ ui/node_modules/
 ui/dist/
 .vercel/
 infra/cdk.context.json
+infra/users.json

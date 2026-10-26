@@ -130,6 +130,9 @@ export default function ProvenanceGraph({ iri, onClose }: { iri: string; onClose
     const link = g.append("g").selectAll("g").data(links).join("g");
     link
       .append("line")
+      .attr("class", "plink")
+      .attr("data-from", (d) => (d.source as SimNode).id)
+      .attr("data-to", (d) => (d.target as SimNode).id)
       .attr("x1", (d) => pos(d.source).x!)
       .attr("y1", (d) => pos(d.source).y!)
       .attr("x2", (d) => pos(d.target).x!)
@@ -171,9 +174,12 @@ export default function ProvenanceGraph({ iri, onClose }: { iri: string; onClose
 
   useEffect(() => {
     if (!svgRef.current) return;
-    d3.select(svgRef.current)
-      .selectAll<SVGGElement, SimNode>("g.prov-node")
-      .classed("selected", (d) => d.id === selected);
+    const svg = d3.select(svgRef.current);
+    svg.selectAll<SVGGElement, SimNode>("g.prov-node").classed("selected", (d) => d.id === selected);
+    // The selected node's relationships flow in the direction they point.
+    svg.selectAll<SVGLineElement, unknown>("line.plink").classed("flow", function () {
+      return this.dataset.from === selected || this.dataset.to === selected;
+    });
   }, [selected, graph]);
 
   const sel = byId.get(selected);

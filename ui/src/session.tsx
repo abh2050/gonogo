@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useAuth } from "./auth";
 import { api, type ActResult, type Decision, type Diff, type GEvent, type Role } from "./api";
 
 // The browser holds the session: the steward's event log and the decisions made so far. The server replays
@@ -40,16 +41,20 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const initial = useMemo(load, []);
   const [events, setEvents] = useState<GEvent[]>(initial.events);
   const [history, setHistory] = useState<Entry[]>(initial.history);
-  const [steward, setSteward] = useState(initial.steward);
-  const [role, setRole] = useState<Role>(initial.role ?? "steward");
+  const { identity } = useAuth();
+  const [typedSteward, setSteward] = useState(initial.steward);
+  const [typedRole, setRole] = useState<Role>(initial.role ?? "steward");
+  // A signed-in user is who the token says, and the server ignores anything else.
+  const steward = identity?.name ?? typedSteward;
+  const role: Role = identity?.role ?? typedRole;
 
   useEffect(() => {
     try {
-      sessionStorage.setItem(KEY, JSON.stringify({ events, history, steward, role }));
+      sessionStorage.setItem(KEY, JSON.stringify({ events, history, steward: typedSteward, role: typedRole }));
     } catch {
       // The session still works for this page view.
     }
-  }, [events, history, steward, role]);
+  }, [events, history, typedSteward, typedRole]);
 
   const record = useCallback((entry: Entry) => setHistory((h) => [entry, ...h].slice(0, 40)), []);
 

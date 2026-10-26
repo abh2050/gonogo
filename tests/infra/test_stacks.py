@@ -27,12 +27,20 @@ def bundle(tmp_path_factory: pytest.TempPathFactory) -> Path:
 
 def synth(bundle: Path, neptune: bool, email: str | None = "budget@example.invalid") -> dict[str, assertions.Template]:
     stacks.BUILD = bundle
+    stacks.DIST = bundle / "dist"
+    stacks.DIST.mkdir(exist_ok=True)
+    (stacks.DIST / "index.html").write_text("<html></html>")
     app = cdk.App()
     env = cdk.Environment(account="123456789012", region="us-east-2")
     core = stacks.CoreStack(app, "gonogo-core", env=env)
     api = stacks.ApiStack(app, "gonogo-api", core=core, deploy_neptune=neptune, env=env)
+    ui = stacks.UiStack(app, "gonogo-ui", core=core, api=api, neptune=neptune, env=env)
     budget = stacks.BudgetStack(app, "gonogo-budget", limit_usd=10, email=email, env=env) if email else None
-    out = {"core": assertions.Template.from_stack(core), "api": assertions.Template.from_stack(api)}
+    out = {
+        "core": assertions.Template.from_stack(core),
+        "api": assertions.Template.from_stack(api),
+        "ui": assertions.Template.from_stack(ui),
+    }
     if budget is not None:  # every stack is created before the first synthesis, because a tree cannot change after it
         out["budget"] = assertions.Template.from_stack(budget)
     return out
@@ -235,6 +243,60 @@ def test_the_neptune_security_group_admits_only_its_own_members(full: dict[str, 
 # ---- Policies ----------------------------------------------------------------------------------------------------
 
 
+# ---- The UI -------------------------------------------------------------------------------------------------------
+
+
+def test_the_ui_bucket_is_private_and_reachable_only_through_cloudfront(full: dict[str, assertions.Template]) -> None:
+    ui = full["ui"]
+    [bucket] = resources(ui, "AWS::S3::Bucket").values()
+    assert bucket["Properties"]["PublicAccessBlockConfiguration"]["BlockPublicPolicy"] is True
+    policy = str(resources(ui, "AWS::S3::BucketPolicy"))
+    assert "cloudfront.amazonaws.com" in policy and "AWS:SourceArn" in policy, "access is limited to this distribution"
+    ui.resource_count_is("AWS::CloudFront::OriginAccessControl", 1)
+
+
+def test_cloudfront_serves_https_only_with_security_headers_and_a_strict_csp(
+    full: dict[str, assertions.Template],
+) -> None:
+    [dist] = resources(full["ui"], "AWS::CloudFront::Distribution").values()
+    cfg = dist["Properties"]["DistributionConfig"]
+    assert cfg["DefaultCacheBehavior"]["ViewerProtocolPolicy"] == "redirect-to-https"
+    assert "ViewerCertificate" not in cfg or cfg["ViewerCertificate"].get("CloudFrontDefaultCertificate") is True
+    policies = [
+        p["Properties"]["ResponseHeadersPolicyConfig"]
+        for p in resources(full["ui"], "AWS::CloudFront::ResponseHeadersPolicy").values()
+    ]
+    csp = next(
+        p["SecurityHeadersConfig"]["ContentSecurityPolicy"]["ContentSecurityPolicy"]
+        for p in policies
+        if "ContentSecurityPolicy" in p["SecurityHeadersConfig"]
+    )
+    assert "script-src 'self'" in csp and "frame-ancestors 'none'" in csp and "unsafe-inline'; img" in csp
+    assert "unsafe-eval" not in csp and "connect-src 'self' https://cognito-idp.us-east-2.amazonaws.com" in csp
+
+
+def test_the_api_paths_pass_through_cloudfront_with_the_token_and_no_caching(
+    full: dict[str, assertions.Template],
+) -> None:
+    [dist] = resources(full["ui"], "AWS::CloudFront::Distribution").values()
+    behaviors = {b["PathPattern"]: b for b in dist["Properties"]["DistributionConfig"]["CacheBehaviors"]}
+    for path in stacks.API_PATHS:
+        b = behaviors[path]
+        assert b["ViewerProtocolPolicy"] == "https-only" and len(b["AllowedMethods"]) == 7
+    assert "/ontology/*" in behaviors
+
+
+def test_the_browser_gets_its_configuration_from_a_file_the_deploy_writes(full: dict[str, assertions.Template]) -> None:
+    [deploy] = resources(full["ui"], "Custom::CDKBucketDeployment").values()
+    assert len(deploy["Properties"]["SourceObjectKeys"]) == 2, "the built app, and the generated config.json"
+    assert deploy["Properties"]["Prune"] is True and deploy["Properties"]["DistributionPaths"] == ["/*"]
+
+
+def test_the_api_is_regional_because_cloudfront_fronts_it(full: dict[str, assertions.Template]) -> None:
+    [api] = resources(full["api"], "AWS::ApiGateway::RestApi").values()
+    assert api["Properties"]["EndpointConfiguration"]["Types"] == ["REGIONAL"]
+
+
 def test_every_cedar_policy_is_in_the_policy_store_exactly_as_the_adapter_writes_it(
     full: dict[str, assertions.Template],
 ) -> None:
@@ -262,3 +324,16 @@ def test_the_app_refuses_any_region_but_us_east_2() -> None:
     for bad in ("us-east-1", "us-west-2", "eu-west-1"):
         with pytest.raises(RegionNotAllowedError):
             check_region(bad)
+
+
+# ---- The inventory ------------------------------------------------------------------------------------------------
+
+
+def test_every_resource_type_has_a_plain_description_and_the_inventory_is_current() -> None:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "infra"))
+    import inventory
+
+    resources = inventory.synthesize()
+    kinds = {r["Type"] for stack in resources.values() for r in stack.values()}
+    assert kinds - {"AWS::CDK::Metadata"} <= set(inventory.PURPOSE), kinds - set(inventory.PURPOSE)
+    assert inventory.OUT.read_text() == inventory.render(), "run: uv run python infra/inventory.py"

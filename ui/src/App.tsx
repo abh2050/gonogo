@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Architecture from "./pages/Architecture";
 import Ask from "./pages/Ask";
 import Findings from "./pages/Findings";
 import History from "./pages/History";
@@ -7,6 +8,9 @@ import Steward from "./pages/Steward";
 import Overview from "./pages/Overview";
 import TimeTravel from "./pages/TimeTravel";
 import Vocabularies from "./pages/Vocabularies";
+import { useAuth } from "./auth";
+import SignIn from "./pages/SignIn";
+import { Loading } from "./components/Loading";
 import { useTheme } from "./theme";
 
 const PAGES = [
@@ -14,6 +18,7 @@ const PAGES = [
   { path: "ask", label: "Ask", element: <Ask /> },
   { path: "steward", label: "Steward", element: <Steward /> },
   { path: "history", label: "History", element: <History /> },
+  { path: "architecture", label: "Architecture", element: <Architecture /> },
   { path: "ontology", label: "Ontology", element: <OntologyMap /> },
   { path: "vocabularies", label: "Vocabularies", element: <Vocabularies /> },
   { path: "findings", label: "Data findings", element: <Findings /> },
@@ -28,6 +33,7 @@ function currentPath(): string {
 export default function App() {
   const [path, setPath] = useState(currentPath);
   const { theme, toggle } = useTheme();
+  const { config, identity, signOut } = useAuth();
 
   useEffect(() => {
     const onHash = () => {
@@ -39,6 +45,7 @@ export default function App() {
   }, []);
 
   const page = PAGES.find((p) => p.path === path) ?? PAGES[0];
+  const locked = config?.mode === "aws" && !identity;
 
   return (
     <div className="shell">
@@ -59,6 +66,14 @@ export default function App() {
               </a>
             ))}
           </nav>
+          {identity ? (
+            <span className="who" title="Read from your Cognito token. The gateway checks it on every call.">
+              {identity.name} · {identity.role.replace(/_/g, " ")}
+              <button className="link" onClick={signOut}>
+                Sign out
+              </button>
+            </span>
+          ) : null}
           <a className="nav-ref" href="./ontology/index.html" target="_blank" rel="noreferrer">Reference docs ↗</a>
           <button className="icon-button" onClick={toggle} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
             {theme === "dark" ? (
@@ -74,7 +89,7 @@ export default function App() {
           </button>
         </div>
       </header>
-      <main key={page.path}>{page.element}</main>
+      <main key={page.path}>{!config ? <Loading what="configuration" /> : locked ? <SignIn /> : page.element}</main>
       <footer className="footer">
         <div className="footer-inner">
           <span>

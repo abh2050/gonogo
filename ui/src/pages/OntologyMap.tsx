@@ -318,6 +318,8 @@ export default function OntologyMap() {
           if (sel) return l.source.id === sel || l.target.id === sel ? 1 : 0.07;
           return needle ? 0.15 : 0.85;
         });
+      // The selected class's relationships flow in the direction they point, so a reader can follow them.
+      linkSel.classed("flow", (l) => Boolean(sel) && (l.source.id === sel || l.target.id === sel));
       edgeLabel
         .style("display", (l) => (linkVisible(l) ? null : "none"))
         .style("opacity", (l) => (sel ? (l.source.id === sel || l.target.id === sel ? 1 : 0) : 0.0));

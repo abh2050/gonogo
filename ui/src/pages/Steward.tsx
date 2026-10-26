@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api, local, ROLES, ROLE_LABEL, type ActResult, type AuthzMatrix, type Queue, type QueueFact, type QueueLink, type Role } from "../api";
 import ProvenanceGraph from "../components/ProvenanceGraph";
 import { DiffView } from "../components/VerdictCard";
+import { useAuth } from "../auth";
 import { useSession, type Entry } from "../session";
 
 interface Outcome {
@@ -148,6 +149,7 @@ function RouteNote({ result }: { result: ActResult }) {
 
 export default function Steward() {
   const { events, act, steward, setSteward, role, setRole, reset, history } = useSession();
+  const { identity } = useAuth();
   const [queue, setQueue] = useState<Queue | null>(null);
   const [matrix, setMatrix] = useState<AuthzMatrix | null>(null);
   const [busy, setBusy] = useState(false);
@@ -220,20 +222,29 @@ export default function Steward() {
       </header>
 
       <div className="steward-bar card">
-        <label>
-          Acting as
-          <input value={steward} onChange={(e) => setSteward(e.target.value)} aria-label="Name" />
-        </label>
-        <label>
-          Role
-          <select value={role} onChange={(e) => setRole(e.target.value as Role)} aria-label="Role">
-            {ROLES.map((r) => (
-              <option key={r} value={r}>
-                {ROLE_LABEL[r]}
-              </option>
-            ))}
-          </select>
-        </label>
+        {identity ? (
+          <span>
+            Signed in as <strong>{identity.name}</strong>, <strong>{ROLE_LABEL[identity.role]}</strong>. To play the second
+            person, sign out and sign in as another user.
+          </span>
+        ) : (
+          <>
+            <label>
+              Acting as
+              <input value={steward} onChange={(e) => setSteward(e.target.value)} aria-label="Name" />
+            </label>
+            <label>
+              Role
+              <select value={role} onChange={(e) => setRole(e.target.value as Role)} aria-label="Role">
+                {ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {ROLE_LABEL[r]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </>
+        )}
         <span className="muted small">
           {events.length} action{events.length === 1 ? "" : "s"} · {history.length} decision{history.length === 1 ? "" : "s"}
         </span>
@@ -242,8 +253,9 @@ export default function Steward() {
         </button>
       </div>
       <p className="muted small">
-        In this public demo you choose your own name and role, so the checks show how the policies work, not who you
-        are. In the AWS deployment, the role comes from the signed-in user's Cognito group.
+        {identity
+          ? "Your name and role come from your Cognito token. The gateway verifies it, so nothing typed here can change them."
+          : "In this public demo you choose your own name and role, so the checks show how the policies work, not who you are. In the AWS deployment, the role comes from the signed-in user's Cognito group."}
       </p>
       {error ? (
         <div className="error" role="alert">
