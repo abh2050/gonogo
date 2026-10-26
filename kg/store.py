@@ -11,6 +11,7 @@ their overlays, and it never reads a graph that the template did not name.
 from __future__ import annotations
 
 import re
+import threading
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Protocol
@@ -21,6 +22,10 @@ from rdflib.graph import ReadOnlyGraphAggregate
 from gonogo.paths import BUILD
 from kg.ns import GRAPH_APPROVED, GRAPH_CANDIDATE, GRAPH_RELEASE, GRAPH_ROYALTY
 from kg.templates import strip_from
+
+# rdflib parses SPARQL with pyparsing, which is not safe across threads: two requests parsing at once in the API's
+# thread pool fail with errors inside the parser. Every in-process query takes this lock.
+SPARQL_LOCK = threading.Lock()
 
 GRAPH_FILES = {
     GRAPH_RELEASE: "release.ttl",
@@ -99,8 +104,9 @@ class Store:
         iris = _FROM.findall(query)
         if not iris:
             raise ValueError("A query must name its graphs with FROM clauses.")
-        result = self._union(iris).query(strip_from(query))
-        return [dict(row.asdict()) for row in result]  # type: ignore[union-attr]
+        with SPARQL_LOCK:
+            result = self._union(iris).query(strip_from(query))
+            return [dict(row.asdict()) for row in result]  # type: ignore[union-attr]
 
     def update(self, graph_iri: str, triples: Iterable[tuple[Any, Any, Any]]) -> None:
         """Add triples to a graph's overlay. Only actions call this."""

@@ -1,0 +1,10 @@
+{
+ "arch-verdict": 1.401,
+ "arch-parser": 7.467,
+ "arch-rules": 15.479,
+ "arch-candidate": 22.295,
+ "arch-combiner": 29.888,
+ "arch-record": 37.483,
+ "tworule": 43.878,
+ "access": 55.278
+}

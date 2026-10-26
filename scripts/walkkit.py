@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 import tempfile
+import time
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -35,6 +37,25 @@ CAPTION_JS = """
 """
 
 
+TIMING = (
+    MEDIA / "narration-timing.json"
+)  # {step key: seconds of narration, with a pause}, written by scripts/narrate.py
+MARKS: dict[str, float] = {}
+_t0 = 0.0
+
+
+def hold_for(key: str, default: float) -> float:
+    """How long a step stays on screen: the length of its spoken line when there is one."""
+    return json.loads(TIMING.read_text()).get(key, default) if TIMING.exists() else default
+
+
+def step(page: Page, key: str, text: str, default: float = 3.0) -> None:
+    """Show a caption, note when the step began (seconds into the recording), and hold it for its narration."""
+    caption(page, text)
+    MARKS[key] = round(time.monotonic() - _t0, 3)
+    page.wait_for_timeout(int(hold_for(key, default) * 1000))
+
+
 def caption(page: Page, text: str) -> None:
     page.evaluate(CAPTION_JS, [text, CAPTION_STYLE])
 
@@ -49,11 +70,14 @@ def click_dot(page: Page, find_js: str, label: str) -> None:
 
 
 def record(script: Callable[[Page], Any]) -> Path:
+    global _t0
+    MARKS.clear()
     tmp = Path(tempfile.mkdtemp())
     with sync_playwright() as p:
         b = p.chromium.launch(channel="chrome")
         ctx = b.new_context(viewport=VIEW, record_video_dir=str(tmp), record_video_size=VIEW)
         page = ctx.new_page()
+        _t0 = time.monotonic()
         script(page)
         video = page.video
         ctx.close()
@@ -95,4 +119,5 @@ def encode(video: Path, name: str) -> None:
         check=True,
     )
     shutil.rmtree(video.parent, ignore_errors=True)
+    (MEDIA / f"{name}.marks.json").write_text(json.dumps(MARKS, indent=1))
     print(f"wrote {gif.relative_to(ROOT)} ({gif.stat().st_size / 1e6:.1f} MB) and {mp4.relative_to(ROOT)}")

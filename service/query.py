@@ -25,7 +25,7 @@ from rdflib.term import URIRef
 
 from authz import cedar
 from kg.ns import GRAPH_APPROVED, GRAPH_CANDIDATE, GRAPH_RELEASE, GRAPH_ROYALTY
-from kg.store import Store
+from kg.store import SPARQL_LOCK, Store
 
 GRAPH_BY_NAME = {
     "release": GRAPH_RELEASE,
@@ -132,10 +132,11 @@ class LocalBackend:
     def run(self, graphs: list[str], query: str) -> list[dict[str, Any]]:
         from kg.templates import strip_from
 
-        out = self.store.view(graphs).query(strip_from(query))
-        if out.type == "ASK":
-            return [{"ask": bool(out.askAnswer)}]
-        return [{str(k): str(v) for k, v in row.asdict().items()} for row in out]  # type: ignore[union-attr]
+        with SPARQL_LOCK:
+            out = self.store.view(graphs).query(strip_from(query))
+            if out.type == "ASK":
+                return [{"ask": bool(out.askAnswer)}]
+            return [{str(k): str(v) for k, v in row.asdict().items()} for row in out]  # type: ignore[union-attr]
 
 
 class EndpointBackend:
@@ -175,7 +176,8 @@ def run_template(store: Store, principal: cedar.Principal, template: str) -> lis
             raise QueryRefusedError(
                 f"The {principal.role.replace('_', ' ')} role may not read the {NAME_BY_IRI.get(g, 'unknown')} graph."
             )
-    return [dict(r.asdict()) for r in store.view(needed).query(strip_from(template))]  # type: ignore[union-attr]
+    with SPARQL_LOCK:
+        return [dict(r.asdict()) for r in store.view(needed).query(strip_from(template))]  # type: ignore[union-attr]
 
 
 def graph_store_request(principal: cedar.Principal, method: str, graph: str) -> None:

@@ -11,7 +11,7 @@ from __future__ import annotations
 import sys
 
 from playwright.sync_api import Page
-from walkkit import caption, click_dot, encode, record
+from walkkit import click_dot, encode, record, step
 
 # (the label drawn on the class, the caption). The captions say what the arrows mean, in the order a reader needs them.
 WALK = [
@@ -46,12 +46,10 @@ def walk(base: str):  # type: ignore[no-untyped-def]
         page.wait_for_selector("svg text")
         page.wait_for_timeout(2500)  # let the layout settle
         page.evaluate("window.scrollTo(0, 260)")
-        caption(page, "The ontology: 48 classes. Watch the arrows move.")
-        page.wait_for_timeout(1800)
+        step(page, "onto-open", "The ontology: 48 classes. Watch the arrows move.", 1.8)
         for label, text in WALK:
             click_dot(page, FIND_JS, label)
-            caption(page, text)
-            page.wait_for_timeout(2600)
+            step(page, f"onto-{label}", text, 2.6)
 
     return run
 

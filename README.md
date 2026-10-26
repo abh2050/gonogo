@@ -42,6 +42,7 @@ A one-minute video of both walks: [docs/media/gonogo-overview.mp4](docs/media/go
 
 | Read | What it gives you |
 |---|---|
+| [docs/ontology-from-scratch.md](docs/ontology-from-scratch.md) | Start here if you have never heard of an ontology: triples, OWL, SKOS, SHACL, SPARQL, then the build in twelve steps |
 | [docs/ontology-guide.md](docs/ontology-guide.md) | The model on one page, each ontology construct with the test that proves it, and one real patent followed through the graph |
 | [docs/modeling-decisions.md](docs/modeling-decisions.md) | Thirteen modeling decisions, each with the problem, the choice, the reason, the cost, and the evidence |
 | [ontology/competency_questions.md](ontology/competency_questions.md) | Fifteen competency questions, each an executable SPARQL template with hand-worked answers |

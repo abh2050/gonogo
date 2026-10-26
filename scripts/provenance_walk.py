@@ -12,7 +12,7 @@ from __future__ import annotations
 import sys
 
 from playwright.sync_api import Page
-from walkkit import caption, click_dot, encode, record
+from walkkit import click_dot, encode, record, step
 
 # (a piece of the node's label, the caption). Each hop follows one relationship.
 WALK = [
@@ -51,12 +51,10 @@ def walk(base: str):  # type: ignore[no-untyped-def]
         page.wait_for_timeout(1500)
         page.locator(".prov").scroll_into_view_if_needed()
         page.evaluate("window.scrollBy(0, 40)")
-        caption(page, "Provenance: the trail behind one approved fact.")
-        page.wait_for_timeout(2000)
+        step(page, "prov-open", "Provenance: the trail behind one approved fact.", 2.0)
         for piece, text in WALK:
             click_dot(page, FIND_JS, piece)
-            caption(page, text)
-            page.wait_for_timeout(2800)
+            step(page, f"prov-{piece}", text, 2.8)
 
     return run
 

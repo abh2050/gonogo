@@ -6,6 +6,11 @@ behind real identities, with the two-person rule held by Cedar and nothing reada
 is deployed for a session, checked, and torn down. This page says what ran, what the checks found, and what is not
 built.
 
+![GoNoGo on AWS, drawn in draw.io with the AWS icon set](architecture/gonogo-aws.png)
+
+The diagram is [architecture/gonogo-aws.drawio](architecture/gonogo-aws.drawio). Open it in draw.io to edit, or
+change `scripts/drawio_aws.py` and run it to export the PNG and SVG again.
+
 ## What ran
 
 | Piece | What it did in the session |
