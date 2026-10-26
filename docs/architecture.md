@@ -54,10 +54,10 @@ flowchart TB
 
 ## 3. The AWS deployment
 
-![GoNoGo on AWS, drawn in draw.io with the AWS icon set](architecture/gonogo-aws.png)
+![GoNoGo on AWS: the whole system, drawn in draw.io with the AWS icon set](architecture/gonogo-aws-1-overview.png)
 
-The diagram is [architecture/gonogo-aws.drawio](architecture/gonogo-aws.drawio). Open it in draw.io to edit, or
-change `scripts/drawio_aws.py` and run it to export the PNG and SVG again.
+This is the first of seven draw.io views: the whole system, the request path, ingestion, security and network, data
+and access, the benchmark, and stacks and cost. See [architecture/README.md](architecture/README.md).
 
 106 resources in four stacks, listed one by one in [aws-resources.md](aws-resources.md). Everything is in
 us-east-2. The VPC has no NAT gateway and no route to the internet.

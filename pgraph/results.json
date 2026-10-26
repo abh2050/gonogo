@@ -1,0 +1,14 @@
+{
+ "requests": 1435,
+ "with_a_conflict": 503,
+ "agree": 1435,
+ "differ": [],
+ "median_ms": {
+  "sparql_rdflib": 13.22,
+  "cypher_neo4j": 3.28
+ },
+ "query_lines": {
+  "sparql": 14,
+  "cypher": 13
+ }
+}

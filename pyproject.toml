@@ -22,6 +22,9 @@ dependencies = [
 ]
 
 [dependency-groups]
+agent = [
+    "strands-agents>=1.0",
+]
 dev = [
     "pylode==3.6.0",
     "kurra==3.0.5",
@@ -55,6 +58,7 @@ ignore = ["SIM905"]  # word lists read better as one split string
 [tool.ruff.lint.per-file-ignores]
 "api/index.py" = ["E402"]  # the repo root goes on sys.path before the engine imports
 "tests/leakage/*" = ["E501"]  # attack queries are data, and reading them on one line is the point
+"scripts/drawio_aws.py" = ["E501"]  # draw.io style strings and diagram coordinates read better unbroken
 
 [tool.mypy]
 python_version = "3.12"

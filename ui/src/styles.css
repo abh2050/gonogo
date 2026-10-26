@@ -1627,3 +1627,25 @@ mark.part-end {
     animation: none;
   }
 }
+
+/* Benchmark page */
+.confusion {
+  width: 100%;
+  max-width: 560px;
+  display: block;
+  margin: 0 auto;
+}
+.conf-label {
+  font-size: 11px;
+  fill: var(--muted);
+}
+.conf-axis {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+.conf-num {
+  font-size: 14px;
+  font-weight: 700;
+  fill: #fff;
+}

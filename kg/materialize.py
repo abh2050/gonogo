@@ -60,6 +60,11 @@ def _keep(s: Node, p: Node, o: Node) -> bool:
     return p in KEPT_PREDICATES and isinstance(o, URIRef)
 
 
+def kept(s: Node, p: Node, o: Node) -> bool:
+    """Whether an entailed triple is one the graphs store (the whitelist above)."""
+    return _keep(s, p, o)
+
+
 class InconsistentGraphError(ValueError):
     """Raised when an individual belongs to two disjoint classes after the closure."""
 

@@ -23,7 +23,7 @@ from gonogo import aws
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORT = ROOT / "docs" / "aws-teardown.json"
-STACKS = ["gonogo-ui", "gonogo-api", "gonogo-core"]
+STACKS = ["gonogo-eval", "gonogo-ui", "gonogo-api", "gonogo-core"]
 KEPT_ON_PURPOSE = {
     "AWS::Budgets::Budget gonogo-monthly": "Free. It emails at 50, 80, and 100 percent of the monthly limit."
 }

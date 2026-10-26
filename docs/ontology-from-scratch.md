@@ -290,7 +290,7 @@ would change, and a counsel approval tied to that report ([docs/release-process.
 
 The same engine runs in a public demo (Vercel) and on AWS (CloudFront, API Gateway, Cognito, Lambda, Neptune).
 Decisions are identical on Fuseki and Neptune, which is checked with real requests. See
-[docs/aws.md](aws.md) and the [architecture diagram](architecture/gonogo-aws.png).
+[docs/aws.md](aws.md) and the [AWS diagrams](architecture/README.md).
 
 ```mermaid
 flowchart TB
@@ -368,5 +368,5 @@ flowchart TB
 
 - [The model on one page](ontology-guide.md), with each construct and the test that proves it
 - [Modeling decisions](modeling-decisions.md), the reasons behind each choice
-- [The architecture](architecture.md) and the [AWS diagram](architecture/gonogo-aws.png)
+- [The architecture](architecture.md) and the [AWS diagrams](architecture/README.md)
 - [The tour](tour.md), with screenshots and the walks

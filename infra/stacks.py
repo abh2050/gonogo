@@ -4,6 +4,8 @@
                     groups, and the Verified Permissions policy store that holds the Cedar policies
     gonogo-api      the VPC, Neptune Serverless (when deployNeptune is true), the three Lambdas, and API Gateway
                     with a Cognito authorizer, request validation, and throttling
+    gonogo-eval     the benchmark's vector search: a corpus bucket, an S3 Vectors index, and a Bedrock Knowledge
+                    Base with Titan embeddings. It stands alone and is torn down with the others.
     gonogo-budget   a monthly cost budget that emails at 50, 80, and 100 percent. It outlives the other stacks.
 
 Nothing here has a NAT gateway, an interface endpoint, or a long-lived access key. Neptune is the one resource
@@ -24,6 +26,9 @@ from aws_cdk import (
 )
 from aws_cdk import (
     aws_apigateway as apigw,
+)
+from aws_cdk import (
+    aws_bedrock as bedrock,
 )
 from aws_cdk import (
     aws_budgets as budgets,
@@ -66,6 +71,18 @@ from aws_cdk import (
 )
 from aws_cdk import (
     aws_s3_deployment as s3deploy,
+)
+from aws_cdk import (
+    aws_s3_notifications as s3n,
+)
+from aws_cdk import (
+    aws_s3vectors as s3vectors,
+)
+from aws_cdk import (
+    aws_stepfunctions as sfn,
+)
+from aws_cdk import (
+    aws_stepfunctions_tasks as tasks,
 )
 from aws_cdk import (
     aws_verifiedpermissions as avp,
@@ -187,7 +204,16 @@ class CoreStack(Stack):
 
 
 class ApiStack(Stack):
-    def __init__(self, scope: Construct, id: str, *, core: CoreStack, deploy_neptune: bool, **kw: Any) -> None:
+    def __init__(
+        self,
+        scope: Construct,
+        id: str,
+        *,
+        core: CoreStack,
+        deploy_neptune: bool,
+        deploy_ingest: bool = False,
+        **kw: Any,
+    ) -> None:
         super().__init__(scope, id, **kw)
         tag(self)
         common = dict(
@@ -244,12 +270,14 @@ class ApiStack(Stack):
 
         self.neptune_endpoint = ""
         if deploy_neptune:
-            self._graph(core, api, common, secured)
+            self._graph(core, api, common, secured, deploy_ingest)
 
         cdk.CfnOutput(self, "ApiUrl", value=api.url)
         cdk.CfnOutput(self, "EngineFunction", value=self.engine.function_name)
 
-    def _graph(self, core: CoreStack, api: apigw.RestApi, common: dict[str, Any], secured: dict[str, Any]) -> None:
+    def _graph(
+        self, core: CoreStack, api: apigw.RestApi, common: dict[str, Any], secured: dict[str, Any], deploy_ingest: bool
+    ) -> None:
         vpc = ec2.Vpc(
             self,
             "Vpc",
@@ -372,6 +400,143 @@ class ApiStack(Stack):
         cdk.CfnOutput(self, "NeptuneEndpoint", value=cluster.attr_endpoint)
         cdk.CfnOutput(self, "QueryFunction", value=self.query.function_name)
         cdk.CfnOutput(self, "LoaderFunction", value=self.loader.function_name)
+        if deploy_ingest:
+            self._ingest(core, api, secured, env, vpc_args, neptune_access)
+
+    def _ingest(
+        self,
+        core: CoreStack,
+        api: apigw.RestApi,
+        secured: dict[str, Any],
+        env: dict[str, str],
+        vpc_args: dict[str, Any],
+        neptune_access: Any,
+    ) -> None:
+        """The ingestion workflow (service/ingest.py). A PDF in the inbox starts a state machine that reads it with
+        Textract, extracts a grant, checks it with SHACL, and waits for a steward's decision with a task token. Once
+        approved, the grant is written to Neptune and the booked requests on its patents run again. It lives in this
+        stack because it adds a route to this API and runs two functions in this VPC."""
+        inbox = s3.Bucket(
+            self,
+            "Inbox",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            encryption=s3.BucketEncryption.KMS,
+            encryption_key=core.key,
+            enforce_ssl=True,
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+        )
+        pending = dynamodb.Table(
+            self,
+            "Pending",
+            partition_key=dynamodb.Attribute(name="id", type=dynamodb.AttributeType.STRING),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.DESTROY,
+            encryption=dynamodb.TableEncryption.CUSTOMER_MANAGED,
+            encryption_key=core.key,
+        )
+        shared = dict(
+            runtime=_lambda.Runtime.PYTHON_3_12,
+            architecture=_lambda.Architecture.ARM_64,
+            code=_lambda.Code.from_asset(str(BUILD)),
+            memory_size=1536,
+            environment={**env, "PENDING_TABLE": pending.table_name},
+        )
+
+        def fn(name: str, handler: str, timeout: int, **extra: Any) -> _lambda.Function:
+            return _lambda.Function(
+                self,
+                name,
+                handler=f"service.ingest.{handler}",
+                timeout=Duration.seconds(timeout),
+                log_group=logs.LogGroup(
+                    self, f"Logs{name}", retention=logs.RetentionDays.THREE_DAYS, removal_policy=RemovalPolicy.DESTROY
+                ),
+                **{**shared, **extra},  # type: ignore[arg-type]
+            )
+
+        ocr = fn("Ocr", "ocr_handler", 240)
+        inbox.grant_read(ocr)
+        core.key.grant_decrypt(ocr)
+        ocr.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["textract:StartDocumentTextDetection", "textract:GetDocumentTextDetection"], resources=["*"]
+            )
+        )
+        extract = fn("Extract", "extract_handler", 60)
+        check = fn("Check", "check_handler", 120)
+        wait = fn("Wait", "await_handler", 30)
+        pending.grant_write_data(wait)
+        core.key.grant_encrypt_decrypt(wait)
+        # The two steps that touch Neptune run in its VPC, with the same role limits as the other graph Lambdas.
+        apply = fn("Apply", "apply_handler", 120, **vpc_args)
+        rerun = fn("Rerun", "rerun_handler", 120, **vpc_args)
+        neptune_access(
+            apply,
+            "neptune-db:connect",
+            "neptune-db:ReadDataViaQuery",
+            "neptune-db:WriteDataViaQuery",
+            "neptune-db:DeleteDataViaQuery",
+        )
+        neptune_access(rerun, "neptune-db:connect", "neptune-db:ReadDataViaQuery")
+
+        def step(name: str, f: _lambda.Function, **kw: Any) -> tasks.LambdaInvoke:
+            return tasks.LambdaInvoke(self, name, lambda_function=f, payload_response_only=True, **kw)
+
+        failed = sfn.Fail(self, "NotApproved", error="NotApproved", cause="A steward rejected the proposal.")
+        invalid = sfn.Fail(self, "Invalid", error="Invalid", cause="The proposal did not pass the shape checks.")
+        approval = tasks.LambdaInvoke(
+            self,
+            "AwaitApproval",
+            lambda_function=wait,
+            integration_pattern=sfn.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
+            payload=sfn.TaskInput.from_object(
+                {
+                    "execution": sfn.JsonPath.string_at("$$.Execution.Name"),
+                    "token": sfn.JsonPath.task_token,
+                    "candidate": sfn.JsonPath.string_at("$.candidate"),
+                    "record": sfn.JsonPath.object_at("$.record"),
+                }
+            ),
+            result_path="$.decision",
+            heartbeat_timeout=None,
+            task_timeout=sfn.Timeout.duration(Duration.days(7)),
+        )
+        approval.add_catch(failed, errors=["Rejected"], result_path="$.rejection")
+        definition = (
+            step("ReadWithTextract", ocr)
+            .next(step("ExtractGrant", extract, result_selector={"value.$": "$"}, output_path="$.value"))
+            .next(step("CheckShapes", check))
+            .next(
+                sfn.Choice(self, "Conforms")
+                .when(sfn.Condition.boolean_equals("$.conforms", False), invalid)
+                .otherwise(approval.next(step("WriteToGraph", apply)).next(step("RerunRequests", rerun)))
+            )
+        )
+        machine = sfn.StateMachine(
+            self,
+            "Machine",
+            state_machine_name="gonogo-ingest",
+            definition_body=sfn.DefinitionBody.from_chainable(definition),
+            timeout=Duration.days(8),
+            tracing_enabled=True,
+        )
+        starter = fn("Start", "start_handler", 30, environment={"MACHINE": machine.state_machine_arn})
+        machine.grant_start_execution(starter)
+        inbox.add_event_notification(
+            s3.EventType.OBJECT_CREATED, s3n.LambdaDestination(starter), s3.NotificationKeyFilter(suffix=".pdf")
+        )
+        decide = fn("Decide", "decide_handler", 30)
+        pending.grant_read_write_data(decide)
+        core.key.grant_encrypt_decrypt(decide)
+        decide.add_to_role_policy(
+            iam.PolicyStatement(actions=["states:SendTaskSuccess", "states:SendTaskFailure"], resources=["*"])
+        )
+        api.root.add_resource("ingest").add_resource("decide").add_method(
+            "POST", apigw.LambdaIntegration(decide), **secured
+        )
+        cdk.CfnOutput(self, "InboxBucket", value=inbox.bucket_name)
+        cdk.CfnOutput(self, "MachineArn", value=machine.state_machine_arn)
 
 
 DIST = Path(__file__).resolve().parent.parent / "ui" / "dist"
@@ -529,3 +694,110 @@ class BudgetStack(Stack):
             ],
         )
         cdk.CfnOutput(self, "BudgetLimitUsd", value=str(limit_usd))
+
+
+EMBEDDING_MODEL = "amazon.titan-embed-text-v2:0"
+EMBEDDING_DIMENSIONS = 1024
+
+
+class EvalStack(Stack):
+    """Vector retrieval for the benchmark (eval/rag.py). S3 Vectors holds the index, so nothing bills while idle
+    except a few megabytes of storage; an OpenSearch Serverless collection would bill by the hour."""
+
+    def __init__(self, scope: Construct, id: str, **kw: Any) -> None:
+        super().__init__(scope, id, **kw)
+        tag(self)
+        docs = s3.Bucket(
+            self,
+            "Corpus",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            enforce_ssl=True,
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+        )
+        vectors = s3vectors.CfnVectorBucket(self, "Vectors", vector_bucket_name=f"gonogo-eval-{self.account}")
+        index = s3vectors.CfnIndex(
+            self,
+            "Index",
+            vector_bucket_name=vectors.vector_bucket_name,
+            index_name="gonogo-corpus",
+            data_type="float32",
+            dimension=EMBEDDING_DIMENSIONS,
+            distance_metric="cosine",
+            # The Knowledge Base stores each chunk's text and its own metadata on the vector. They are too large for
+            # filterable metadata, which S3 Vectors caps at 2 KB, so they are marked non-filterable.
+            metadata_configuration=s3vectors.CfnIndex.MetadataConfigurationProperty(
+                non_filterable_metadata_keys=["AMAZON_BEDROCK_TEXT", "AMAZON_BEDROCK_METADATA"]
+            ),
+        )
+        index.add_dependency(vectors)
+        model_arn = f"arn:aws:bedrock:{self.region}::foundation-model/{EMBEDDING_MODEL}"
+        role = iam.Role(
+            self,
+            "KnowledgeBaseRole",
+            assumed_by=iam.ServicePrincipal(
+                "bedrock.amazonaws.com",
+                conditions={"StringEquals": {"aws:SourceAccount": self.account}},
+            ),
+        )
+        role.add_to_policy(iam.PolicyStatement(actions=["bedrock:InvokeModel"], resources=[model_arn]))
+        docs.grant_read(role)
+        role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "s3vectors:PutVectors",
+                    "s3vectors:GetVectors",
+                    "s3vectors:DeleteVectors",
+                    "s3vectors:QueryVectors",
+                    "s3vectors:GetIndex",
+                ],
+                resources=[index.attr_index_arn],
+            )
+        )
+        kb = bedrock.CfnKnowledgeBase(
+            self,
+            "KnowledgeBase",
+            name="gonogo-corpus",
+            role_arn=role.role_arn,
+            knowledge_base_configuration=bedrock.CfnKnowledgeBase.KnowledgeBaseConfigurationProperty(
+                type="VECTOR",
+                vector_knowledge_base_configuration=bedrock.CfnKnowledgeBase.VectorKnowledgeBaseConfigurationProperty(
+                    embedding_model_arn=model_arn,
+                    embedding_model_configuration=bedrock.CfnKnowledgeBase.EmbeddingModelConfigurationProperty(
+                        bedrock_embedding_model_configuration=bedrock.CfnKnowledgeBase.BedrockEmbeddingModelConfigurationProperty(
+                            dimensions=EMBEDDING_DIMENSIONS, embedding_data_type="FLOAT32"
+                        )
+                    ),
+                ),
+            ),
+            storage_configuration=bedrock.CfnKnowledgeBase.StorageConfigurationProperty(
+                type="S3_VECTORS",
+                s3_vectors_configuration=bedrock.CfnKnowledgeBase.S3VectorsConfigurationProperty(
+                    index_arn=index.attr_index_arn, vector_bucket_arn=vectors.attr_vector_bucket_arn
+                ),
+            ),
+        )
+        kb.node.add_dependency(role)
+        source = bedrock.CfnDataSource(
+            self,
+            "Source",
+            name="gonogo-corpus-s3",
+            knowledge_base_id=kb.attr_knowledge_base_id,
+            data_source_configuration=bedrock.CfnDataSource.DataSourceConfigurationProperty(
+                type="S3",
+                s3_configuration=bedrock.CfnDataSource.S3DataSourceConfigurationProperty(bucket_arn=docs.bucket_arn),
+            ),
+            vector_ingestion_configuration=bedrock.CfnDataSource.VectorIngestionConfigurationProperty(
+                chunking_configuration=bedrock.CfnDataSource.ChunkingConfigurationProperty(
+                    chunking_strategy="FIXED_SIZE",
+                    fixed_size_chunking_configuration=bedrock.CfnDataSource.FixedSizeChunkingConfigurationProperty(
+                        max_tokens=300, overlap_percentage=15
+                    ),
+                )
+            ),
+            data_deletion_policy="DELETE",
+        )
+        cdk.CfnOutput(self, "CorpusBucket", value=docs.bucket_name)
+        cdk.CfnOutput(self, "KnowledgeBaseId", value=kb.attr_knowledge_base_id)
+        cdk.CfnOutput(self, "DataSourceId", value=source.attr_data_source_id)

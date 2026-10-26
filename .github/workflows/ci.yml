@@ -19,7 +19,7 @@ jobs:
       - run: uv sync --frozen
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run mypy gonogo ingest synth kg rules er agent api authz service
+      - run: uv run mypy gonogo ingest synth kg rules er agent api authz service eval pgraph
       # Offline suite: shapes, competency questions on rdflib, the graph build, and the ontology checks.
       - run: uv run pytest
 
@@ -66,6 +66,12 @@ jobs:
         run: uv run python -m kg all
       # With the full graph loaded, every rule decision over HTTP must match the in-memory engine.
       - run: uv run pytest -m docker -k sparql_store
+      # ADR 0003: R2 in Cypher on Neo4j returns the same grants as R2 in SPARQL.
+      - name: Start Neo4j
+        run: docker run -d --name neo4j -p 7687:7687 -e NEO4J_AUTH=neo4j/gonogo-local neo4j:5.26-community
+      - name: Wait for Neo4j
+        run: until docker logs neo4j 2>&1 | grep -q "Started"; do sleep 2; done
+      - run: uv run pytest -m docker tests/integration/test_pgraph.py
       # The public demo serves a committed snapshot of the graph, so it must match a fresh build.
       - run: git diff --exit-code api/snapshot
 
@@ -98,7 +104,10 @@ jobs:
       - run: uv sync --frozen
       # The visualizations read JSON exported from the ontology and the built graph.
       - run: uv run python -m kg.export_viz
-      - run: git diff --exit-code ui/public/data
+      # The benchmark's tables and chart data are scored from the committed runs, so they must not drift.
+      - run: uv run python -m eval.score
+      - run: uv run python -m eval.report
+      - run: git diff --exit-code ui/public/data eval/results.json eval/results.md
       - run: npm ci
         working-directory: ui
       - run: npm run build

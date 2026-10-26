@@ -337,3 +337,66 @@ def test_every_resource_type_has_a_plain_description_and_the_inventory_is_curren
     kinds = {r["Type"] for stack in resources.values() for r in stack.values()}
     assert kinds - {"AWS::CDK::Metadata"} <= set(inventory.PURPOSE), kinds - set(inventory.PURPOSE)
     assert inventory.OUT.read_text() == inventory.render(), "run: uv run python infra/inventory.py"
+
+
+# ---- Gate 4: ingestion and the benchmark's vector search ----------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def gate4(bundle: Path) -> dict[str, assertions.Template]:
+    stacks.BUILD = bundle
+    stacks.DIST = bundle / "dist"
+    stacks.DIST.mkdir(exist_ok=True)
+    (stacks.DIST / "index.html").write_text("<html></html>")
+    app = cdk.App()
+    env = cdk.Environment(account="123456789012", region="us-east-2")
+    core = stacks.CoreStack(app, "gonogo-core", env=env)
+    api = stacks.ApiStack(app, "gonogo-api", core=core, deploy_neptune=True, deploy_ingest=True, env=env)
+    evaluation = stacks.EvalStack(app, "gonogo-eval", env=env)
+    return {"api": assertions.Template.from_stack(api), "eval": assertions.Template.from_stack(evaluation)}
+
+
+def test_the_ingestion_state_machine_waits_for_a_person_with_a_task_token(
+    gate4: dict[str, assertions.Template],
+) -> None:
+    import json
+
+    machines = resources(gate4["api"], "AWS::StepFunctions::StateMachine")
+    assert len(machines) == 1
+    definition = json.dumps(next(iter(machines.values()))["Properties"]["DefinitionString"])
+    assert "waitForTaskToken" in definition
+    for step in ("ReadWithTextract", "ExtractGrant", "CheckShapes", "AwaitApproval", "WriteToGraph", "RerunRequests"):
+        assert step in definition
+
+
+def test_only_the_apply_step_can_write_to_neptune(gate4: dict[str, assertions.Template]) -> None:
+    api = gate4["api"]
+    writers = [
+        name
+        for name, r in resources(api, "AWS::IAM::Policy").items()
+        if "neptune-db:WriteDataViaQuery" in str(r["Properties"]["PolicyDocument"])
+    ]
+    assert len(writers) == 2, writers  # the loader's policy and the ingestion apply step's, and nothing else
+
+
+def test_the_ingestion_inbox_is_private_and_encrypted(gate4: dict[str, assertions.Template]) -> None:
+    buckets = {k: b for k, b in resources(gate4["api"], "AWS::S3::Bucket").items() if "Inbox" in k}
+    assert len(buckets) == 1
+    props = next(iter(buckets.values()))["Properties"]
+    assert props["PublicAccessBlockConfiguration"]["BlockPublicAcls"] is True
+    assert "aws:kms" in str(props["BucketEncryption"])
+
+
+def test_the_decision_route_needs_a_signed_in_user(gate4: dict[str, assertions.Template]) -> None:
+    methods = resources(gate4["api"], "AWS::ApiGateway::Method")
+    decide = [m for m in methods.values() if "Decide" in str(m["Properties"].get("Integration", ""))]
+    assert decide and all(m["Properties"]["AuthorizationType"] == "COGNITO_USER_POOLS" for m in decide)
+
+
+def test_the_benchmark_index_is_s3_vectors_not_a_billed_cluster(gate4: dict[str, assertions.Template]) -> None:
+    ev = gate4["eval"]
+    ev.resource_count_is("AWS::S3Vectors::Index", 1)
+    ev.resource_count_is("AWS::OpenSearchServerless::Collection", 0)
+    kb = next(iter(resources(ev, "AWS::Bedrock::KnowledgeBase").values()))["Properties"]
+    assert kb["StorageConfiguration"]["Type"] == "S3_VECTORS"
+    assert "titan-embed-text-v2" in str(kb["KnowledgeBaseConfiguration"])

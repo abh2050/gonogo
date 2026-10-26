@@ -2,8 +2,8 @@
 
     uvx --with playwright python scripts/diagram_walk.py
 
-The camera moves from one region of docs/architecture/gonogo-aws.png to the next. Each step is held for its narration,
-the same way as the other walks (see walkkit.step).
+The camera moves from one region of the system overview (docs/architecture/gonogo-aws-1-overview.png) to the
+next. Each step is held for its narration, the same way as the other walks (see walkkit.step).
 """
 
 from __future__ import annotations
@@ -14,16 +14,16 @@ from pathlib import Path
 from playwright.sync_api import Page
 from walkkit import ROOT, encode, record, step
 
-IMG = ROOT / "docs" / "architecture" / "gonogo-aws.png"
+IMG = ROOT / "docs" / "architecture" / "gonogo-aws-1-overview.png"
 # (step key, caption, focus x, focus y as fractions of the picture, zoom)
 STEPS = [
     ("dia-overview", "GoNoGo on AWS (us-east-2)", 0.5, 0.5, 1.0),
-    ("dia-edge", "CloudFront in front of a private S3 bucket", 0.17, 0.3, 2.2),
-    ("dia-auth", "API Gateway checks the Cognito token on every call", 0.37, 0.3, 2.2),
-    ("dia-engine", "The engine Lambda asks Cedar who may do what", 0.55, 0.3, 2.2),
-    ("dia-data", "Decisions: DynamoDB, S3 Object Lock, EventBridge, KMS", 0.8, 0.4, 1.8),
-    ("dia-vpc", "A VPC with no internet route. One reader, one writer", 0.72, 0.76, 1.55),
-    ("dia-cost", "A $10 budget alarm, and one script to tear it all down", 0.07, 0.75, 2.6),
+    ("dia-edge", "CloudFront in front of a private S3 bucket", 0.15, 0.28, 2.4),
+    ("dia-auth", "API Gateway checks the Cognito token on every call", 0.33, 0.28, 2.4),
+    ("dia-engine", "The engine Lambda asks Cedar who may do what", 0.53, 0.28, 2.4),
+    ("dia-data", "Decisions: DynamoDB, S3 Object Lock, EventBridge, KMS", 0.71, 0.28, 2.4),
+    ("dia-vpc", "A VPC with no internet route. One reader, two writers", 0.42, 0.64, 1.9),
+    ("dia-cost", "A $10 budget alarm, and one script to tear it all down", 0.13, 0.86, 2.6),
 ]
 PAGE = """<!doctype html><body style="margin:0;background:#fff;overflow:hidden">
 <div id="w" style="position:absolute;left:0;top:0;transform-origin:0 0;transition:transform 1.4s ease-in-out">

@@ -81,6 +81,18 @@ PURPOSE: dict[str, tuple[str, str]] = {
         "Adds security headers, and a strict content policy to the app.",
         "Free",
     ),
+    "AWS::StepFunctions::StateMachine": (
+        "The ingestion workflow: read a PDF, extract a grant, check it, wait for a steward, write it, rerun.",
+        "Free while idle",
+    ),
+    "Custom::S3BucketNotifications": ("Lets the ingestion inbox start the workflow when a PDF arrives.", "Free"),
+    "AWS::S3Vectors::VectorBucket": ("Holds the benchmark's vector index.", "Cents of storage"),
+    "AWS::S3Vectors::Index": ("The benchmark's search index over the document corpus.", "Cents of storage"),
+    "AWS::Bedrock::KnowledgeBase": (
+        "Embeds the corpus with Titan and answers search queries for answerer A.",
+        "Free while idle",
+    ),
+    "AWS::Bedrock::DataSource": ("Points the Knowledge Base at the corpus bucket and chunks its documents.", "Free"),
     "AWS::Budgets::Budget": (
         "A $10 monthly budget on GoNoGo's services that emails at 50, 80, and 100 percent.",
         "Free; survives teardown",
@@ -89,8 +101,9 @@ PURPOSE: dict[str, tuple[str, str]] = {
 
 STACKS = {
     "gonogo-core": "Identity, keys, storage, policies",
-    "gonogo-api": "The network, the graph database, the functions, and the API",
+    "gonogo-api": "The network, the graph database, the functions, the API, and the ingestion workflow",
     "gonogo-ui": "Where the UI lives",
+    "gonogo-eval": "The benchmark's vector search: a corpus bucket, a vector index, and a Knowledge Base",
     "gonogo-budget": "The cost alarm",
 }
 
@@ -104,11 +117,13 @@ def synthesize() -> dict[str, dict[str, Any]]:
     app = cdk.App()
     env = cdk.Environment(account="123456789012", region="us-east-2")
     core = stacks.CoreStack(app, "gonogo-core", env=env)
-    api = stacks.ApiStack(app, "gonogo-api", core=core, deploy_neptune=True, env=env)
+    api = stacks.ApiStack(app, "gonogo-api", core=core, deploy_neptune=True, deploy_ingest=True, env=env)
     ui = stacks.UiStack(app, "gonogo-ui", core=core, api=api, neptune=True, env=env)
+    evaluation = stacks.EvalStack(app, "gonogo-eval", env=env)
     budget = stacks.BudgetStack(app, "gonogo-budget", limit_usd=10, email="alerts@example.invalid", env=env)
     return {
-        s.stack_name: dict(assertions.Template.from_stack(s).to_json()["Resources"]) for s in (core, api, ui, budget)
+        s.stack_name: dict(assertions.Template.from_stack(s).to_json()["Resources"])
+        for s in (core, api, ui, evaluation, budget)
     }
 
 

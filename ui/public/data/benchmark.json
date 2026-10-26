@@ -1,0 +1,209 @@
+{
+ "answerers": {
+  "C+": {
+   "questions": 200,
+   "accuracy": 97.5,
+   "false_go": [],
+   "false_go_rate": 0.0,
+   "missed_go_rate": 2.3,
+   "citation_precision": 100.0,
+   "decisive_recall": 100.0,
+   "cases": 65,
+   "case_accuracy": 92.3,
+   "accuracy_by_style": {
+    "casual": 100.0,
+    "formal": 100.0,
+    "noisy": 88.9,
+    "terse": 100.0,
+    "unanswerable": 100.0
+   },
+   "accuracy_by_family": {
+    "Baselines and steward loop": [
+     16,
+     16
+    ],
+    "Combiner order": [
+     7,
+     8
+    ],
+    "Corrections": [
+     8,
+     8
+    ],
+    "Planted instructions": [
+     12,
+     12
+    ],
+    "R1 patent in force": [
+     28,
+     28
+    ],
+    "R2 overlapping grants": [
+     44,
+     44
+    ],
+    "R3 co-exclusive cap": [
+     11,
+     12
+    ],
+    "R4 notice window": [
+     7,
+     8
+    ],
+    "R5 export control": [
+     10,
+     12
+    ],
+    "R6 co-owner consent": [
+     16,
+     16
+    ],
+    "Terms in time": [
+     16,
+     16
+    ],
+    "Unanswerable": [
+     20,
+     20
+    ]
+   },
+   "retrieval_hit_rate": null,
+   "errors": 0,
+   "latency_p50_s": 1.557,
+   "latency_p95_s": 7.586,
+   "model_calls": 114,
+   "tokens_in": 106129,
+   "tokens_out": 18555,
+   "model_cost_usd": 0.1989,
+   "confusion": {
+    "COUNSEL -> COUNSEL": 34,
+    "COUNSEL -> NO DATA": 2,
+    "GO -> GO": 43,
+    "GO -> NO DATA": 1,
+    "HOLD -> COUNSEL": 2,
+    "HOLD -> HOLD": 6,
+    "NEEDS INFO -> NEEDS INFO": 20,
+    "NO DATA -> NO DATA": 20,
+    "NO GO -> NO GO": 72
+   }
+  },
+  "C": {
+   "questions": 200,
+   "accuracy": 50.5,
+   "false_go": [],
+   "false_go_rate": 0.0,
+   "missed_go_rate": 54.5,
+   "citation_precision": 100.0,
+   "decisive_recall": 48.2,
+   "cases": 65,
+   "case_accuracy": 30.8,
+   "accuracy_by_style": {
+    "casual": 0.0,
+    "formal": 100.0,
+    "noisy": 80.0,
+    "terse": 0.0,
+    "unanswerable": 100.0
+   },
+   "accuracy_by_family": {
+    "Baselines and steward loop": [
+     7,
+     16
+    ],
+    "Combiner order": [
+     3,
+     8
+    ],
+    "Corrections": [
+     4,
+     8
+    ],
+    "Planted instructions": [
+     5,
+     12
+    ],
+    "R1 patent in force": [
+     13,
+     28
+    ],
+    "R2 overlapping grants": [
+     22,
+     44
+    ],
+    "R3 co-exclusive cap": [
+     5,
+     12
+    ],
+    "R4 notice window": [
+     3,
+     8
+    ],
+    "R5 export control": [
+     4,
+     12
+    ],
+    "R6 co-owner consent": [
+     8,
+     16
+    ],
+    "Terms in time": [
+     7,
+     16
+    ],
+    "Unanswerable": [
+     20,
+     20
+    ]
+   },
+   "retrieval_hit_rate": null,
+   "errors": 0,
+   "latency_p50_s": 0.006,
+   "latency_p95_s": 0.234,
+   "model_calls": 0,
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "model_cost_usd": 0.0,
+   "confusion": {
+    "COUNSEL -> COUNSEL": 16,
+    "COUNSEL -> NEEDS INFO": 18,
+    "COUNSEL -> NO DATA": 2,
+    "GO -> GO": 20,
+    "GO -> NEEDS INFO": 23,
+    "GO -> NO DATA": 1,
+    "HOLD -> COUNSEL": 2,
+    "HOLD -> HOLD": 2,
+    "HOLD -> NEEDS INFO": 4,
+    "NEEDS INFO -> NEEDS INFO": 20,
+    "NO DATA -> NEEDS INFO": 11,
+    "NO DATA -> NO DATA": 9,
+    "NO GO -> NEEDS INFO": 38,
+    "NO GO -> NO GO": 34
+   }
+  }
+ },
+ "golden": {
+  "questions": 200,
+  "cases": 65,
+  "verdicts": {
+   "GO": 44,
+   "COUNSEL": 36,
+   "NO GO": 72,
+   "HOLD": 8,
+   "NO DATA": 20,
+   "NEEDS INFO": 20
+  }
+ },
+ "pgraph": {
+  "requests": 1435,
+  "with_a_conflict": 503,
+  "agree": 1435,
+  "differ": [],
+  "median_ms": {
+   "sparql_rdflib": 13.22,
+   "cypher_neo4j": 3.28
+  },
+  "query_lines": {
+   "sparql": 14,
+   "cypher": 13
+  }
+ }
+}

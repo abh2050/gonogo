@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Architecture from "./pages/Architecture";
+import Benchmark from "./pages/Benchmark";
 import Ask from "./pages/Ask";
 import Findings from "./pages/Findings";
 import History from "./pages/History";
@@ -19,6 +20,7 @@ const PAGES = [
   { path: "steward", label: "Steward", element: <Steward /> },
   { path: "history", label: "History", element: <History /> },
   { path: "architecture", label: "Architecture", element: <Architecture /> },
+  { path: "benchmark", label: "Benchmark", element: <Benchmark /> },
   { path: "ontology", label: "Ontology", element: <OntologyMap /> },
   { path: "vocabularies", label: "Vocabularies", element: <Vocabularies /> },
   { path: "findings", label: "Data findings", element: <Findings /> },
