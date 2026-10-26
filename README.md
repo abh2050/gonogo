@@ -68,6 +68,43 @@ cd ui && npm install && npm run dev         # the app, with /api forwarded to po
 [docs/public-demo.md](docs/public-demo.md) explains how the interactive demo keeps working after the AWS
 stack is torn down.
 
+### Explore the graph in Neo4j Browser
+
+The same approved grants, vocabularies, and provenance also load into Neo4j as a property graph, so you can click
+through them in Neo4j Browser. This copy is for exploring and for the comparison in
+[ADR 0003](docs/adr/0003-rdf-versus-property-graph.md); the rules never read it.
+
+```bash
+docker compose up -d --wait neo4j    # Neo4j 5 Community on :7474 and :7687
+uv run python -m pgraph.load         # about 770 nodes and 1,200 relationships
+```
+
+Open [http://localhost:7474/browser/](http://localhost:7474/browser/) and sign in with user `neo4j` and password
+`gonogo-local` (or your `NEO4J_PASSWORD`). Then try:
+
+```cypher
+// Every node label and how they connect
+CALL db.schema.visualization()
+
+// One patent with its grants, licensees, fields, territories, and source documents
+MATCH (p:Patent {key: "LEW-18461-2"})<-[:ABOUT]-(g:Grant)
+OPTIONAL MATCH (g)-[r]->(x)
+RETURN p, g, r, x
+
+// The field-of-use hierarchy
+MATCH path = (f:Field)-[:BROADER*1..3]->(:Field)
+RETURN path LIMIT 80
+
+// Rule R2 in Cypher: grants that overlap a request, walking the hierarchy both ways
+MATCH (g:ExecutedGrant)-[:ABOUT]->(:Patent {key: "LEW-18461-2"}),
+      (g)-[:FIELD]->(gf:Field), (rf:Field {id: "spacecraft-systems"})
+WHERE EXISTS { (rf)-[:BROADER*0..]->(gf) } OR EXISTS { (gf)-[:BROADER*1..]->(rf) }
+RETURN g, gf, rf
+```
+
+Click a node for its properties, and double-click it to expand its neighbors. The full rule is
+[pgraph/r2.cypher](pgraph/r2.cypher), and `uv run python -m pgraph.compare` checks it against the SPARQL version.
+
 ## Data
 
 GoNoGo uses real public data from five NASA and federal sources, including USPTO legal status, and labels
