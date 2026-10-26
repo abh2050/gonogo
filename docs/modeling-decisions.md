@@ -278,3 +278,28 @@ whether the threshold is right.
 **Evidence.** ADR 0002, `tests/authz/test_policies.py` (every role against every action), and
 `tests/rules/test_separation.py`, which runs the decoy through the whole sequence.
 
+### MD16. Verdicts go to a table for finance, and Ontop shows the table as a graph
+
+**Problem.** Finance analysts read verdicts and royalty terms in Snowflake and may not query the graph. At the
+same time, reports about decisions benefit from the ontology: a finance question such as "how many exclusive
+requests ended in COUNSEL last quarter" reads better as SPARQL over `gng:Decision` than as a column list.
+
+**Choice.** Each decision writes one summary row to a verdict table, with the verdict, the signature, the user and
+role, the release, the combiner version, and the recording cutoff. An R2RML mapping (`mappings/gonogo.r2rml.ttl`)
+describes the table as `gng:Decision` individuals, and Ontop answers SPARQL over them without copying anything.
+The same mapping also describes the patent master and licensee tables, so the mapping is the contract between
+Snowflake and the ontology. The rules never read Ontop: a rule reads only facts that were loaded with recording
+times, so a decision reproduces. Decisions get their own property, `gng:decisionPatent`, because
+`gng:aboutPatent` belongs to facts.
+
+**Why.** A virtual graph over reporting data costs nothing to keep in sync, and the mapping documents what each
+column means. Materializing the same mapping produces the same triples as the build for the columns it covers,
+which a test checks.
+
+**Cost.** Ontop is another service to run, and the mapping must change when a table does. The writeback is
+idempotent but not transactional with the decision record, so a crash between the two leaves a decision with no
+finance row until the next write.
+
+**Evidence.** `tests/integration/test_ontop.py` materializes the mapping over PostgreSQL and compares it with the
+graph. `tests/service/test_writeback.py` checks the writeback, and says what a live Snowflake account would add.
+

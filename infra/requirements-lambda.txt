@@ -1,0 +1,10 @@
+# What the two Lambda functions import at run time. boto3 comes with the Lambda runtime.
+fastapi
+mangum
+pydantic
+rdflib
+pyyaml
+cedarpy
+pyshacl
+owlrl
+httpx

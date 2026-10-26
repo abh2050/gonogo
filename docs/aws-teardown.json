@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-25T07:24:59Z",
+  "region": "us-east-2",
+  "actions": [
+    "emptied the audit bucket with the Object Lock bypass; the first run then failed on the graph bucket, because S3 rejects the bypass flag on a bucket without Object Lock (fixed in scripts/teardown.py)",
+    "emptied the graph bucket: 4 objects",
+    "cdk destroy gonogo-api gonogo-core (Neptune cluster and instance, three Lambdas, API Gateway, Cognito, Verified Permissions, DynamoDB, KMS key, buckets, VPC, event bus)",
+    "deleted log group /aws/lambda/gonogo-core-CustomS3AutoDeleteObjectsCustomResourc-XJj7ts9fIWQi"
+  ],
+  "left_behind": [
+    {
+      "resource": "AWS::CloudFormation::Stack gonogo-budget",
+      "why": "status CREATE_COMPLETE"
+    },
+    {
+      "resource": "AWS::KMS::Key ac5487d9-d759-4d47-a8f1-425d8d6ced89",
+      "why": "pending deletion until 2026-11-01, the shortest wait KMS allows; not billed"
+    },
+    {
+      "resource": "AWS::Budgets::Budget gonogo-monthly",
+      "why": "Free. It emails at 50, 80, and 100 percent of the monthly limit."
+    }
+  ],
+  "still_billing": []
+}

@@ -8,7 +8,7 @@ BANNED = ["delve", "crucial", "pivotal", "robust", "seamless", "landscape", "lev
 
 
 def test_docs_avoid_banned_words() -> None:
-    skipped = {".venv", "node_modules", "raw", "build", ".cache"}
+    skipped = {".venv", "node_modules", "raw", "build", ".cache", "cdk.out"}
     paths = [p for p in ROOT.rglob("*.md") if not skipped & set(p.relative_to(ROOT).parts)]
     assert len(paths) >= 8
     offenders = []

@@ -7,10 +7,10 @@ from functools import cached_property
 from pathlib import Path
 from typing import Any
 
-from rdflib import RDF, URIRef
+from rdflib import URIRef
 
 from kg.ns import FIELD, GNG, GRAPH_APPROVED, GRAPH_RELEASE, TERRITORY, patent_iri
-from kg.store import Store
+from kg.store import Reader
 from kg.templates import render
 from rules.model import ClauseRef, FactRef, Request
 
@@ -40,7 +40,7 @@ def local(iri: str | None) -> str:
 class Context:
     """One evaluation: a request read at a recording cutoff, as of an evaluation date."""
 
-    def __init__(self, store: Store, request: Request, cutoff: str, as_of: str) -> None:
+    def __init__(self, store: Reader, request: Request, cutoff: str, as_of: str) -> None:
         self.store = store
         self.request = request
         self.cutoff = cutoff  # xsd:dateTime lexical form
@@ -79,10 +79,7 @@ class Context:
             raise UnknownConceptError("The request ends before it starts.")
 
     def _has_type(self, iri: str, cls: URIRef) -> bool:
-        for g in (self.store.base[GRAPH_APPROVED], self.store.base[GRAPH_RELEASE]):
-            if (URIRef(iri), RDF.type, cls) in g:
-                return True
-        return False
+        return bool(self.store.has_type(iri, cls))
 
     # ---- templates ----------------------------------------------------------------------------
 

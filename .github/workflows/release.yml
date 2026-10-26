@@ -1,0 +1,72 @@
+name: release
+# A change to anything that can change a verdict is a release. This workflow builds the impact report against the
+# base branch, posts it on the pull request, and fails until counsel has approved the report that CI rebuilt.
+on:
+  pull_request:
+    paths:
+      - "ontology/**"
+      - "shapes/**"
+      - "rules/**"
+      - "config/precedence.yaml"
+      - "mappings/gonogo.r2rml.ttl"
+      - "release/**"
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  gate:
+    name: Impact report and counsel approval
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      # The proposed ontology must be consistent, with no unsatisfiable class.
+      - run: uv run pytest -m robot
+      # The proposed bundle must build, pass SHACL, and keep every recorded verdict.
+      - run: uv run pytest tests/rules tests/authz tests/leakage tests/injection -q
+      - name: Build the impact report against the base branch
+        run: |
+          git fetch origin "${{ github.base_ref }}"
+          uv run python -m release impact --base "origin/${{ github.base_ref }}" | tee impact.md || true
+      - name: Post the report on the pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr comment "${{ github.event.pull_request.number }}" --body-file impact.md
+      # The committed report and counsel's approval of it must match the one CI just rebuilt.
+      - run: uv run python -m release check --base "origin/${{ github.base_ref }}" --recompute
+
+  publish:
+    name: Publish the release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - name: The release must have counsel's approval and a published record
+        run: |
+          uv run python -m release check
+          test -f "release/published/${GITHUB_REF_NAME#v}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.ref_name }}
+          path: |
+            release/published/
+            release/impact/
+            release/approvals/

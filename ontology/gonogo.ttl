@@ -354,7 +354,8 @@ gng:ClearanceRequest a owl:Class ;
 gng:Decision a owl:Class ;
     rdfs:subClassOf prov:Entity ;
     rdfs:label "Decision"@en ;
-    skos:definition "The stored result of one clearance request: the rule findings, the combiner policy, the release, the recording cutoff, and the verdict. Gate 2 adds its properties."@en .
+    skos:definition "The stored result of one clearance request: the rule findings, the combiner policy, the release, the recording cutoff, and the verdict. The full record lives in DynamoDB. A summary row goes to the finance reporting table, and Ontop exposes that row as a Decision."@en ;
+    gng:modelingDecision "MD16" .
 
 # -----------------------------------------------------------------------------------------------------
 # Object properties
@@ -475,6 +476,12 @@ gng:secondApprovedBy a owl:ObjectProperty ;
     rdfs:label "second approved by"@en ;
     skos:definition "The counsel who made the second approval that a conflicting fact, or a fact that moves a verdict to GO, needs before it takes effect."@en ;
     gng:modelingDecision "MD15" .
+
+gng:decisionPatent a owl:ObjectProperty ;
+    rdfs:domain gng:Decision ; rdfs:range gng:Patent ;
+    rdfs:label "decision patent"@en ;
+    skos:definition "The patent that a decision was about. It is separate from gng:aboutPatent, which belongs to facts and would make a decision look like a fact."@en ;
+    gng:modelingDecision "MD16" .
 
 gng:coOwner a owl:ObjectProperty ;
     rdfs:domain gng:OwnershipRecord ; rdfs:range gng:CoOwner ;
@@ -770,6 +777,48 @@ gng:promptVersion a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:label "prompt version"@en ;
     skos:definition "The version of the instructions and output schema that a model extraction used, so a reader can find the exact prompt."@en ;
     gng:modelingDecision "MD14" .
+
+gng:verdict a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Decision ; rdfs:range xsd:string ;
+    rdfs:label "verdict"@en ;
+    skos:definition "The outcome of a decision: GO, NO GO, HOLD, COUNSEL, or NO DATA."@en ;
+    gng:modelingDecision "MD16" .
+
+gng:decisionSignature a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Decision ; rdfs:range xsd:string ;
+    rdfs:label "decision signature"@en ;
+    skos:definition "A SHA-256 digest of the decision's findings. A rerun from the stored context must produce the same digest."@en ;
+    gng:modelingDecision "MD16" .
+
+gng:decidedByUser a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Decision ; rdfs:range xsd:string ;
+    rdfs:label "decided by user"@en ;
+    skos:definition "The signed-in user who asked the question."@en ;
+    gng:modelingDecision "MD16" .
+
+gng:decidedByRole a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Decision ; rdfs:range xsd:string ;
+    rdfs:label "decided by role"@en ;
+    skos:definition "The role that the user held when asking."@en ;
+    gng:modelingDecision "MD16" .
+
+gng:releaseVersion a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Decision ; rdfs:range xsd:string ;
+    rdfs:label "release version"@en ;
+    skos:definition "The ontology release that the decision used."@en ;
+    gng:modelingDecision "MD16" .
+
+gng:combinerPolicyVersion a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Decision ; rdfs:range xsd:string ;
+    rdfs:label "combiner policy version"@en ;
+    skos:definition "The version of the precedence policy that turned rule statuses into the verdict."@en ;
+    gng:modelingDecision "MD16" .
+
+gng:recordingCutoff a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain gng:Decision ; rdfs:range xsd:dateTime ;
+    rdfs:label "recording cutoff"@en ;
+    skos:definition "The recording time that the decision's rules saw. Facts recorded later were invisible to it."@en ;
+    gng:modelingDecision "MD16" .
 
 gng:extractionModel a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain gng:Extraction ; rdfs:range xsd:string ;

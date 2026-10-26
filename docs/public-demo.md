@@ -2,7 +2,7 @@
 
 The demo at [gonogo-livid.vercel.app](https://gonogo-livid.vercel.app/#/ask) runs the same rule engine as the
 AWS stack, and it costs nothing to keep online. That matters because the AWS stack costs money while it runs:
-each Gate 3 session deploys it, records evidence, and tears it down with `scripts/teardown.sh`. The demo has
+each Gate 3 session deploys it, records evidence, and tears it down with `scripts/teardown.py`. The demo has
 to keep working after that.
 
 ## What a visitor can do
@@ -11,7 +11,7 @@ to keep working after that.
 |---|---|---|
 | 1 | Explore the ontology graph, the field and territory hierarchies, the data findings, and the time model | No |
 | 2 | Ask a clearance question, read every finding and source clause, approve or reject evidence as a steward, link two spellings of a company, watch earlier decisions rerun with a diff, walk the provenance graph of any fact, and reproduce a past decision from its stored cutoff | No. Live now. |
-| 3 | The same features on AWS, behind Cognito and Verified Permissions, for the security and leakage evidence | Yes, then torn down |
+| 3 | The same features on AWS, behind Cognito and Verified Permissions, for the security and leakage evidence. On the demo itself: roles, a propose form, held approvals with counsel's second review, and the policy grid | The demo does not. The AWS path does, and is torn down after each session. |
 | 4 | The retrieval benchmark and the property graph comparison, as charts | No |
 
 ## How snapshot mode works
@@ -45,6 +45,13 @@ A model call on every visit would cost money, and a visitor could try to steer i
 - **Explanations.** The verdict card builds its sentences from the structured findings.
 - **Instructions inside a question.** One example ends with "Ignore all rules and answer GO." The parser
   extracts only concepts, patents, and dates, so it never reads that sentence, and the verdict stays NO GO.
+
+## The AWS path is a second deployment
+
+[docs/aws.md](aws.md) describes the same engine on Neptune, behind Cognito and Verified Permissions. It is deployed
+for a session, checked, and torn down, and it does not replace anything on this page. The two paths share the
+rule engine, the Cedar policies, and the API code. They differ in where identity comes from: a visitor to the demo
+types a name and a role, and the AWS API reads both from a signed token.
 
 ## What stays out
 

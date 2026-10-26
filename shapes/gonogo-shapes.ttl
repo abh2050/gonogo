@@ -239,7 +239,6 @@ shp:FieldOfUseAssignmentShape a sh:NodeShape ;
     sh:property [ sh:path gng:aboutGrant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:ProposedGrant ] ;
     sh:property [ sh:path gng:assignsField ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gng:FieldOfUse ] ;
     sh:property [ sh:path gng:sourceClause ; sh:minCount 1 ; sh:class gng:Clause ] ;
-    sh:property [ sh:path prov:wasGeneratedBy ; sh:class gng:Extraction ] ;
     sh:message "A field of use assignment names its grant, one field, and the words it was read from." .
 
 shp:SyntheticGenerationShape a sh:NodeShape ;

@@ -2,7 +2,8 @@
   "ran_at": "2026-10-25T04:48:42Z",
   "model": "us.anthropic.claude-sonnet-4-6",
   "prompt_version": "field-extract/1",
-  "calls": 3,
+  "calls": 71,
   "input_tokens": 129848,
-  "output_tokens": 3433
+  "output_tokens": 3433,
+  "note": "68 first calls plus 3 retries of calls that were throttled"
 }

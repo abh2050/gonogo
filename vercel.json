@@ -7,25 +7,46 @@
   "functions": {
     "api/index.py": {
       "maxDuration": 30,
-      "excludeFiles": "{ui/**,data/**,docs/**,tests/**,build/**,synth/**,ingest/**,infra/**,eval/**,scripts/**,mappings/**,.github/**,**/__pycache__/**}"
+      "excludeFiles": "{ui/**,data/**,docs/**,tests/**,build/**,synth/**,ingest/**,infra/**,eval/**,scripts/**,mappings/**,release/**,.github/**,**/__pycache__/**}"
     }
   },
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api/index" }],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    }
+  ],
   "headers": [
     {
       "source": "/data/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=300" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300"
+        }
+      ]
     },
     {
       "source": "/ontology/(.*)\\.ttl",
       "headers": [
-        { "key": "Content-Type", "value": "text/turtle; charset=utf-8" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Content-Type",
+          "value": "text/turtle; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     },
     {
       "source": "/ontology/(.*)\\.html",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
     }
   ]
 }

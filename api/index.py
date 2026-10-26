@@ -20,11 +20,13 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # Vercel loads this file by path
 
 from fastapi import FastAPI, HTTPException
+from fastapi import Request as HttpRequest
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from rdflib import RDF, Literal, URIRef
 
 from agent.parser import Vocabulary, parse
+from authz import cedar
 from er.resolver import index_parties, propose_links
 from gonogo.paths import SNAPSHOT
 from kg.actions import ActionRejectedError, apply_event, describe_candidate, pending_candidates, replay
@@ -39,6 +41,31 @@ from rules.model import Request
 from rules.policy import policy_version
 
 MAX_EVENTS = 50
+
+
+def who(http: HttpRequest) -> cedar.Principal | None:
+    """The verified caller, when API Gateway and Cognito stand in front of this app. The public demo has none."""
+    from service import identity
+
+    event = http.scope.get("aws.event")
+    claims = identity.claims_from_event(event) if event else None
+    if claims is None:
+        return None
+    try:
+        return identity.principal_from_claims(claims)
+    except identity.IdentityError as e:
+        raise HTTPException(403, str(e)) from e
+
+
+def allow(principal: cedar.Principal | None, action: str, resource: tuple[str, str]) -> None:
+    """Ask Cedar when there is a verified caller. In the demo, the engine's own checks run on the self-declared role."""
+    if principal is None:
+        return
+    decision = cedar.authorize(principal, action, resource)
+    if not decision.allowed:
+        raise HTTPException(403, " ".join(decision.reasons))
+
+
 GRAPH_NAMES = {"release": GRAPH_RELEASE, "approved": GRAPH_APPROVED, "candidate": GRAPH_CANDIDATE}
 
 app = FastAPI(title="GoNoGo", version="0.2.0", docs_url="/api/docs", openapi_url="/api/openapi.json")
@@ -237,12 +264,15 @@ EXAMPLES: list[dict[str, Any]] = [
 
 
 @app.post("/api/parse")
-def parse_text(body: TextBody) -> dict[str, Any]:
+def parse_text(body: TextBody, http: HttpRequest) -> dict[str, Any]:
+    allow(who(http), "AskClearance", ("Request", "r"))
     return parse(body.text, Vocabulary.from_store(world(body.events))).to_dict()
 
 
 @app.post("/api/decide")
-def decide(body: DecideBody) -> dict[str, Any]:
+def decide(body: DecideBody, http: HttpRequest) -> dict[str, Any]:
+    principal = who(http)
+    allow(principal, "AskClearance", ("Request", "r"))
     store = world(body.events)
     parsed: dict[str, Any] | None = None
     if body.request is not None:
@@ -256,10 +286,20 @@ def decide(body: DecideBody) -> dict[str, Any]:
     else:
         raise HTTPException(422, "Send a question as text or a structured request.")
     try:
-        record = evaluate_now(store, request, parse=parsed, user="demo-visitor")
+        record = evaluate_now(
+            store,
+            request,
+            parse=parsed,
+            user=principal.name if principal else "demo-visitor",
+            role=principal.role if principal else "licensing_manager",
+        )
     except (UnknownConceptError, ValueError) as e:
         raise HTTPException(422, str(e)) from e
     out: dict[str, Any] = {"parse": parsed, "decision": record.to_dict()}
+    if principal:
+        from service import audit
+
+        out["audit"] = audit.record_decision(out["decision"])
     if body.previous and same_question(body.previous.get("request") or {}, record.request):
         out["diff"] = diff(DecisionRecord.from_dict(body.previous), record)
     return out
@@ -272,15 +312,17 @@ def same_question(a: dict[str, Any], b: dict[str, Any]) -> bool:
 
 
 @app.post("/api/rerun")
-def rerun_decision(body: RecordBody) -> dict[str, Any]:
+def rerun_decision(body: RecordBody, http: HttpRequest) -> dict[str, Any]:
     """Evaluate a stored decision again from its stored cutoff. The answer must not change."""
+    allow(who(http), "RerunDecision", ("Decision", str(body.record.get("id", "d"))))
     record = DecisionRecord.from_dict(body.record)
     again = rerun(world(body.events), record)
     return {"decision": again.to_dict(), "reproduced": again.signature == record.signature}
 
 
 @app.post("/api/queue")
-def queue(body: Session) -> dict[str, Any]:
+def queue(body: Session, http: HttpRequest) -> dict[str, Any]:
+    allow(who(http), "ReadGraph", ("Graph", "candidate"))  # the queue is the candidate graph
     store = world(body.events)
 
     def open_link(p: dict[str, Any]) -> bool:
@@ -305,14 +347,24 @@ def queue(body: Session) -> dict[str, Any]:
 
 
 @app.post("/api/act")
-def act(body: ActBody) -> dict[str, Any]:
+def act(body: ActBody, http: HttpRequest) -> dict[str, Any]:
     store = world(body.events).copy()  # the cached world stays as it was
     event = {**body.event, "params": {**(body.event.get("params") or {}), "requests": body.requests}}
+    principal = who(http)
+    if principal:  # a verified caller's name and role override whatever the body claims
+        event["steward"], event["role"] = principal.name, principal.role
     try:
         result = apply_event(store, event)
     except ActionRejectedError as e:
         raise HTTPException(422, str(e)) from e
     events = [*body.events, result["event"]]
+    if principal:
+        from service import audit
+
+        audit.publish(
+            "fact.approved" if result.get("new_facts") else "fact.action",
+            {"action": result["action"], "route": result["route"], "by": principal.name},
+        )
     _WORLDS[hashlib.sha256(json.dumps(events, sort_keys=True).encode()).hexdigest()] = store
     return {"events": events, "result": result, "sparql_update": sparql_updates(store)[-1:]}
 
@@ -325,41 +377,9 @@ def authz_matrix() -> dict[str, Any]:
 
 @cache
 def _authz_matrix() -> dict[str, Any]:
-    from authz import cedar
+    from authz import cedar, matrix
 
-    clean = {"proposer": "feed", "firstApprover": "", "conflict": False, "upgradesToGo": False}
-    flagged = clean | {"conflict": True}
-    second = clean | {"firstApprover": "someone else", "conflict": True}
-    release = {"proposer": "someone else", "gatePassed": True, "counselApproved": True}
-    cases: list[tuple[str, str, tuple[str, str], dict[str, Any] | None]] = [
-        ("Ask a clearance question", "AskClearance", ("Request", "r"), None),
-        ("Read a decision", "ViewDecision", ("Decision", "d"), None),
-        ("Read the approved graph", "ReadGraph", ("Graph", "approved"), None),
-        ("Read the candidate graph", "ReadGraph", ("Graph", "candidate"), None),
-        ("Read the royalty graph", "ReadGraph", ("Graph", "royalty"), None),
-        ("Read royalty terms in Snowflake", "ReadRoyaltyTable", ("Decision", "d"), None),
-        ("Propose a fact", "ProposeFact", ("Candidate", "c"), None),
-        ("Approve a clean fact", "ApproveFact", ("Candidate", "c"), clean),
-        ("Approve a conflicting fact alone", "ApproveFact", ("Candidate", "c"), flagged),
-        ("Submit a flagged approval", "SubmitForSecondReview", ("Candidate", "c"), flagged),
-        ("Second review", "SecondReview", ("Candidate", "c"), second),
-        ("Reject a fact", "RejectFact", ("Candidate", "c"), None),
-        ("Link two companies", "LinkIdentity", ("IdentityPair", "p"), clean),
-        ("Override a verdict", "OverrideVerdict", ("Decision", "d"), None),
-        ("Read release history", "ReadReleaseHistory", ("Release", "r"), None),
-        ("Propose a release", "ProposeRelease", ("Release", "r"), None),
-        ("Publish a release", "PublishRelease", ("Release", "r"), release),
-    ]
-    rows = [
-        {
-            "label": label,
-            "action": action,
-            "allowed": {
-                role: cedar.authorize(cedar.Principal("pat", role), action, res, ctx).allowed for role in cedar.ROLES
-            },
-        }
-        for label, action, res, ctx in cases
-    ]
+    rows = matrix.evaluate()
     return {"roles": list(cedar.ROLES), "rows": rows, "policies": [i for i, _ in cedar._policy_meta()]}
 
 
@@ -392,10 +412,16 @@ def short(iri: Any) -> str:
 
 
 @app.post("/api/provenance")
-def provenance(body: NodeBody) -> dict[str, Any]:
+def provenance(body: NodeBody, http: HttpRequest) -> dict[str, Any]:
     """The neighborhood of a fact, two steps out: who made it, from what, what it replaced, and what it is about."""
+    principal = who(http)
+    allow(principal, "ReadGraph", ("Graph", "approved"))
     store = world(body.events)
-    g = store._union([GRAPH_APPROVED, GRAPH_RELEASE, GRAPH_CANDIDATE])
+    # A caller who may not read the candidate graph sees the approved and release graphs only.
+    graphs = [GRAPH_APPROVED, GRAPH_RELEASE]
+    if principal is None or cedar.may_read_graph(principal, "candidate"):
+        graphs.append(GRAPH_CANDIDATE)
+    g = store._union(graphs)
     start = URIRef(body.iri)
     if (start, None, None) not in g:
         raise HTTPException(404, "The graph holds no such node.")

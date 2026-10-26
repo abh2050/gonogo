@@ -1,0 +1,58 @@
+@prefix rr:    <http://www.w3.org/ns/r2rml#> .
+@prefix gng:   <https://w3id.org/gonogo/ontology#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix map:   <https://w3id.org/gonogo/mapping#> .
+
+# R2RML mapping from the three relational tables to the GoNoGo ontology (mappings/tables.py defines the tables).
+#
+# Ontop reads this file to answer SPARQL over Snowflake without copying the data. Materializing it must
+# reproduce the triples that kg/build.py writes for the same columns, and tests/integration/test_ontop.py checks
+# that it does. A NULL column produces no triple, so an unstated patent number stays unstated.
+#
+# The IRIs match the graph's: https://w3id.org/gonogo/id/patent/<key>, .../licensee/<key>, and .../licensee/real/<key>.
+
+map:Patent a rr:TriplesMap ;
+    rr:logicalTable [ rr:tableName "patent_master" ] ;
+    rr:subjectMap [ rr:template "https://w3id.org/gonogo/id/patent/{patent_key}" ; rr:class gng:Patent ] ;
+    rr:predicateObjectMap [ rr:predicate dct:identifier ; rr:objectMap [ rr:column "patent_key" ] ] ;
+    rr:predicateObjectMap [ rr:predicate dct:title ; rr:objectMap [ rr:column "title" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:caseNumber ; rr:objectMap [ rr:column "case_number" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:patentNumber ; rr:objectMap [ rr:column "patent_number" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:applicationSerial ; rr:objectMap [ rr:column "application_sn" ] ] ;
+    rr:predicateObjectMap [
+        rr:predicate gng:center ;
+        rr:objectMap [ rr:template "https://w3id.org/gonogo/center/{center_code}" ; rr:termType rr:IRI ]
+    ] .
+
+# A licensee that a notice named has its own node under /licensee/real/. A generated one sits under /licensee/.
+map:RealLicensee a rr:TriplesMap ;
+    rr:logicalTable [ rr:sqlQuery "SELECT licensee_key, legal_name, country, address FROM licensee WHERE origin = 'real'" ] ;
+    rr:subjectMap [ rr:template "https://w3id.org/gonogo/id/licensee/real/{licensee_key}" ; rr:class gng:Licensee ] ;
+    rr:predicateObjectMap [ rr:predicate schema:legalName ; rr:objectMap [ rr:column "legal_name" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:countryCode ; rr:objectMap [ rr:column "country" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:registeredAddress ; rr:objectMap [ rr:column "address" ] ] .
+
+map:SyntheticLicensee a rr:TriplesMap ;
+    rr:logicalTable [ rr:sqlQuery "SELECT licensee_key, legal_name, country, address FROM licensee WHERE origin = 'synthetic'" ] ;
+    rr:subjectMap [ rr:template "https://w3id.org/gonogo/id/licensee/{licensee_key}" ; rr:class gng:Licensee ] ;
+    rr:predicateObjectMap [ rr:predicate schema:legalName ; rr:objectMap [ rr:column "legal_name" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:countryCode ; rr:objectMap [ rr:column "country" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:registeredAddress ; rr:objectMap [ rr:column "address" ] ] .
+
+# One finance row per decision, exposed as a gng:Decision. No rule reads this mapping.
+map:Decision a rr:TriplesMap ;
+    rr:logicalTable [ rr:tableName "verdict_log" ] ;
+    rr:subjectMap [ rr:template "https://w3id.org/gonogo/id/decision/{decision_id}" ; rr:class gng:Decision ] ;
+    rr:predicateObjectMap [ rr:predicate gng:verdict ; rr:objectMap [ rr:column "verdict" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:decisionSignature ; rr:objectMap [ rr:column "signature" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:decidedByUser ; rr:objectMap [ rr:column "decided_by" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:decidedByRole ; rr:objectMap [ rr:column "role" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:releaseVersion ; rr:objectMap [ rr:column "release_version" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:combinerPolicyVersion ; rr:objectMap [ rr:column "combiner_policy_version" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gng:recordingCutoff ; rr:objectMap [ rr:column "recording_cutoff" ; rr:datatype xsd:dateTime ] ] ;
+    rr:predicateObjectMap [
+        rr:predicate gng:decisionPatent ;
+        rr:objectMap [ rr:template "https://w3id.org/gonogo/id/patent/{patent_key}" ; rr:termType rr:IRI ]
+    ] .

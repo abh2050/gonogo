@@ -1,8 +1,136 @@
 # Status
 
+## Gate 3: the two-person rule, the AWS deployment, the leakage and injection suites, Ontop, and releases
+
+**State:** complete and waiting for approval. Gate 4 has not started.
+**Date:** 2026-10-25
+**Live demo:** https://gonogo-livid.vercel.app/#/steward
+
+Gate 3 is done, with two gaps you should weigh before approving Gate 4. First, no Snowflake account was available,
+so the writeback ran against SQLite and Ontop ran against PostgreSQL. Second, I did not build the Fargate agent,
+the Textract and Step Functions ingestion path, or the Guardrails layer, because your Gate 3 scope did not list
+them. Everything else in your scope is built and was checked, and the AWS stack is torn down. The deployment cost
+under $2 by my estimate and about $0.68 of Bedrock calls; see "AWS spend" for what is measured and what is not.
+
+### Deliverables
+
+| Deliverable | Where | State |
+|---|---|---|
+| Field-of-use extraction for the 68 notices | `agent/field_extractor.py`, `data/processed/field_proposals.jsonl` | Done. 65 notices name no field, 3 got a proposal, and 2 of those enter the steward queue (the third notice has no grant node). Each proposal carries the model ID, the prompt version, and the notice's own words. |
+| The two-person rule | `authz/`, `kg/actions.py`, `kg/governance.py`, [ADR 0002](adr/0002-separation-of-duties.md) | Done. A conflicting approval, or one that would move a verdict from COUNSEL or NO GO to GO, waits for counsel. Nobody approves what they proposed. |
+| The decoy in the injected suite | INJ-045 in `data/synthetic/injected_conflicts.json` | Done. It passes only when the approval cannot produce GO without a second approver. |
+| Cedar for every role and every action | `authz/policies/gonogo.cedar` (21 policies), `authz/gonogo.cedarschema.json` | Done. Six roles, 21 actions, validated against a schema. |
+| Leakage suite, every role | `tests/leakage/` | Done. 338 offline attacks, and 500 queries through the deployed gateway. |
+| Prompt-injection suite | `tests/injection/`, `agent/injection.py` | Done. 41 offline tests, and 36 live calls to the model. |
+| CDK in Python | `infra/` | Done. Three stacks, 18 template assertions, deployed and checked. |
+| Query service with a graph allowlist | `service/query.py`, `service/handler.py` | Done. |
+| Snowflake writeback and R2RML mapping with Ontop | `mappings/`, `service/snowflake.py` | Built and tested, not live. See above. |
+| Release workflow with impact report and counsel approval | `release/`, `.github/workflows/release.yml`, [docs/release-process.md](release-process.md) | Done. |
+| Teardown and the budget alarm | `scripts/teardown.py`, `infra/stacks.py` | Done. |
+| The demo still runs without AWS | `vercel.json`, `api/` | Done. Checked after the push. |
+
+### Test results
+
+| Suite | Command | Result |
+|---|---|---|
+| Lint, format, types | `ruff check`, `ruff format --check`, `mypy` (strict, 82 files) | Pass |
+| Offline | `uv run pytest` | 1,079 passed |
+| Fuseki, Ontop, and the endpoint store | `uv run pytest -m docker` | 50 passed, including all 88 decisions equal over HTTP and an Ontop finance query |
+| HermiT | `uv run pytest -m robot` | 6 passed |
+| AWS, against the deployment | `uv run python infra/evidence.py` | 11 of 11 checks passed ([aws-evidence.json](aws-evidence.json)) |
+| UI | `npm run build` | Pass |
+
+### What the work found
+
+1. **A wrong approval is now held, and the test proves it.** Approving the decoy as one steward leaves the
+   verdict at COUNSEL, adds no fact, and waits. A second steward and the first approver are both refused. A different
+   counsel approves, and the verdict becomes GO. The same sequence passed on AWS with five real Cognito users.
+2. **Writing the model-proposal test found a bug in my own shape.** The new shape for a field-of-use assignment
+   demanded that its generating activity be an `Extraction`. That holds for the candidate and not for the approved
+   copy, which an approval action generates, so SHACL rejected every approval. Approving one on the real data
+   now moves R2 from REVIEW to PASS for an unrelated field, and a test covers it.
+3. **The disjointness check caught a modeling error.** My first draft gave an assignment the property
+   `gng:fieldOfUse`, whose domain is `gng:Grant`, and the build refused to load an individual that was both. The
+   assignment has its own property now (MD14).
+4. **The model rarely names a field, and what it names is weak.** Of 68 notices, 65 say only that fields "may be
+   limited". The 3 proposals quote the description of an invention ("Aerogel/Polymer Composite Materials") and not
+   a stated field of use. The queue shows the quote so a steward can decide, and I would not approve them without
+   reading the notice.
+5. **The real model ignored all 36 planted instructions.** That is small: it allows a true rate near 8 percent.
+   The claim to rely on is the code-level one, that a proposal can only reach a queue that no rule reads.
+6. **Listing a Claude model does not mean the account may call it.** Sonnet 5.5 is listed and denied. Discovery
+   now probes, and today picks Sonnet 4.6.
+7. **A decision on Neptune is the same decision.** All 43 signatures match, and so do 45 injected cases at their own
+   cutoffs on Fuseki. The query templates needed no change.
+8. **A teardown can leave things behind without saying so.** The first run failed on a bucket without Object Lock,
+   and the report missed a KMS key because it looked for a description the key never had. Both are fixed and tested.
+9. **A data question surfaced through the mapping.** One company is spelled "La Mesa, CA" in one notice and "La Mesa,
+   California" in another. The graph keeps both and a table column holds one. The test states this exception.
+10. **A parser weakness surfaced through the injection tests.** A question naming two license types was resolved
+    silently by taking the first. It now reports the ambiguity and asks.
+
+### Decisions and deviations
+
+| Topic | Decision | Made by |
+|---|---|---|
+| Field-of-use extraction | Built first, as you asked. The model may answer "none stated", and code checks the concept and the verbatim quote. | You, with my design |
+| Model | `us.anthropic.claude-sonnet-4-6`, because it is the newest Sonnet this account can call | Me |
+| Budget | $10, as you set it. It counts the eight AWS services that only GoNoGo uses, because this account cannot use cost tags and another project's spend already passes $10. Bedrock is outside it. | Me |
+| Budget email | The alerts go to the address on your Claude account. I put it in the deployed stack and not in the repository. | Me, tell me if you want another |
+| Role per user | A Cognito user must belong to exactly one role group, so no one can play both parts of a two-person rule | Me |
+| Verified Permissions vs. local Cedar | The Lambdas evaluate the policies in process, and Verified Permissions holds the same text, checked equal on 126 questions. This avoids interface endpoints and their cost. | Me |
+| Release approvals | Recorded in the repository, bound to the report's digest, and decided by Cedar. A single maintainer cannot supply two people. | Me |
+| CI | Added an Ontop job and the endpoint-store test to the Fuseki job, and a release workflow for pull requests | Me |
+| `scripts/teardown.sh` | Replaced by `scripts/teardown.py`, which can empty an Object Lock bucket | Me |
+
+### AWS spend
+
+- **Bedrock, estimated:** about $0.68, from token counts at $3 and $15 per million tokens, which is the list price I
+  assumed and did not look up. Field-of-use extraction used 129,848 input and 3,433 output tokens across 71 calls (68
+  plus 3 retries). The injection measurement used 69,597 and 1,800 across 36 calls. The model probes cost a few tokens.
+- **Infrastructure, estimated:** under $2. The Neptune cluster ran about 80 minutes at 1 NCU, and the other
+  services cost cents.
+- **Measured:** not yet. Cost Explorer returned nothing for 2026-10-25 when I asked. Run
+  `uv run python scripts/aws_spend.py 2026-10-25 2026-10-27` tomorrow for the real figure.
+
+### What the teardown left behind
+
+| Resource | Why |
+|---|---|
+| The `gonogo-budget` stack and the `gonogo-monthly` budget | Free, and kept on purpose |
+| One KMS key, pending deletion until 2026-11-01 | KMS enforces a seven-day wait. It is not billed while it waits. |
+
+Nothing that bills remains ([aws-teardown.json](aws-teardown.json)). Three other KMS keys that wait for deletion
+belong to a different project in the account, and I did not touch them.
+
+### Not done, and why
+
+- **Live Snowflake.** No account. [mappings/README.md](../mappings/README.md) says what is and is not proven.
+- **The Fargate agent, ingestion workflow, and Guardrails.** Not in your scope list. [docs/aws.md](aws.md) lists
+  every gap.
+- **Ontop on Fargate.** It ran in Docker.
+- **Deploying from CI.** Deploys come from a laptop. A GitHub OIDC role is not set up.
+- **The release gate with two real people.** One maintainer uses the mechanism and cannot show it.
+
+### Open questions for you
+
+1. **Snowflake.** Do you have an account or a trial I can use? With one, I would run the DDL, the writeback, and Ontop
+   against it, and move the "not live" caveat.
+2. **The agent and the ingestion path.** Should Gate 4 include the Strands agent on Fargate and the Step Functions
+   approval workflow, or does the benchmark come first?
+3. **The budget address.** Is the Claude account's address the right place for budget alerts?
+4. **Gate 4 approval.** Gate 4 covers the GraphRAG benchmark, ADR 0003 on RDF versus a property graph, the
+   results file, and the README.
+
+### Gate 4 preview
+
+The benchmark compares the rule engine with retrieval-augmented answers over the same questions, measures what the
+model adds, runs the same graph in Neo4j, and writes `eval/results.md`. ADR 0003 records the RDF versus property
+graph decision. The README then gets its final form, with the numbers.
+
 ## Gate 2: rules, verdicts, entity resolution, the steward loop, and the live demo
 
-**State:** complete and waiting for approval. Gate 3 has not started.
+**State:** approved.
 **Date:** 2026-10-24
 **Live demo:** https://gonogo-livid.vercel.app/#/ask
 
@@ -93,7 +221,7 @@ Bedrock calls. Second, I moved the Vercel project's root directory to the reposi
 Gate 3 builds the CDK app (Neptune Serverless, the Fargate agent, the Lambda rules and SHACL container, Step
 Functions with a steward callback, API Gateway with Cognito, Verified Permissions with Cedar), the query
 service's graph allowlist, the leakage and injection test suites, the Snowflake and Ontop mapping, and the
-release workflow. Each deployment session ends with `scripts/teardown.sh`.
+release workflow. Each deployment session ends with `scripts/teardown.py`.
 
 ## Gate 1: ontology, vocabularies, shapes, and the graph load
 

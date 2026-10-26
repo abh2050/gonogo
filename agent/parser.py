@@ -15,7 +15,7 @@ from typing import Any
 
 from er.resolver import Party, index_parties, resolve
 from kg.ns import GRAPH_APPROVED, GRAPH_RELEASE
-from kg.store import Store
+from kg.store import Reader
 from rules.model import EXCLUSIVITY_TYPES, Request
 
 FIELDS = ("patent_key", "exclusivity", "field", "territory", "start", "end", "licensee")
@@ -110,7 +110,7 @@ class Vocabulary:
     same_as: dict[str, set[str]]  # licensee IRI -> every IRI a steward linked to it
 
     @classmethod
-    def from_store(cls, store: Store) -> Vocabulary:
+    def from_store(cls, store: Reader) -> Vocabulary:
         def concepts(scheme: str) -> list[dict[str, Any]]:
             return store.select(
                 f"""PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -166,16 +166,30 @@ WHERE {{ ?a owl:sameAs ?b }}"""
         )
 
 
-def _longest_label(text: str, table: dict[str, tuple[str, str]], skip: tuple[int, int] | None) -> Found | None:
-    best: Found | None = None
+def _label_hits(text: str, table: dict[str, tuple[str, str]], skip: tuple[int, int] | None) -> list[Found]:
+    """Every concept the text names, keeping the longest label where two overlap, in order of appearance."""
+    hits: list[Found] = []
     lowered = text.lower()
     for label, (slug, pref) in table.items():
         for m in re.finditer(rf"(?<![\w-]){re.escape(label)}(?![\w-])", lowered):
             if skip and m.start() < skip[1] and m.end() > skip[0]:
                 continue
-            if best is None or len(label) > best.span[1] - best.span[0]:
-                best = Found(slug, (m.start(), m.end()), text[m.start() : m.end()], pref)
-    return best
+            hits.append(Found(slug, (m.start(), m.end()), text[m.start() : m.end()], pref))
+    hits.sort(key=lambda h: (h.span[0], -(h.span[1] - h.span[0])))
+    kept: list[Found] = []
+    for h in hits:
+        if not any(k.span[0] <= h.span[0] and h.span[1] <= k.span[1] for k in kept):
+            kept.append(h)
+    return kept
+
+
+def _choose(out: Parse, key: str, noun: str, hits: list[Found]) -> None:
+    """Take the one thing the question names. Two different things are an ambiguity to report, never a guess."""
+    distinct = list(dict.fromkeys(h.value for h in hits))
+    if len(distinct) == 1:
+        out.found[key] = hits[0]
+    elif len(distinct) > 1:
+        out.notes.append(f"The question names more than one {noun} ({', '.join(distinct)}), so GoNoGo does not choose.")
 
 
 def to_iso(raw: str) -> str:
@@ -209,28 +223,30 @@ def parse(text: str, vocab: Vocabulary) -> Parse:
         f["licensee"] = Found(name, (lead.start(g), lead.start(g) + len(name)), name)
     name_span = f["licensee"].span if "licensee" in f else None
 
-    m = CASE.search(text)
-    if m and m.group(1) in vocab.cases:
-        key = vocab.cases[m.group(1)]
-        f["patent_key"] = Found(key, m.span(1), m.group(1), f"NASA case {m.group(1)}")
-    elif m:
-        out.notes.append(f"The graph holds no NASA case {m.group(1)}.")
-    if "patent_key" not in f and (pm := PATENT_NO.search(text)):
+    patents: list[Found] = []
+    for m in CASE.finditer(text):
+        if m.group(1) in vocab.cases:
+            patents.append(Found(vocab.cases[m.group(1)], m.span(1), m.group(1), f"NASA case {m.group(1)}"))
+        else:
+            out.notes.append(f"The graph holds no NASA case {m.group(1)}.")
+    for pm in PATENT_NO.finditer(text):
         number = re.sub(r"\D", "", pm.group(1))
         if number in vocab.patent_numbers:
-            key = vocab.patent_numbers[number]
-            f["patent_key"] = Found(key, pm.span(1), pm.group(1), f"US Patent {pm.group(1)}")
+            patents.append(Found(vocab.patent_numbers[number], pm.span(1), pm.group(1), f"US Patent {pm.group(1)}"))
         else:
             out.notes.append(f"The graph holds no US patent {pm.group(1)}.")
+    _choose(out, "patent_key", "patent", sorted(patents, key=lambda h: h.span))
 
-    if em := EXCLUSIVITY.search(text):
+    licenses = []
+    for em in EXCLUSIVITY.finditer(text):
         slug = EXCLUSIVITY_SLUGS[re.sub(r"[^a-z]", "", em.group(1).lower())]
-        f["exclusivity"] = Found(slug, em.span(1), em.group(1), slug.replace("-", " "))
+        licenses.append(Found(slug, em.span(1), em.group(1), slug.replace("-", " ")))
+    _choose(out, "exclusivity", "license type", licenses)
 
-    if hit := _longest_label(text, vocab.fields, name_span):
-        f["field"] = hit
-    if hit := _longest_label(text, vocab.territories, name_span):
-        f["territory"] = hit
+    _choose(out, "field", "field of use", _label_hits(text, vocab.fields, name_span))
+    places = _label_hits(text, vocab.territories, name_span)
+    if places:
+        _choose(out, "territory", "territory", places)
     else:
         for tm in re.finditer(r"\b(?:in|for|across|throughout)\s+(?:the\s+)?([A-Z]{2})\b", text):
             if tm.group(1) in vocab.notations:

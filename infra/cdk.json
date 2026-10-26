@@ -2,6 +2,6 @@
   "app": "uv run python app.py",
   "context": {
     "deployNeptune": false,
-    "deployFargate": false
+    "@aws-cdk/core:defaultCrossStackReferences": "strong"
   }
 }

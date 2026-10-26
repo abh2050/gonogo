@@ -1,0 +1,100 @@
+{
+  "ran_at": "2026-10-25T06:54:55Z",
+  "region": "us-east-2",
+  "account": "\u20266600",
+  "neptune": true,
+  "engine_decide_ms": {
+    "p50": 1206,
+    "p95": 1796,
+    "n": 20
+  },
+  "passed": 11,
+  "total": 11,
+  "checks": [
+    {
+      "check": "Neptune holds every triple of the four graphs",
+      "passed": true,
+      "detail": "46,276 triples loaded in 26 s",
+      "triples": {
+        "https://w3id.org/gonogo/graph/release/0.1.0": 1972,
+        "https://w3id.org/gonogo/graph/approved": 41315,
+        "https://w3id.org/gonogo/graph/candidate": 71,
+        "https://w3id.org/gonogo/graph/royalty": 2918
+      }
+    },
+    {
+      "check": "Verified Permissions answers every policy question as local Cedar does",
+      "passed": true,
+      "detail": "126 of 126 answers match across 21 actions and 6 roles",
+      "mismatches": []
+    },
+    {
+      "check": "The gateway refuses a call with no token",
+      "passed": true,
+      "detail": "401 without an Authorization header"
+    },
+    {
+      "check": "No role reads a graph it may not, and Neptune never sees a refused query",
+      "passed": true,
+      "detail": "500 queries across 8 users: 382 refused, 0 leaked royalty text, 0 where the deployment and the local service disagreed",
+      "attacks": 500,
+      "refused": 382,
+      "leaked": 0,
+      "disagreements": 0
+    },
+    {
+      "check": "The gateway rejects oversize, extra-field, and empty bodies before any Lambda runs",
+      "passed": true,
+      "detail": "statuses [400, 400, 400]"
+    },
+    {
+      "check": "Decisions made on Neptune carry the same signatures as decisions made in memory",
+      "passed": true,
+      "detail": "43 of 43 signatures match",
+      "mismatched": [],
+      "neptune_ms": {
+        "p50": 573,
+        "p95": 897
+      },
+      "in_memory_ms": {
+        "p50": 156,
+        "p95": 337
+      }
+    },
+    {
+      "check": "Roles that may not ask are refused on the Neptune path",
+      "passed": true,
+      "detail": "statuses {'fin-analyst': 403, 'aud-auditor': 403, 'owen-owner': 403}"
+    },
+    {
+      "check": "A steward's approval of the decoy waits for a different counsel, and only then reaches GO",
+      "passed": true,
+      "detail": "verdict COUNSEL; first approval pending_second_review; still COUNSEL; a second steward refused (422); the first approver refused (422); counsel approved; verdict GO",
+      "approvers": [
+        [
+          "ann-steward",
+          "steward"
+        ],
+        [
+          "dee-counsel",
+          "counsel"
+        ]
+      ]
+    },
+    {
+      "check": "Cedar gates every read behind the gateway",
+      "passed": true,
+      "detail": "statuses {'manager reads the steward queue': 403, 'steward reads the steward queue': 200, 'finance asks a question': 403, 'auditor asks a question': 403}"
+    },
+    {
+      "check": "A body that claims another identity is ignored in favor of the token",
+      "passed": true,
+      "detail": "status 422"
+    },
+    {
+      "check": "Every decision is in DynamoDB and in a locked S3 object",
+      "passed": true,
+      "detail": "3 of 3 decisions are in the table and 3 in the bucket, Object Lock mode GOVERNANCE"
+    }
+  ]
+}

@@ -88,31 +88,53 @@ after that cutoff, so the bitemporal filter hides it, and the signature matches 
 
 ## The steward loop
 
-A steward changes the graph through four governed actions. Each one needs the steward's name and a reason:
+A steward changes the graph through governed actions. Each one needs a name, a role, and a reason, and Cedar
+decides whether that role may do it ([ADR 0002](adr/0002-separation-of-duties.md)):
 
 | Action | Effect |
 |---|---|
-| `approve_fact` | Copies the candidate into the approved graph as a new fact, with `prov:wasGeneratedBy` the action, `gng:approvedBy` the steward, and `prov:wasDerivedFrom` the candidate. The new fact supersedes the current fact of the same kind for the same patent (`gng:supersedes`, `gng:supersededAt`); the old fact stays. SHACL validates the new triples before the store accepts them. |
+| `propose_fact` | Puts a candidate fact forward, recording who proposed it. Changes no verdict. |
+| `approve_fact` | Copies the candidate into the approved graph as a new fact: `prov:wasGeneratedBy` the action, `gng:approvedBy` the steward, `prov:wasDerivedFrom` the candidate. It supersedes the current fact of the same kind for the same patent (`gng:supersedes`, `gng:supersededAt`), and the old fact stays. SHACL validates the new triples first. |
+| `second_review` | Counsel approves or denies an approval that a steward submitted and that is waiting. |
 | `reject_fact` | Records the decision. The graph's facts do not change. |
 | `link_identity` | Writes `owl:sameAs` between two licensee nodes, plus a dated `gng:IdentityLink` that carries the score and the method |
 | `reject_link` | Records that two nodes are different organizations, so the resolver stops proposing the pair |
 
-The actions form an event log. Replaying a log over the frozen graphs gives the same graph every time, and
-`to_sparql_update` writes the same triples as `INSERT DATA` for Fuseki or Neptune. The demo clock records
-event *n* at 2026-11-01T00:00:00Z plus *n* seconds, so the same clicks give the same decision ids on any day.
+### When one person is enough
+
+Before an approval takes effect, the engine applies it to a copy of the store and computes two flags. The fact
+may **conflict** with a fact that is already approved, such as an ownership record that leaves out a listed
+co-owner. Or the approval may **move a verdict from COUNSEL or NO GO to GO** for a question on the same patent,
+either one in the request book or one that the steward's own session asked. Cedar then reads the flags:
+
+| Flags | What the steward may do | What happens |
+|---|---|---|
+| none | `ApproveFact` | The fact takes effect now |
+| either | `SubmitForSecondReview` | The approval waits in `PENDING_SECOND_REVIEW`, adds no fact, and changes no verdict |
+| any | nothing, if the steward proposed the fact | Refused |
+
+Counsel then makes the second approval, and counsel must be a different person from the steward and from the
+proposer. Counsel never approves a fact alone. The approved fact records both approvers.
+
+The log stays honest. Each event records its route, and replaying a log recomputes the route from the graph. A log
+that someone edited from `pending_second_review` to `immediate` fails on replay.
+
+The event log replays from the frozen graph to the same graph every time, and `to_sparql_update` writes the same
+triples as `INSERT DATA` for Fuseki or Neptune. The demo clock records event *n* at 2026-11-01T00:00:00Z plus *n*
+seconds, so the same clicks give the same decision ids on any day.
 
 ### What the demo queue holds
 
-| Candidate | What approval does | Should a steward approve it? |
-|---|---|---|
-| Unrestricted export classification for LAR-17317-2 | R5 UNKNOWN → PASS, verdict NO DATA → GO | Yes. The patent had no classification. |
-| Ownership record for LEW-18605-2, complete with no co-owners | R6 UNKNOWN → PASS, verdict NO DATA → GO | Yes. It completes an incomplete record. |
-| Ownership record for LAR-17381-1, complete with no co-owners | R6 REVIEW → PASS, verdict COUNSEL → GO | No. The recorded assignment lists a co-owner, and the queue shows the conflict. Approval would hide a missing consent. |
-| Identity link between "GenH2" and "GenH2 Corporation", from two real notices | For an exclusive request by GenH2 Corporation on US 10,431,355, R4 REVIEW → PASS, because the 2022 notice now names the requester, and R2 REVIEW → PASS, because the proposed grant is no longer another party's. R7 keeps the verdict at COUNSEL. | Yes, on the evidence in the notices. |
+| Candidate | Proposed by | What approval does | Should a steward approve it? |
+|---|---|---|---|
+| Unrestricted export classification for LAR-17317-2 | A review desk (synthetic) | R5 UNKNOWN → PASS, verdict NO DATA → GO. No flag, so one steward is enough. | Yes. The patent had no classification. |
+| Ownership record for LEW-18605-2, complete with no co-owners | A feed (synthetic) | R6 UNKNOWN → PASS, verdict NO DATA → GO. One steward is enough. | Yes. It completes an incomplete record. |
+| Ownership record for LAR-17381-1, complete with no co-owners | The licensee (synthetic) | Both flags fire: it drops co-owner COO-001, and it would move COUNSEL to GO. The approval waits for counsel. | No. The recorded assignment lists a co-owner, so approval would hide a missing consent. |
+| A field of use for two real notices (coatings, aerogels) | A language model | R2 narrows an unstated field to the named one. The queue shows the notice's own words. | Check the quote. Both quote an invention's description and not a stated field of use. |
+| Identity link between "GenH2" and "GenH2 Corporation", from two real notices | The resolver | For an exclusive request: R4 and R2 REVIEW → PASS, and R7 keeps COUNSEL. For a non-exclusive request in the session, it would move COUNSEL to GO, so it waits for counsel. | Yes, on the evidence in the notices. |
 
-The third row is the reason a person stays in the loop. GoNoGo acts on a wrong approval exactly as it acts on
-a right one. What it adds is a record of who approved the fact, when, and why, so someone can find the
-mistake later.
+The third row is the reason for the two-person rule. Before it, GoNoGo acted on that wrong approval exactly as it
+acted on a right one, and the only protection was a record that someone could read afterward.
 
 ## Entity resolution
 

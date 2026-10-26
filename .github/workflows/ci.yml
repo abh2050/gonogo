@@ -19,7 +19,7 @@ jobs:
       - run: uv sync --frozen
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run mypy gonogo ingest synth kg rules er agent api
+      - run: uv run mypy gonogo ingest synth kg rules er agent api authz service
       # Offline suite: shapes, competency questions on rdflib, the graph build, and the ontology checks.
       - run: uv run pytest
 
@@ -61,11 +61,25 @@ jobs:
       - run: uv sync --frozen
       - name: Wait for Fuseki
         run: until curl -fs http://localhost:3030/$/ping; do sleep 2; done
-      - run: uv run pytest -m docker -k fuseki
+      # Every competency question on Fuseki, and every rule decision over HTTP matching the in-memory engine.
+      - run: uv run pytest -m docker -k "fuseki or sparql_store"
       - name: Build and load the full graph
         run: uv run python -m kg all
       # The public demo serves a committed snapshot of the graph, so it must match a fresh build.
       - run: git diff --exit-code api/snapshot
+
+  ontop:
+    name: Ontop applies the R2RML mapping
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      # PostgreSQL and Ontop run as containers. The test compares Ontop's triples with the graph and answers a
+      # finance question as SPARQL over the verdict table.
+      - run: uv run pytest -m docker tests/integration/test_ontop.py
 
   ui:
     name: UI build and data drift

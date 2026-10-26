@@ -5,17 +5,19 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+from rdflib import URIRef
 
 from er.resolver import compare, index_parties, pair_id, propose_links
 from kg.actions import (
     ActionRejectedError,
     apply_event,
     clock,
+    describe_candidate,
     pending_candidates,
     replay,
     to_sparql_update,
 )
-from kg.ns import GNG, GRAPH_APPROVED
+from kg.ns import GNG, GRAPH_APPROVED, GRAPH_CANDIDATE, PROV
 from kg.store import Store
 from rules.engine import evaluate, evaluate_now, rerun
 from rules.explain import diff
@@ -284,3 +286,52 @@ def test_candidate_facts_never_reach_the_rules_before_approval(fresh: Store) -> 
 
 def test_name_comparison_is_symmetric() -> None:
     assert compare("GenH2", "GenH2 Corporation").status == compare("GenH2 Corporation", "GenH2").status
+
+
+# ---- A model's proposal narrows R2 only after a person approves it -----------------------------------------------
+
+COATINGS_CLAIM = "https://w3id.org/gonogo/id/field-claim/fr-2020-05383/candidate"
+
+
+def field_request(field: str) -> Request:
+    return Request(
+        patent_key="KSC-12631",
+        exclusivity="non-exclusive",
+        field=field,
+        territory="US",
+        start="2027-01-01",
+        end="2031-12-31",
+        licensee_name="Orbital Lens Works, Inc.",
+        licensee_ids=("https://w3id.org/gonogo/id/licensee/LIC-001",),
+        licensee_country="US",
+    )
+
+
+def test_a_notice_that_names_no_field_blocks_every_field_until_a_person_approves_a_proposal(fresh: Store) -> None:
+    before = evaluate_now(fresh, field_request("lasers"))
+    assert before.statuses()["R2"] == "REVIEW", "an unstated field could overlap anything"
+    info = describe_candidate(fresh, URIRef(COATINGS_CLAIM))
+    assert info["origin"] == "model" and info["proposed_by"].startswith("us.anthropic.claude")
+    assert info["quote"] and info["quote"] in "".join(
+        str(o) for o in fresh.base[GRAPH_CANDIDATE].objects(None, GNG.spanText)
+    )
+    assert evaluate_now(fresh, field_request("lasers")).signature == before.signature, "a candidate moves nothing"
+
+    done = apply_event(fresh, approve(COATINGS_CLAIM))
+    assert done["route"] == "immediate" and done["new_facts"]
+    after = evaluate_now(fresh, field_request("lasers"))
+    assert after.statuses()["R2"] == "PASS", "coatings and lasers do not overlap, so the proposed grant is no concern"
+    assert diff(before, after)["changes"][0]["rule"] == "R2"
+
+
+def test_an_approved_field_assignment_cites_the_notice_and_names_the_model_and_the_steward(fresh: Store) -> None:
+    [new] = apply_event(fresh, approve(COATINGS_CLAIM))["new_facts"]
+    view = fresh.view([GRAPH_APPROVED])
+    node = URIRef(new)
+    assert str(view.value(node, GNG.approvedBy)).endswith("/steward/demo-steward")
+    assert str(view.value(node, GNG.proposedBy)).endswith("claude-sonnet-4-6")
+    assert str(view.value(node, GNG.assignsField)).endswith("/field/coatings")
+    clause = view.value(node, GNG.sourceClause)
+    assert view.value(clause, GNG.clauseKind).toPython() == "field"
+    run = next(view.objects(URIRef(COATINGS_CLAIM), PROV.wasGeneratedBy))
+    assert str(view.value(run, GNG.promptVersion)) == "field-extract/1"

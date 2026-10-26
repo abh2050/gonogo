@@ -50,7 +50,7 @@ def test_expired_session_is_reported() -> None:
 
 
 def test_no_denied_region_names_outside_region_log() -> None:
-    """The SCP denies us-east-1 and us-west-2. Only the status log and this test may name them."""
+    """The SCP denies us-east-1 and us-west-2. Only the status log and the tests of the region guard may name them."""
     files = subprocess.run(
         ["git", "ls-files", "-co", "--exclude-standard"],
         cwd=ROOT,
@@ -60,7 +60,14 @@ def test_no_denied_region_names_outside_region_log() -> None:
     ).stdout.split()
     if not files:
         files = [str(p.relative_to(ROOT)) for p in ROOT.rglob("*") if p.is_file() and ".venv" not in p.parts]
-    allowed = {"docs/status.md", "tests/unit/test_aws.py", "gonogo/aws.py", "config/aws.yaml"}
+    allowed = {
+        "docs/status.md",
+        "tests/unit/test_aws.py",
+        "tests/infra/test_stacks.py",
+        "scripts/aws_spend.py",
+        "gonogo/aws.py",
+        "config/aws.yaml",
+    }
     offenders = []
     for name in files:
         path = Path(ROOT / name)

@@ -21,7 +21,7 @@ from typing import Any
 from er.normalize import compact
 from er.similarity import address_relation, name_score
 from kg.ns import GRAPH_APPROVED, GRAPH_RELEASE
-from kg.store import Store
+from kg.store import Reader
 
 METHOD = "gonogo-er/1.0"
 AMBIGUOUS_FROM = 0.74  # chosen on the development pairs only
@@ -70,7 +70,7 @@ class Candidate:
     outcome: Outcome
 
 
-def index_parties(store: Store) -> list[Party]:
+def index_parties(store: Reader) -> list[Party]:
     """Every licensee node in the approved graph, with its alternate spellings."""
     rows = store.select(
         f"""PREFIX gng: <https://w3id.org/gonogo/ontology#> PREFIX schema: <https://schema.org/>

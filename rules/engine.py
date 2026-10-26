@@ -13,7 +13,7 @@ from typing import Any
 import yaml
 
 from gonogo.paths import ROOT
-from kg.store import Store
+from kg.store import Reader, Store
 from rules import r1_legal_status, r2_exclusivity, r3_cap, r4_notice, r5_export, r6_consent, r7_statutory
 from rules.context import Context
 from rules.decision import DecisionRecord, decision_id, findings_to_dicts, signature
@@ -35,7 +35,7 @@ def rule_versions() -> dict[str, str]:
 
 
 def evaluate(
-    store: Store,
+    store: Reader,
     request: Request,
     *,
     cutoff: str,
@@ -43,7 +43,7 @@ def evaluate(
     user: str = "anonymous",
     role: str = "licensing_manager",
     parse: dict[str, Any] | None = None,
-    resolve: Callable[[Store, Request], Request] | None = None,
+    resolve: Callable[[Reader, Request], Request] | None = None,
     events_applied: int = 0,
     release: str | None = None,
 ) -> DecisionRecord:
@@ -92,7 +92,7 @@ def evaluate_now(store: Store, request: Request, **kw: Any) -> DecisionRecord:
     )
 
 
-def rerun(store: Store, record: DecisionRecord) -> DecisionRecord:
+def rerun(store: Reader, record: DecisionRecord) -> DecisionRecord:
     """Evaluate a stored decision again from its stored context. The result must match the original."""
     request = Request(
         patent_key=record.request["patent_key"],

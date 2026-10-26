@@ -13,7 +13,7 @@ from __future__ import annotations
 import re
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 from rdflib import Graph, URIRef
 from rdflib.graph import ReadOnlyGraphAggregate
@@ -29,6 +29,16 @@ GRAPH_FILES = {
     GRAPH_ROYALTY: "royalty.ttl",
 }
 _FROM = re.compile(r"\bFROM\s+<([^>]+)>")
+
+
+class Reader(Protocol):
+    """What the rule engine needs from a store. The in-memory Store and the SPARQL endpoint store both provide it."""
+
+    events: list[dict[str, Any]]
+
+    def select(self, query: str) -> list[dict[str, Any]]: ...
+
+    def has_type(self, iri: str, cls: URIRef) -> bool: ...
 
 
 class Store:
@@ -97,6 +107,12 @@ class Store:
         target = self.overlay[graph_iri]
         for t in triples:
             target.add(t)
+
+    def has_type(self, iri: str, cls: URIRef) -> bool:
+        """Whether the approved or release graph says `iri` is an instance of `cls`."""
+        from rdflib import RDF
+
+        return any((URIRef(iri), RDF.type, cls) in self.base[g] for g in (GRAPH_APPROVED, GRAPH_RELEASE))
 
     def graph_size(self, graph_iri: str) -> int:
         return len(self.base[graph_iri]) + len(self.overlay[graph_iri])
