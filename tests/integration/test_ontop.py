@@ -41,6 +41,14 @@ def docker(*args: str, input: str | None = None) -> str:
     return out.stdout
 
 
+def share(*dirs: Path) -> None:
+    """Let the Ontop container, which runs as another user, read these folders and write its output into them."""
+    for d in dirs:
+        d.chmod(0o777)
+        for f in d.rglob("*"):
+            f.chmod(0o777 if f.is_dir() else 0o666)
+
+
 def load_sql(sql: list[str]) -> None:
     """Load the tables. The PostgreSQL image starts a temporary server and then restarts it, and pg_isready answers
     during the first phase, so the load retries until the real server is up."""
@@ -80,6 +88,7 @@ def materialized(store: Store, tmp_path_factory: pytest.TempPathFactory) -> Grap
                 break
             subprocess.run(["sleep", "1"])
         load_sql(sql)
+        share(work, jdbc)
         docker(
             "run",
             "--rm",
@@ -209,6 +218,7 @@ def test_a_finance_question_is_answered_as_sparql_over_the_verdict_table(store: 
                 break
             subprocess.run(["sleep", "1"])
         load_sql(sql)
+        share(tmp_path)
         docker(
             "run",
             "--rm",
