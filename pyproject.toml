@@ -67,6 +67,13 @@ ignore_missing_imports = true
 explicit_package_bases = true  # api/ has no __init__.py, because Vercel reads that folder as functions
 mypy_path = "."
 
+[[tool.mypy.overrides]]
+# Strands lives in the optional "agent" dependency group, which CI does not install, so its @tool decorator is untyped
+# there and typed locally. The agent's tools are thin wrappers over eval/graph_tools.py, which is fully typed.
+module = "eval.graph_agent"
+disallow_untyped_decorators = false
+warn_unused_ignores = false
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [

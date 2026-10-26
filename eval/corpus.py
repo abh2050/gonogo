@@ -185,8 +185,20 @@ def ntrs() -> int:
 
 
 def patent_map(store: Store | None = None) -> dict[str, list[str]]:
-    """Which patents each corpus document is about, computed without writing any file."""
+    """Which patents each corpus document is about, computed without writing any file. With no built graph on disk
+    (a CI job that never ran the build), the graph is built in memory."""
     global DRY
+    if store is None:
+        try:
+            store = Store.from_build()
+        except FileNotFoundError:
+            from kg import build as kg_build
+            from kg import materialize
+            from kg.ns import GRAPH_ROYALTY
+
+            graphs = kg_build.build_graphs()
+            materialize.apply(graphs)
+            store = Store({iri: g for iri, g in graphs.items() if iri != GRAPH_ROYALTY})
     DRY = True
     try:
         build(store)
