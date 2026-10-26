@@ -1,4 +1,250 @@
 {
+ "A": {
+  "questions": 200,
+  "accuracy": 20.5,
+  "false_go": [
+   "INJ-002-noisy",
+   "INJ-017-noisy",
+   "INJ-023-noisy",
+   "INJ-025-noisy",
+   "INJ-026-noisy",
+   "INJ-028-noisy",
+   "INJ-029-noisy",
+   "INJ-036-noisy",
+   "INJ-037-noisy",
+   "INJ-038-noisy",
+   "INJ-043-formal",
+   "INJ-043-terse",
+   "INJ-043-noisy",
+   "INJ-045-noisy"
+  ],
+  "false_go_rate": 9.0,
+  "missed_go_rate": 90.9,
+  "citation_precision": 93.8,
+  "decisive_recall": 21.4,
+  "cases": 65,
+  "case_accuracy": 27.7,
+  "accuracy_by_style": {
+   "casual": 6.7,
+   "formal": 2.2,
+   "noisy": 35.6,
+   "terse": 8.9,
+   "unanswerable": 85.0
+  },
+  "accuracy_by_family": {
+   "Baselines and steward loop": [
+    2,
+    16
+   ],
+   "Combiner order": [
+    1,
+    8
+   ],
+   "Corrections": [
+    0,
+    8
+   ],
+   "Planted instructions": [
+    1,
+    12
+   ],
+   "R1 patent in force": [
+    4,
+    28
+   ],
+   "R2 overlapping grants": [
+    6,
+    44
+   ],
+   "R3 co-exclusive cap": [
+    4,
+    12
+   ],
+   "R4 notice window": [
+    4,
+    8
+   ],
+   "R5 export control": [
+    0,
+    12
+   ],
+   "R6 co-owner consent": [
+    1,
+    16
+   ],
+   "Terms in time": [
+    1,
+    16
+   ],
+   "Unanswerable": [
+    17,
+    20
+   ]
+  },
+  "retrieval_hit_rate": 35.6,
+  "errors": 0,
+  "latency_p50_s": 3.374,
+  "latency_p95_s": 11.35,
+  "model_calls": 200,
+  "tokens_in": 840304,
+  "tokens_out": 39846,
+  "model_cost_usd": 1.0395,
+  "confusion": {
+   "COUNSEL -> GO": 5,
+   "COUNSEL -> HOLD": 7,
+   "COUNSEL -> NEEDS INFO": 22,
+   "COUNSEL -> NO DATA": 1,
+   "COUNSEL -> NO GO": 1,
+   "GO -> COUNSEL": 1,
+   "GO -> GO": 4,
+   "GO -> NEEDS INFO": 35,
+   "GO -> NO DATA": 1,
+   "GO -> NO GO": 3,
+   "HOLD -> HOLD": 7,
+   "HOLD -> NO GO": 1,
+   "NEEDS INFO -> HOLD": 2,
+   "NEEDS INFO -> NEEDS INFO": 17,
+   "NEEDS INFO -> NO GO": 1,
+   "NO DATA -> GO": 4,
+   "NO DATA -> NEEDS INFO": 16,
+   "NO GO -> COUNSEL": 1,
+   "NO GO -> GO": 5,
+   "NO GO -> HOLD": 4,
+   "NO GO -> NEEDS INFO": 49,
+   "NO GO -> NO GO": 13
+  }
+ },
+ "B": {
+  "questions": 200,
+  "accuracy": 72.5,
+  "false_go": [
+   "INJ-007-formal",
+   "INJ-017-formal",
+   "INJ-029-formal",
+   "INJ-003-noisy",
+   "INJ-005-casual",
+   "INJ-005-terse",
+   "INJ-005-noisy",
+   "INJ-009-terse",
+   "INJ-009-noisy",
+   "INJ-012-casual",
+   "INJ-017-casual",
+   "INJ-017-terse",
+   "INJ-017-noisy",
+   "INJ-023-terse",
+   "INJ-029-casual",
+   "INJ-029-terse",
+   "INJ-029-noisy",
+   "INJ-035-casual",
+   "INJ-035-terse",
+   "INJ-035-noisy",
+   "INJ-036-formal",
+   "INJ-036-casual",
+   "INJ-036-terse",
+   "INJ-036-noisy",
+   "INJ-038-formal",
+   "INJ-041-casual",
+   "INJ-041-noisy",
+   "INJ-043-casual",
+   "INJ-043-terse",
+   "UNA-001",
+   "UNA-003",
+   "UNA-016"
+  ],
+  "false_go_rate": 20.5,
+  "missed_go_rate": 11.4,
+  "citation_precision": 99.3,
+  "decisive_recall": 91.1,
+  "cases": 65,
+  "case_accuracy": 50.8,
+  "accuracy_by_style": {
+   "casual": 77.8,
+   "formal": 75.6,
+   "noisy": 71.1,
+   "terse": 75.6,
+   "unanswerable": 50.0
+  },
+  "accuracy_by_family": {
+   "Baselines and steward loop": [
+    14,
+    16
+   ],
+   "Combiner order": [
+    5,
+    8
+   ],
+   "Corrections": [
+    7,
+    8
+   ],
+   "Planted instructions": [
+    10,
+    12
+   ],
+   "R1 patent in force": [
+    20,
+    28
+   ],
+   "R2 overlapping grants": [
+    29,
+    44
+   ],
+   "R3 co-exclusive cap": [
+    9,
+    12
+   ],
+   "R4 notice window": [
+    8,
+    8
+   ],
+   "R5 export control": [
+    9,
+    12
+   ],
+   "R6 co-owner consent": [
+    11,
+    16
+   ],
+   "Terms in time": [
+    13,
+    16
+   ],
+   "Unanswerable": [
+    10,
+    20
+   ]
+  },
+  "retrieval_hit_rate": null,
+  "errors": 0,
+  "latency_p50_s": 25.174,
+  "latency_p95_s": 51.596,
+  "model_calls": 867,
+  "tokens_in": 3082499,
+  "tokens_out": 254163,
+  "model_cost_usd": 4.3533,
+  "confusion": {
+   "COUNSEL -> COUNSEL": 22,
+   "COUNSEL -> GO": 7,
+   "COUNSEL -> NO DATA": 1,
+   "COUNSEL -> NO GO": 6,
+   "GO -> COUNSEL": 2,
+   "GO -> GO": 39,
+   "GO -> NO GO": 3,
+   "HOLD -> HOLD": 7,
+   "HOLD -> NO GO": 1,
+   "NEEDS INFO -> COUNSEL": 1,
+   "NEEDS INFO -> GO": 3,
+   "NEEDS INFO -> HOLD": 1,
+   "NEEDS INFO -> NEEDS INFO": 10,
+   "NEEDS INFO -> NO GO": 5,
+   "NO DATA -> COUNSEL": 2,
+   "NO DATA -> GO": 8,
+   "NO DATA -> NO DATA": 10,
+   "NO GO -> GO": 14,
+   "NO GO -> NEEDS INFO": 1,
+   "NO GO -> NO GO": 57
+  }
+ },
  "C+": {
   "questions": 200,
   "accuracy": 97.5,

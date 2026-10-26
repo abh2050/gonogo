@@ -4,8 +4,8 @@
  "agree": 1435,
  "differ": [],
  "median_ms": {
-  "sparql_rdflib": 13.22,
-  "cypher_neo4j": 3.28
+  "sparql_rdflib": 13.91,
+  "cypher_neo4j": 2.82
  },
  "query_lines": {
   "sparql": 14,

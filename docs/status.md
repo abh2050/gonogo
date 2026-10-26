@@ -1,5 +1,96 @@
 # Status
 
+## Gate 4: the benchmark, the Neo4j comparison, ingestion, and the README
+
+**State:** built and checked; one AWS run waits for your go-ahead (see "Open questions").
+**Date:** 2026-10-26
+**Live demo:** https://gonogo-livid.vercel.app/#/benchmark
+
+Gate 4 answers the question the project exists to answer: does the ontology earn its place? On 200 clearance
+questions scored against hand-stated verdicts, GoNoGo was right 97.5% of the time and never cleared a license it
+should not have. A graph agent with the same facts was right 72.5% of the time and cleared 32 it should not have; a
+vector RAG baseline was right 20.5% of the time. The Neo4j comparison, the agreement ingestion workflow, seven draw.io
+AWS diagrams, and the final README are done. The ingestion workflow is built and tested locally but has not yet run
+on AWS, because that needs Neptune for about an hour.
+
+### Deliverables
+
+| Deliverable | Where | State |
+|---|---|---|
+| Golden question set | `eval/golden.py`, `eval/golden.jsonl` | Done. 45 planted cases × 4 wordings + 20 unanswerable. Verdicts come from the planted cases, never the engine. |
+| Document corpus | `eval/corpus.py` | Done. 1,925 documents rendered from the graph and the source texts; royalty terms excluded. |
+| Answerer A, vector RAG | `eval/rag.py`, `gonogo-eval` stack (Bedrock Knowledge Base on S3 Vectors) | Done. 200 questions. |
+| Answerer B, graph agent | `eval/graph_agent.py`, `eval/graph_tools.py` (Strands, the rules' SPARQL templates as tools) | Done. 200 questions, run locally. |
+| Answerers C and C+ | `eval/answer.py` | Done. C+ is the deployed pipeline with the optional model reader on. |
+| Results and report | `eval/results.md`, `docs/benchmark.md`, the Benchmark page | Done. CI fails on any false GO by C or C+ and on drift between runs and report. |
+| Neo4j comparison and ADR 0003 | `pgraph/`, `docs/adr/0003-rdf-versus-property-graph.md` | Done. Same grants on 1,435 of 1,435 requests; a CI test repeats it. |
+| Ingestion workflow | `service/ingest.py`, `IngestStack` in `infra/stacks.py`, `docs/ingestion.md` | Built and tested locally. The AWS run is waiting for your go-ahead. |
+| AWS diagrams | `docs/architecture/` (seven draw.io views) | Done. |
+| README, final form | `README.md`, `docs/media-rights.md` | Done: the business story, the verdict flow, the architecture, the benchmark table, and what carries over to media rights. |
+
+### Test results
+
+- Offline suite: 1,111 passed, 1 skipped (`uv run pytest`).
+- Docker: the Neo4j agreement test and the Ontop tests pass (5 passed).
+- CI: green on all five jobs for the last pushed commit.
+- The ingestion extractor reads 101 of the 120 synthetic agreements exactly and refuses the other 19 for a person;
+  it reads none wrong. A test requires that.
+
+### What the work found
+
+1. **Models misapply the policy to the right facts.** The graph agent retrieved the decisive agreement 91% of the
+   time and still made 32 false GOs: it read "an exclusive grant blocks any overlapping request" as not blocking a
+   non-exclusive one, and it treated a missing ownership record or missing dates as a yes.
+2. **Similarity search misses clearance facts.** The vector baseline found any record of the question's patent only
+   36% of the time and answered NEEDS INFO to 139 of 200 questions.
+3. **The fixed parser is safe and brittle.** Rules only (C) never erred toward GO but read 0% of casual or terse
+   wordings. Letting a model fill the form (C+) fixed that and kept the false-GO count at zero.
+4. **GoNoGo's own five misses** are all the noisy wording, where the parser could not find the licensee. Each fell to
+   NO DATA or COUNSEL, never GO.
+5. **Two engine bugs.** Approving a fact did not store the inferences the build materializes, so a newly approved
+   grant was invisible to R2; approvals now store them. And rdflib's SPARQL parser raced when two API threads parsed
+   their first query together; a lock fixed it, with a test that fails without it.
+6. **A property graph fails quietly.** The first Neo4j load used the wrong scheme IRIs, and every R2 query returned
+   nothing with only a warning. RDF would have failed the shape checks. ADR 0003 records this.
+
+### Decisions and deviations
+
+- **Answerer A's corpus** holds every fact as text, not only NTRS passages as the spec says, so A sees the same
+  information as the other answerers and the comparison measures method, not missing data.
+- **Haiku 4.5 for every model call**, as you chose. The account allows 10 Haiku requests a minute; an increase must be
+  requested through AWS Support, so the agent run took about two hours.
+- **ADR 0003, not 0002.** The build plan called the property graph ADR 0002; separation of duties took that number.
+- **The Strands agent runs in process, not on Fargate.** The VPC has no NAT or interface endpoints, so a Fargate task
+  there could not reach Bedrock without adding paid networking and breaking that design rule.
+- **The ingestion extractor uses fixed patterns, not a model.** It refuses free-text fields of use for a person to map.
+
+### AWS spend
+
+| Item | Spend |
+|---|---|
+| Benchmark model calls (Haiku 4.5, from the runs' token counts) | $5.59: A $1.04, B $4.35, C+ $0.20 |
+| Smoke tests, the stopped sample runs, and quota retries | under $1, estimated |
+| Titan embeddings for 1,925 documents (about a million tokens) | about $0.02 |
+| S3 Vectors and the corpus bucket | cents |
+| **Gate 4 total** | **about $7**, estimated |
+
+Cost Explorer had not posted 2026-10-26 when this was written. `uv run python -m scripts.aws_spend 2026-10-26
+2026-10-28` gives the measured figure the next day. The budget stays at $10 a month, as you chose.
+
+### What is still deployed
+
+- `gonogo-eval` (the Knowledge Base, S3 Vectors, and the corpus bucket): about a cent a day of storage. It goes when
+  you approve the teardown at the end of the gate.
+- `gonogo-budget` and two KMS keys pending deletion, as after Gate 3.
+
+### Open questions for you
+
+1. **Run the ingestion workflow on AWS?** It needs gonogo-core and gonogo-api with Neptune for about an hour (about
+   $1 to $2), then a full teardown. It would add a live execution record and Step Functions screenshots.
+2. **Tear down `gonogo-eval` now,** or keep it while you look at the Benchmark page?
+3. **The overview video** describes the loader as Neptune's only writer, which the ingestion step changed. Rebuild the
+   video with the corrected line and the new diagrams?
+
 ## Gate 3: the two-person rule, the AWS deployment, the leakage and injection suites, Ontop, and releases
 
 **State:** complete and waiting for approval. Gate 4 has not started.

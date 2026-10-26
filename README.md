@@ -1,36 +1,82 @@
 # GoNoGo
 
-GoNoGo answers one question for NASA's technology transfer office: can this company license this patent,
-for this field of use, in this territory, for this term? It answers GO, NO GO, HOLD, COUNSEL, or NO DATA, and
-it shows the rule that decided, the facts that rule read, and the clause each fact came from.
+A licensing manager at a NASA center gets a request: a company wants a license to a patent, for one field of use, in
+one territory, for some years. Before saying yes, the manager checks five places by hand: whether the patent is still
+in force, whether a signed license already covers the same field and territory, whether a public notice of intent is
+still open for objections, whether export control allows the company's country, and whether every co-owner has
+consented. Miss one, and NASA can grant two overlapping exclusive licenses to the same invention.
 
-Seven deterministic rules decide every verdict by querying a W3C knowledge graph through fixed SPARQL
-templates. A missing fact gives NO DATA, never GO, and a proposed fact counts only after a person approves it.
-A language model may propose a field of use from a notice, but it never decides a verdict and never writes a
-query that decides one. Its proposals wait in a queue until a person approves them, and an approval that
-conflicts with the record, or that would move a verdict to GO, waits for a second person. The public demo calls
-no model.
+GoNoGo answers that question in a second and shows its work. It returns **GO, NO GO, HOLD, COUNSEL, or NO DATA**,
+names the rule that decided, and links every fact that rule read to the clause it came from.
 
-**Try it:** [gonogo-livid.vercel.app](https://gonogo-livid.vercel.app/#/ask). Pick "No export classification
-yet", approve the proposed classification on the Steward page, and the verdict moves from NO DATA to GO, with
-R5 named as the rule that changed. [docs/rules.md](docs/rules.md) walks through that example.
+**Try it:** [gonogo-livid.vercel.app](https://gonogo-livid.vercel.app/#/ask). Pick "No export classification yet",
+approve the proposed classification on the Steward page, and watch the verdict move from NO DATA to GO, with R5
+named as the rule that changed.
 
 ![The ontology graph: select a class and its relationships flow along their arrows](docs/screenshots/ontology-walk.gif)
-
-![Provenance: a decision, the fact behind it, and who proposed and approved it](docs/screenshots/provenance-walk.gif)
 
 A narrated four-minute tour of the ontology, provenance, the verdict path, and the AWS architecture:
 [docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4) (subtitles in
 [gonogo-overview.srt](docs/media/gonogo-overview.srt)).
 
-> **Status:** Gate 3 of 4 is complete: the two-person rule enforced by Cedar, the leakage and prompt-injection
-> suites, the AWS deployment (built and checked on Neptune; the public demo does not depend on it), the Ontop mapping, and the release
-> workflow. Gate 4 adds the benchmark. See [docs/status.md](docs/status.md).
+## How a verdict is made
+
+Seven deterministic rules decide every verdict by querying a W3C knowledge graph (OWL 2, SKOS, SHACL, PROV-O)
+through fixed SPARQL templates. A versioned combiner turns their results into one verdict. A missing fact gives NO
+DATA, never GO, and a proposed fact counts only after a person approves it. A language model may read a question or
+propose a fact, but it never decides a verdict and never writes a query that decides one.
+
+```mermaid
+flowchart LR
+    Q[Question in plain words] --> P[Parser: patent, license type,<br/>field, territory, dates]
+    P --> R[Seven rules R1 to R7<br/>fixed SPARQL over the graph]
+    G[(Knowledge graph<br/>release + approved facts)] --> R
+    C[(Candidate graph<br/>proposals)] -. never read .-> R
+    R --> M[Versioned combiner]
+    M --> V{GO / NO GO / HOLD /<br/>COUNSEL / NO DATA}
+    V --> D[Decision record:<br/>cutoff, release, facts, signature]
+```
+
+Risky approvals need two people: an approval that conflicts with the record, or that would raise a verdict to GO,
+waits for counsel, and Cedar policies decide who may do what ([ADR 0002](docs/adr/0002-separation-of-duties.md)).
+
+## Architecture
+
+The same engine runs in two places: a public demo on Vercel that needs no AWS account, and an AWS deployment with
+Neptune, Cognito, Verified Permissions, Lambda, Step Functions, and CloudFront, built with the AWS CDK in Python.
+
+![GoNoGo on AWS: edge, identity and policy, decide, record, the graph in its VPC, ingestion, the benchmark, and the cost guard](docs/architecture/gonogo-aws-1-overview.png)
+
+Seven draw.io views cover the request path, ingestion, security and network, data access, the benchmark, and the
+stacks and their cost: [docs/architecture/README.md](docs/architecture/README.md).
+
+## Does the ontology earn its place?
+
+Two hundred clearance questions went to four answerers, scored against verdicts that were fixed by hand when each case
+was planted ([docs/benchmark.md](docs/benchmark.md)).
+
+| | Vector RAG | Graph agent | Rules only | **GoNoGo** |
+|---|---:|---:|---:|---:|
+| Verdict accuracy | 20.5% | 72.5% | 50.5% | **97.5%** |
+| **False GO** (cleared a license it should not) | 14 | 32 | 0 | **0** |
+| Cites the agreement that decides the case | 21% | 91% | 48% | **100%** |
+| Model cost for 200 questions | $1.04 | $4.35 | $0 | **$0.20** |
+
+The graph agent found the right agreement 91% of the time and still cleared 32 licenses it should not have, because
+the model misapplied the policy to facts it had in hand. GoNoGo lets a model read the question and lets the rules
+decide. The build fails if it ever gives a false GO.
+
+> **Status:** Gate 4 of 4 is built: the benchmark, the Neo4j comparison with
+> [ADR 0003](docs/adr/0003-rdf-versus-property-graph.md), the agreement ingestion workflow, and this README. See
+> [docs/status.md](docs/status.md).
 
 ## Read next
 
 | Read | What it gives you |
 |---|---|
+| [docs/benchmark.md](docs/benchmark.md) | The benchmark: method, results, why each answerer fails, and what it does not show |
+| [docs/ingestion.md](docs/ingestion.md) | How an agreement PDF becomes a proposed grant, waits for a steward, and reaches the graph |
+| [docs/adr/0003-rdf-versus-property-graph.md](docs/adr/0003-rdf-versus-property-graph.md) | R2 in SPARQL and in Cypher on 1,435 requests, and why RDF stays the system of record |
 | [docs/tour.md](docs/tour.md) | The app in pictures: the ontology in motion, a question, a held approval, the policy grid, and the provenance graph |
 | [docs/architecture.md](docs/architecture.md) | Six diagrams: the path to a verdict, the two places it runs, the AWS deployment, the two-person rule, the data and who reads it, and the release process. The demo has the same pictures on its Architecture page. |
 | [docs/aws-resources.md](docs/aws-resources.md) | All 106 AWS resources, generated from the CDK templates, with what each is for and what it costs while idle |
@@ -134,3 +180,12 @@ uv run pytest -m network         # live calls to the public sources
 Local work costs nothing. The AWS stack deploys only when you ask for it. Neptune sits behind `deployNeptune`,
 `scripts/teardown.py` removes everything after a session, and a $10 budget watches the services it uses. See
 [infra/README.md](infra/README.md).
+
+## What carries over to media rights
+
+The architecture carries over to media rights clearance: an ontology written from the questions, vocabularies for
+territories and media, an open world where a missing fact is not a yes, facts with two times and a source,
+confidential terms in their own graph, rules that decide and a model that only reads, two people for risky approvals,
+and decisions that can be rerun. The patent rules do not: patent terms and fee lapses, the co-exclusive cap, the
+federal notice window, export control, and statutory review give way to chain of title, windows and holdbacks, and
+rights split by territory and medium. [docs/media-rights.md](docs/media-rights.md) goes through each.

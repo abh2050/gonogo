@@ -28,6 +28,13 @@ prompt with no words in it, and the title was added afterward. The voice is Elev
 [media/narration.json](media/narration.json). Each walk holds a step for exactly as long as its line, and
 `scripts/assemble_video.py` places every line at the moment its step appears.
 
+## The benchmark
+
+![The Benchmark page: verdict accuracy, false GOs, and accuracy by question family for four answerers](screenshots/17-benchmark.png)
+
+Two hundred questions, four answerers, one false-GO count that matters. The page charts
+[eval/results.md](../eval/results.md); [benchmark.md](benchmark.md) explains the method and what the numbers show.
+
 ## How a verdict is made
 
 ![The architecture page: a question flows through a parser, entity resolution, seven rules, a combiner, and a decision record](screenshots/06-architecture.png)
