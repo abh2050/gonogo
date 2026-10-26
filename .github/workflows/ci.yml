@@ -61,10 +61,11 @@ jobs:
       - run: uv sync --frozen
       - name: Wait for Fuseki
         run: until curl -fs http://localhost:3030/$/ping; do sleep 2; done
-      # Every competency question on Fuseki, and every rule decision over HTTP matching the in-memory engine.
-      - run: uv run pytest -m docker -k "fuseki or sparql_store"
+      - run: uv run pytest -m docker -k fuseki
       - name: Build and load the full graph
         run: uv run python -m kg all
+      # With the full graph loaded, every rule decision over HTTP must match the in-memory engine.
+      - run: uv run pytest -m docker -k sparql_store
       # The public demo serves a committed snapshot of the graph, so it must match a fresh build.
       - run: git diff --exit-code api/snapshot
 

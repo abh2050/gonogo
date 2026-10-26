@@ -35,8 +35,26 @@ MAPPED = {
 
 
 def docker(*args: str, input: str | None = None) -> str:
-    out = subprocess.run(["docker", *args], input=input, capture_output=True, text=True, check=True)
+    out = subprocess.run(["docker", *args], input=input, capture_output=True, text=True, check=False)
+    if out.returncode != 0:
+        raise RuntimeError(f"docker {' '.join(args[:3])} failed ({out.returncode}):\n{out.stderr[-1500:]}")
     return out.stdout
+
+
+def load_sql(sql: list[str]) -> None:
+    """Load the tables. The PostgreSQL image starts a temporary server and then restarts it, and pg_isready answers
+    during the first phase, so the load retries until the real server is up."""
+    last: Exception | None = None
+    for _ in range(20):
+        try:
+            docker(
+                "exec", "-i", PG, "psql", "-q", "-U", "postgres", "-v", "ON_ERROR_STOP=1", input="\n".join(sql) + "\n"
+            )
+            return
+        except RuntimeError as e:
+            last = e
+            subprocess.run(["sleep", "2"])
+    raise RuntimeError(f"PostgreSQL never accepted the load: {last}")
 
 
 @pytest.fixture(scope="module")
@@ -61,7 +79,7 @@ def materialized(store: Store, tmp_path_factory: pytest.TempPathFactory) -> Grap
             ):
                 break
             subprocess.run(["sleep", "1"])
-        docker("exec", "-i", PG, "psql", "-q", "-U", "postgres", "-v", "ON_ERROR_STOP=1", input="\n".join(sql) + "\n")
+        load_sql(sql)
         docker(
             "run",
             "--rm",
@@ -190,7 +208,7 @@ def test_a_finance_question_is_answered_as_sparql_over_the_verdict_table(store: 
             ):
                 break
             subprocess.run(["sleep", "1"])
-        docker("exec", "-i", PG, "psql", "-q", "-U", "postgres", "-v", "ON_ERROR_STOP=1", input="\n".join(sql) + "\n")
+        load_sql(sql)
         docker(
             "run",
             "--rm",

@@ -1162,9 +1162,9 @@
  },
  "synthetic": {
   "agreements": 120,
-  "injectedCases": 44,
+  "injectedCases": 45,
   "verdicts": {
-   "COUNSEL": 8,
+   "COUNSEL": 9,
    "GO": 11,
    "HOLD": 2,
    "NO DATA": 5,

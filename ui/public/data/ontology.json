@@ -1,8 +1,8 @@
 {
  "counts": {
-  "classes": 44,
-  "datatypeProperties": 51,
-  "objectProperties": 22
+  "classes": 48,
+  "datatypeProperties": 59,
+  "objectProperties": 27
  },
  "edges": [
   {
@@ -110,6 +110,12 @@
   {
    "kind": "subclass",
    "label": "subclass of",
+   "source": "FieldOfUseAssignment",
+   "target": "BitemporalFact"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
    "source": "FilingRecord",
    "target": "BitemporalFact"
   },
@@ -164,6 +170,12 @@
   {
    "kind": "subclass",
    "label": "subclass of",
+   "source": "ModelAgent",
+   "target": "prov:SoftwareAgent"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
    "source": "OverrideVerdict",
    "target": "Action"
   },
@@ -184,6 +196,12 @@
    "label": "subclass of",
    "source": "ProposeFacts",
    "target": "Action"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
+   "source": "ProposeFacts",
+   "target": "FactGeneration"
   },
   {
    "kind": "subclass",
@@ -224,6 +242,12 @@
   {
    "kind": "subclass",
    "label": "subclass of",
+   "source": "SecondReview",
+   "target": "Action"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
    "source": "SourceDocument",
    "target": "prov:Entity"
   },
@@ -242,6 +266,12 @@
   {
    "kind": "subclass",
    "label": "subclass of",
+   "source": "SubmitForSecondReview",
+   "target": "Action"
+  },
+  {
+   "kind": "subclass",
+   "label": "subclass of",
    "source": "SyntheticGeneration",
    "target": "FactGeneration"
   },
@@ -250,6 +280,14 @@
    "label": "subclass of",
    "source": "UnrestrictedExport",
    "target": "ExportClassification"
+  },
+  {
+   "definition": "The proposed grant that a field of use assignment describes.",
+   "kind": "property",
+   "label": "aboutGrant",
+   "rules": "",
+   "source": "FieldOfUseAssignment",
+   "target": "ProposedGrant"
   },
   {
    "definition": "Relates a fact to a patent that it describes. A grant can cover several patents.",
@@ -266,6 +304,14 @@
    "rules": "R4",
    "source": "ProposedGrant",
    "target": "LicenseNotice"
+  },
+  {
+   "definition": "The field of use that an assignment gives to a proposed grant. It is separate from gng:fieldOfUse, which belongs to the grant itself, so an approved assignment never edits a grant.",
+   "kind": "property",
+   "label": "assignsField",
+   "rules": "",
+   "source": "FieldOfUseAssignment",
+   "target": "FieldOfUse"
   },
   {
    "definition": "The NASA center that manages the patent.",
@@ -306,6 +352,14 @@
    "rules": "R2",
    "source": "Grant",
    "target": "Territory"
+  },
+  {
+   "definition": "The patent that a decision was about. It is separate from gng:aboutPatent, which belongs to facts and would make a decision look like a fact.",
+   "kind": "property",
+   "label": "decisionPatent",
+   "rules": "",
+   "source": "Decision",
+   "target": "Patent"
   },
   {
    "definition": "How exclusive the grant is. An executed grant has exactly one. A proposed grant from a notice that offers several types has several.",
@@ -575,9 +629,40 @@
   },
   {
    "comment": "",
-   "datatypeProperties": [],
-   "decisions": [],
-   "definition": "The stored result of one clearance request: the rule findings, the combiner policy, the release, the recording cutoff, and the verdict. Gate 2 adds its properties.",
+   "datatypeProperties": [
+    {
+     "definition": "The version of the precedence policy that turned rule statuses into the verdict.",
+     "name": "combinerPolicyVersion"
+    },
+    {
+     "definition": "The role that the user held when asking.",
+     "name": "decidedByRole"
+    },
+    {
+     "definition": "The signed-in user who asked the question.",
+     "name": "decidedByUser"
+    },
+    {
+     "definition": "A SHA-256 digest of the decision's findings. A rerun from the stored context must produce the same digest.",
+     "name": "decisionSignature"
+    },
+    {
+     "definition": "The recording time that the decision's rules saw. Facts recorded later were invisible to it.",
+     "name": "recordingCutoff"
+    },
+    {
+     "definition": "The ontology release that the decision used.",
+     "name": "releaseVersion"
+    },
+    {
+     "definition": "The outcome of a decision: GO, NO GO, HOLD, COUNSEL, or NO DATA.",
+     "name": "verdict"
+    }
+   ],
+   "decisions": [
+    "MD16"
+   ],
+   "definition": "The stored result of one clearance request: the rule findings, the combiner policy, the release, the recording cutoff, and the verdict. The full record lives in DynamoDB. A summary row goes to the finance reporting table, and Ontop exposes that row as a Decision.",
    "external": false,
    "id": "Decision",
    "kind": "process",
@@ -648,6 +733,10 @@
     {
      "definition": "The identifier of the model or extractor that read the facts out of text.",
      "name": "extractionModel"
+    },
+    {
+     "definition": "The version of the instructions and output schema that a model extraction used, so a reader can find the exact prompt.",
+     "name": "promptVersion"
     }
    ],
    "decisions": [],
@@ -683,6 +772,21 @@
    "id": "FieldOfUse",
    "kind": "vocabulary",
    "label": "Field of use",
+   "rules": [
+    "R2"
+   ]
+  },
+  {
+   "comment": "",
+   "datatypeProperties": [],
+   "decisions": [
+    "MD14"
+   ],
+   "definition": "A statement that a proposed grant covers one field of use, read from the words of its notice. A notice often says only that the field may be limited. A model proposes the assignment, and it counts only after a steward approves it.",
+   "external": false,
+   "id": "FieldOfUseAssignment",
+   "kind": "fact",
+   "label": "Field of use assignment",
    "rules": [
     "R2"
    ]
@@ -834,6 +938,19 @@
    "id": "LinkIdentity",
    "kind": "process",
    "label": "Link identity",
+   "rules": []
+  },
+  {
+   "comment": "",
+   "datatypeProperties": [],
+   "decisions": [
+    "MD15"
+   ],
+   "definition": "A language model, identified by its model ID, as the software agent that proposed a fact. A model agent cannot approve anything.",
+   "external": false,
+   "id": "ModelAgent",
+   "kind": "party",
+   "label": "Model agent",
    "rules": []
   },
   {
@@ -1089,6 +1206,19 @@
   },
   {
    "comment": "",
+   "datatypeProperties": [],
+   "decisions": [
+    "MD15"
+   ],
+   "definition": "Counsel approves or denies a steward's submitted approval. Counsel is never the proposer or the first approver.",
+   "external": false,
+   "id": "SecondReview",
+   "kind": "process",
+   "label": "Second review",
+   "rules": []
+  },
+  {
+   "comment": "",
    "datatypeProperties": [
     {
      "definition": "The cleaned document text. Clause spans index this text by character offset.",
@@ -1131,6 +1261,19 @@
    "id": "SubmitClearanceRequest",
    "kind": "process",
    "label": "Submit clearance request",
+   "rules": []
+  },
+  {
+   "comment": "",
+   "datatypeProperties": [],
+   "decisions": [
+    "MD15"
+   ],
+   "definition": "A steward's approval that conflicts with an approved fact, or that would move a verdict from COUNSEL or NO GO to GO, waits for counsel. The submission changes no fact.",
+   "external": false,
+   "id": "SubmitForSecondReview",
+   "kind": "process",
+   "label": "Submit for second review",
    "rules": []
   },
   {
