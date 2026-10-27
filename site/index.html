@@ -40,11 +40,11 @@
         </a>
         <nav aria-label="Sections">
           <ul>
-            <li><a href="#problem">The problem</a></li>
-            <li><a href="#answer">The answer</a></li>
+            <li><a href="#start">The problem</a></li>
+            <li><a href="#hard">The data</a></li>
+            <li><a href="#tech">The technology</a></li>
+            <li><a href="#story">How it was built</a></li>
             <li><a href="#proof">The proof</a></li>
-            <li><a href="#trust">Governance</a></li>
-            <li><a href="#ontology">Ontology</a></li>
             <li><a href="#architecture">Architecture</a></li>
           </ul>
         </nav>
@@ -59,34 +59,68 @@
           <source src="assets/hero.mp4" type="video/mp4" />
         </video>
         <div class="wrap">
-          <p class="eyebrow reveal">Patent license clearance, with proof</p>
-          <h1 class="reveal d1">Clear a license in seconds. <em>Show your work.</em></h1>
+          <p class="eyebrow reveal">A knowledge graph, built on NASA patent data</p>
+          <h1 class="reveal d1">Can this company use this patent? <em>Get the answer, with the evidence.</em></h1>
           <p class="lede reveal d2">
-            GoNoGo runs the five checks a technology-transfer office does by hand, then answers <b>GO, NO GO, HOLD, COUNSEL, or NO DATA</b>. Each answer shows the rule that decided it and the source of every fact that rule read.
+            When NASA licenses an invention to a company, someone must check five separate records first. GoNoGo runs those
+            checks in under two seconds, then shows what it found and where each fact came from.
           </p>
           <div class="cta reveal d3">
-            <a class="btn btn-primary" href="https://gonogo-livid.vercel.app/#/ask">Try the live demo</a>
+            <a class="btn btn-primary" href="#start">Start with the story</a>
+            <a class="btn btn-ghost" href="https://gonogo-livid.vercel.app/#/ask">Try the live demo</a>
             <a class="btn btn-ghost" href="#watch">Watch the 5-minute tour</a>
           </div>
           <div class="stats reveal d4" aria-label="Key numbers">
             <div class="stat"><b data-count="97.5" data-suffix="%">97.5%</b><span>right on 200 test questions</span></div>
-            <div class="stat"><b data-count="0">0</b><span>wrong GOs in those 200 tests</span></div>
-            <div class="stat"><b>7</b><span>fixed rules decide each verdict</span></div>
+            <div class="stat"><b data-count="0">0</b><span>licenses wrongly approved in those tests</span></div>
+            <div class="stat"><b>7</b><span>fixed rules decide each answer</span></div>
             <div class="stat"><b>1.6 s</b><span>median time to an answer</span></div>
           </div>
         </div>
         <span class="scroll-cue" aria-hidden="true"></span>
       </section>
 
-      <!-- ===== the problem ===== -->
-      <section id="problem">
+      <!-- ===== start here ===== -->
+      <section id="start">
         <div class="wrap">
           <div class="head">
-            <p class="eyebrow reveal">The problem</p>
-            <h2 class="reveal d1">A clearance takes five checks by hand. A missed overlap can put two exclusive licenses on one invention.</h2>
-            <p class="lede reveal d2">
-              A company asks NASA for a license to a patent, for one use, in one place, for some years. Before anyone says yes, someone must confirm each of these:
-            </p>
+            <p class="eyebrow reveal">Start here</p>
+            <h2 class="reveal d1">What is this about?</h2>
+            <p class="lede reveal d2">NASA invents things. Companies want to use them. A license is the permission, and granting one takes care.</p>
+          </div>
+
+          <div class="quad">
+            <article class="mini reveal">
+              <span class="n">1</span>
+              <h3>NASA patents its inventions</h3>
+              <p>A patent is a legal right to an invention. NASA's public list names 1,393 patents and applications, from materials to sensors.</p>
+            </article>
+            <article class="mini reveal d1">
+              <span class="n">2</span>
+              <h3>Companies ask for licenses</h3>
+              <p>A license lets a company use a patent for one purpose, in one place, for a set time. An <b>exclusive</b> license means no one else may.</p>
+            </article>
+            <article class="mini reveal d2">
+              <span class="n">3</span>
+              <h3>Someone checks before saying yes</h3>
+              <p>The same invention cannot be promised exclusively to two companies for the same use, so the office checks five things first.</p>
+            </article>
+            <article class="mini reveal d3">
+              <span class="n">4</span>
+              <h3>A missed check is costly</h3>
+              <p>The error that costs most is approving a license that should have been blocked, because nothing flags it.</p>
+            </article>
+          </div>
+
+          <figure class="scene reveal">
+            <figcaption>One request, in the sentence GoNoGo reads</figcaption>
+            <blockquote>Orbital Lens Works, Inc. wants a non-exclusive license to NASA case LEW-17915-1 for optical communications in United States from January 1, 2027 to December 31, 2031.</blockquote>
+            <p>The company is fictional. The case number is a real NASA invention. GoNoGo's answer is <b>GO</b>: the patent is in force, no grant overlaps, export is unrestricted, and the ownership record is complete with no co-owners.</p>
+          </figure>
+
+          <div class="head" id="problem" style="margin-top: 90px">
+            <h2 class="reveal">A clearance means five checks.</h2>
+            <p class="lede reveal d1">Before anyone says yes, someone must confirm each of these:</p>
           </div>
 
           <div class="checks">
@@ -121,10 +155,115 @@
               <p>When a university or company co-owns the patent, every co-owner must consent. A missing record is not a yes.</p>
             </article>
           </div>
+        </div>
+      </section>
 
-          <div class="pull reveal">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4l13 23H3z" /><path d="M16 13v7M16 24h.01" /></svg>
-            <p>By hand, these checks mean several lists, scanned PDFs, and memory. The error that costs most is clearing a license that should have been blocked, because nothing flags it.</p>
+      <!-- ===== why it is hard ===== -->
+      <section id="hard" style="background: #fff">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">Why it is hard</p>
+            <h2 class="reveal d1">The facts live in different places, and the places disagree.</h2>
+            <p class="lede reveal d2">Each check needs a different source, and each source uses its own words. One calls a company "Acme Corp." and another "ACME Corporation". One says "aviation" where another says "aeronautics".</p>
+          </div>
+
+          <div class="sources">
+            <div class="src reveal"><b>NASA's patent list</b><span>1,393 patents and applications, with dates and a status, as of one snapshot.</span></div>
+            <div class="src reveal d1"><b>USPTO records</b><span>The legal status: granted, lapsed for unpaid fees, or ended.</span></div>
+            <div class="src reveal d2"><b>Federal Register notices</b><span>NASA's public notices of intent to license. 92 since 2018.</span></div>
+            <div class="src reveal d3"><b>Technical reports</b><span>NASA papers about each invention. 172 are linked to patents here.</span></div>
+            <div class="src gap reveal d4"><b>Agreements, ownership, export records</b><span>Not published. We generated them and label every one as synthetic.</span></div>
+          </div>
+
+          <h3 class="sub reveal">What the real data showed</h3>
+          <div class="findings">
+            <div class="find reveal">
+              <b>181 <small>of 263</small></b>
+              <span>Patents that NASA's list calls "in force" but USPTO shows lapsed for unpaid fees. NASA's list keeps showing an expiration date a median of 9.4 years after the lapse.</span>
+            </div>
+            <div class="find reveal d1">
+              <b>208 <small>of 260</small></b>
+              <span>Patents that NASA's list shows as applications, which USPTO has since granted.</span>
+            </div>
+            <div class="find reveal d2">
+              <b>24 <small>of 92</small></b>
+              <span>Public notices that say what the license is for. Most say nothing about the intended use.</span>
+            </div>
+          </div>
+          <p class="takeaway reveal">A system that trusted any single source would give wrong answers. So GoNoGo records where every fact came from, and when two sources disagree about a patent's status, the USPTO record wins.</p>
+        </div>
+      </section>
+
+      <!-- ===== the technology, in plain words ===== -->
+      <section id="tech">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">The technology</p>
+            <h2 class="reveal d1">A knowledge graph: facts a computer can check.</h2>
+            <p class="lede reveal d2">
+              A spreadsheet stores values. A knowledge graph stores facts and the relationships between them, along with a written
+              definition of what each kind of thing means. That written definition is called an <b>ontology</b>.
+            </p>
+          </div>
+
+          <div class="ideas">
+            <article class="idea reveal">
+              <svg viewBox="0 0 260 110" role="img" aria-label="Two nodes, Grant 17 and Patent, joined by an arrow labeled is about">
+                <circle cx="48" cy="58" r="30" /><text x="48" y="62" text-anchor="middle">Grant 17</text>
+                <circle cx="212" cy="58" r="30" /><text x="212" y="62" text-anchor="middle">Patent</text>
+                <path class="arrow" d="M80 58h98" /><path class="head" d="M178 52l10 6-10 6" />
+                <text x="130" y="48" text-anchor="middle" class="rel">is about</text>
+              </svg>
+              <h3>A fact is a short sentence</h3>
+              <p>"Grant 17 is about this patent." Each fact joins two things with a relationship. Join enough facts and you have a graph.</p>
+            </article>
+            <article class="idea reveal d1">
+              <svg viewBox="0 0 260 110" role="img" aria-label="Five kinds of thing, patent, licensee, field, territory, and grant, all linked to grant">
+                <path class="arrow" d="M130 58L50 24M130 58L50 92M130 58L212 24M130 58L212 92" />
+                <rect x="95" y="42" width="70" height="32" rx="8" class="hub" /><text x="130" y="62" text-anchor="middle">Grant</text>
+                <rect x="14" y="10" width="70" height="26" rx="8" /><text x="49" y="27" text-anchor="middle">Patent</text>
+                <rect x="14" y="80" width="70" height="26" rx="8" /><text x="49" y="97" text-anchor="middle">Licensee</text>
+                <rect x="176" y="10" width="70" height="26" rx="8" /><text x="211" y="27" text-anchor="middle">Field</text>
+                <rect x="176" y="80" width="70" height="26" rx="8" /><text x="211" y="97" text-anchor="middle">Territory</text>
+              </svg>
+              <h3>Each word gets one meaning</h3>
+              <p>The ontology defines the kinds of things (patent, grant, licensee, field of use) and how they connect. GoNoGo's defines 48, so every source maps onto the same words.</p>
+            </article>
+            <article class="idea reveal d2">
+              <svg viewBox="0 0 260 110" role="img" aria-label="A family tree: Aeronautics above Aircraft and Drones; a request about drones is covered by the grant on Aeronautics">
+                <path class="arrow" d="M130 34L70 76M130 34L190 76" />
+                <rect x="85" y="8" width="90" height="28" rx="8" class="hub" /><text x="130" y="27" text-anchor="middle">Aeronautics</text>
+                <rect x="24" y="76" width="92" height="28" rx="8" /><text x="70" y="95" text-anchor="middle">Aircraft</text>
+                <rect x="144" y="76" width="92" height="28" rx="8" class="pick" /><text x="190" y="95" text-anchor="middle">Drones</text>
+              </svg>
+              <h3>Broad covers narrow</h3>
+              <p>Fields and territories form a family tree. A license for aeronautics covers a request about drones, and one for North America covers the United States. The graph states this once, and every rule uses it.</p>
+            </article>
+            <article class="idea reveal d3">
+              <svg viewBox="0 0 260 110" role="img" aria-label="Two boxes: a recorded fact that says no co-owners, and a missing record marked unknown">
+                <rect x="14" y="22" width="108" height="66" rx="10" /><text x="68" y="52" text-anchor="middle">Recorded:</text><text x="68" y="70" text-anchor="middle">no co-owners</text>
+                <rect x="138" y="22" width="108" height="66" rx="10" class="dash" /><text x="192" y="52" text-anchor="middle">No record:</text><text x="192" y="70" text-anchor="middle" class="q">unknown</text>
+              </svg>
+              <h3>No record is not a "no"</h3>
+              <p>If nobody recorded the co-owners, they are unknown, not absent. The graph keeps "unknown" as its own state, so a missing fact can never turn into a yes.</p>
+            </article>
+            <article class="idea reveal d4">
+              <svg viewBox="0 0 260 110" role="img" aria-label="A timeline bar for when a fact is true, a marker for when it was learned, and a source tag">
+                <rect x="14" y="40" width="232" height="14" rx="7" class="bar" /><text x="14" y="30">true in the world: 2025 to 2034</text>
+                <path class="arrow" d="M96 54v22" /><circle cx="96" cy="80" r="5" class="hub" /><text x="108" y="84">learned 15 Jan 2026</text>
+                <rect x="14" y="92" width="108" height="16" rx="8" class="pick" /><text x="68" y="104" text-anchor="middle">source: clause 4</text>
+              </svg>
+              <h3>Every fact has two times and a source</h3>
+              <p>When it was true in the world, when the system learned it, and where it came from. That lets GoNoGo rerun any past decision and get the same answer.</p>
+            </article>
+            <article class="idea idea-note reveal d1">
+              <h3>And where does a language model fit?</h3>
+              <p>
+                Models read messy sentences well and apply rules inconsistently (the benchmark below measures this). So in GoNoGo a model may read a
+                question or propose a fact. Fixed rules decide, and a person approves any new fact.
+              </p>
+              <a href="https://github.com/abh2050/gonogo/blob/main/docs/ontology-from-scratch.md">New to ontologies? Read the guide that assumes no background</a>
+            </article>
           </div>
         </div>
       </section>
@@ -199,6 +338,96 @@
               </div>
               <img src="assets/provenance-graph.png" width="1400" height="721" alt="The provenance graph of one approved fact: the approval, its proposer, and the patent it concerns" loading="lazy" />
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== how we got here ===== -->
+      <section id="story">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">How it was built</p>
+            <h2 class="reveal d1">Five stages, each ending with a written report and a pause for approval.</h2>
+            <p class="lede reveal d2">Here is what each stage did, and what went wrong or surprised us along the way.</p>
+          </div>
+
+          <ol class="timeline">
+            <li class="stage reveal">
+              <span class="dot">0</span>
+              <div>
+                <h3>Gather the real data</h3>
+                <p>Five public sources were pulled and every raw response kept with its date. From them we chose 300 patents across three NASA centers (Langley, Glenn, and Kennedy) and every notice that names one.</p>
+                <p class="learned"><b>What we found.</b> The stale statuses and missing details described above. NASA does not publish agreements, ownership records, or export classifications, so a generator wrote 120 fictional agreements and 45 test cases. Each case has an answer written by hand, and every synthetic fact is labeled.</p>
+              </div>
+            </li>
+            <li class="stage reveal">
+              <span class="dot">1</span>
+              <div>
+                <h3>Write the questions, then the model</h3>
+                <p>Before drawing a single class, we wrote 15 questions the system must be able to answer. Then came the ontology, the word lists for fields and territories, and shapes that check incoming data. A reasoner tests the whole model for contradictions.</p>
+                <p class="learned"><b>What we learned.</b> Two kinds of check catch different mistakes. A grant that named a country where a field of use belongs passed the shape check and was caught by the contradiction check, so every build runs both.</p>
+              </div>
+            </li>
+            <li class="stage reveal">
+              <span class="dot">2</span>
+              <div>
+                <h3>Build the rules and the loop</h3>
+                <p>Seven rules, a combiner that turns their results into one verdict, a parser for the question, matching of company names, and a queue where a steward approves new facts. A public demo ran the whole loop in a browser.</p>
+                <p class="learned"><b>What we learned.</b> A wrong approval is acted on exactly like a right one. In the demo, approving a record that left out a co-owner changed the verdict from COUNSEL to GO. Nothing in the engine could catch that, which led to the two-person rule.</p>
+              </div>
+            </li>
+            <li class="stage reveal">
+              <span class="dot">3</span>
+              <div>
+                <h3>Make it safe, then run it for real</h3>
+                <p>Policies decide who may do what, and an approval that conflicts with the record or would raise a verdict waits for counsel. Tests tried to leak confidential royalty terms and to plant instructions inside agreements. The system then ran on AWS with real sign-in, passed 11 live checks, and was torn down.</p>
+                <p class="learned"><b>What we learned.</b> No model obeyed a planted instruction in 36 tries. That is a small sample, and the write-up says what it does and does not prove.</p>
+              </div>
+            </li>
+            <li class="stage reveal">
+              <span class="dot">4</span>
+              <div>
+                <h3>Test it against a language model</h3>
+                <p>200 questions went to four ways of answering. A second database, built for graphs of a different kind, ran the same overlap rule in its own language. A workflow now reads an agreement PDF, extracts a grant, and waits for a steward.</p>
+                <p class="learned"><b>What we learned.</b> A model that was given the right facts still got the answer wrong 27.5% of the time. And when the second database was loaded with a wrong identifier, it returned nothing and only logged a warning, where the first database's checks would have stopped the load.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ===== why it was built this way ===== -->
+      <section id="why" style="background: #fff">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">Why it was built this way</p>
+            <h2 class="reveal d1">Six choices, and the reason for each.</h2>
+          </div>
+          <div class="reasons">
+            <article class="reason reveal">
+              <h3>Write the questions first</h3>
+              <p><b>Because</b> a model of the world should answer real questions. A class that no question needs gets cut.</p>
+            </article>
+            <article class="reason reveal d1">
+              <h3>A missing fact is never a yes</h3>
+              <p><b>Because</b> otherwise a patent nobody checked would be approved. The answer for a missing fact is NO DATA.</p>
+            </article>
+            <article class="reason reveal d2">
+              <h3>A model reads. Fixed rules decide.</h3>
+              <p><b>Because</b> the benchmark showed that models misapply a rule even when they hold the right facts. The same rules give the same answer every time.</p>
+            </article>
+            <article class="reason reveal d3">
+              <h3>Every fact keeps its times and its source</h3>
+              <p><b>Because</b> a decision must be explainable and repeatable months later, and an auditor must be able to rerun it.</p>
+            </article>
+            <article class="reason reveal d4">
+              <h3>A second person for risky approvals</h3>
+              <p><b>Because</b> the first demo showed that one wrong approval could change a verdict. People are fallible, so the system asks for a second.</p>
+            </article>
+            <article class="reason reveal d1">
+              <h3>Confidential terms stay in their own graph</h3>
+              <p><b>Because</b> royalty terms must never leak. Only one role may read them, and every export and demo leaves them out.</p>
+            </article>
           </div>
         </div>
       </section>

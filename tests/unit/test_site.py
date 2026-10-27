@@ -60,3 +60,26 @@ def test_the_page_keeps_the_public_repo_clean() -> None:
 def test_the_demo_and_repo_links_point_at_the_right_places() -> None:
     assert "https://gonogo-livid.vercel.app/#/ask" in HTML
     assert "https://github.com/abh2050/gonogo" in HTML
+
+
+FINDINGS = json.loads((ROOT / "ui" / "public" / "data" / "findings.json").read_text())
+
+
+def test_the_data_numbers_on_the_page_are_the_measured_ones() -> None:
+    legal = FINDINGS["legalStatus"]
+    apps = FINDINGS["applications"]
+    assert f"<b>{len(legal['lapsed'])} <small>of {legal['nasaCallsInForce']}</small></b>" in HTML
+    assert f"{legal['phantomYearsMedian']} years after the lapse" in HTML
+    assert f"<b>{apps['nowGranted']} <small>of {apps['listedAsApplication']}</small></b>" in HTML
+    ext = FINDINGS["extraction"]
+    assert f"<b>{ext['fieldStated']} <small>of {ext['total']}</small></b>" in HTML
+    assert f"{ext['total']} since 2018" in HTML
+
+
+def test_the_page_explains_before_it_argues() -> None:
+    order = [HTML.index(f'id="{s}"') for s in ("start", "hard", "tech", "answer", "how", "story", "why", "proof")]
+    assert order == sorted(order), (
+        "the sections must run: situation, data, technology, answer, build story, reasons, proof"
+    )
+    for term in ("A patent is a legal right", "A license lets a company use a patent", "called an <b>ontology</b>"):
+        assert term in HTML
