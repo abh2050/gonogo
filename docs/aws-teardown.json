@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T18:12:34Z",
+  "at": "2026-10-27T01:07:07Z",
   "region": "us-east-2",
   "actions": [
     "emptied the audit bucket with the Object Lock bypass; the first run then failed on the graph bucket, because S3 rejects the bypass flag on a bucket without Object Lock (fixed in scripts/teardown.py)",
@@ -11,7 +11,14 @@
     "cdk destroy gonogo-ui gonogo-api gonogo-core",
     "deleted log group /aws/lambda/gonogo-core-CustomS3AutoDeleteObjectsCustomResourc-iaIxUiM1Gt2W",
     "deleted log group /aws/lambda/gonogo-ui-CustomCDKBucketDeployment8693BB64968944B-2pC8HVfRf3ic",
-    "deleted log group /aws/lambda/gonogo-ui-CustomS3AutoDeleteObjectsCustomResourceP-yKtU1yedyRRC"
+    "deleted log group /aws/lambda/gonogo-ui-CustomS3AutoDeleteObjectsCustomResourceP-yKtU1yedyRRC",
+    "emptied gonogo-core-audit3d8ade0a-a9yihqcqcity: 23 objects",
+    "emptied gonogo-core-graphs4a6c81ff-o1mzm3kwsr93: 4 objects",
+    "cdk destroy gonogo-eval gonogo-api gonogo-core",
+    "deleted log group /aws/lambda/gonogo-api-BucketNotificationsHandler050a0587b7544-WeCtNkbvP1hW",
+    "deleted log group /aws/lambda/gonogo-api-CustomS3AutoDeleteObjectsCustomResource-2hZGCKYjHTWw",
+    "deleted log group /aws/lambda/gonogo-core-CustomS3AutoDeleteObjectsCustomResourc-ffq4KVaQ6G5z",
+    "deleted log group /aws/lambda/gonogo-eval-CustomS3AutoDeleteObjectsCustomResourc-Xa6F3bddwNB5"
   ],
   "left_behind": [
     {
@@ -24,6 +31,10 @@
     },
     {
       "resource": "AWS::KMS::Key b8d19f13-0412-42a1-acc0-be078b46e8da",
+      "why": "pending deletion until 2026-11-02, the shortest wait KMS allows; not billed"
+    },
+    {
+      "resource": "AWS::KMS::Key ca6cb159-b21e-4661-817f-534d51973de9",
       "why": "pending deletion until 2026-11-02, the shortest wait KMS allows; not billed"
     },
     {

@@ -72,28 +72,37 @@ SHACL, a steward's approval, and the write to Neptune, and one booked request mo
 | Smoke tests, the stopped sample runs, and quota retries | under $1, estimated |
 | Titan embeddings for 1,925 documents (about a million tokens) | about $0.02 |
 | S3 Vectors and the corpus bucket | cents |
-| **Gate 4 total** | **about $7**, estimated |
+| Neptune and the AWS services for the ingestion run and the evidence checks (about 2 hours up) | about $1, estimated |
+| **Gate 4 total** | **about $8**, estimated. The budget alarm is $10 a month. |
 
 Cost Explorer had not posted 2026-10-26 when this was written. `uv run python -m scripts.aws_spend 2026-10-26
 2026-10-28` gives the measured figure the next day. The budget stays at $10 a month, as you chose.
 
-### What is still deployed
+### What the teardown left behind
 
-- `gonogo-eval` (the Knowledge Base, S3 Vectors, and the corpus bucket): about a cent a day of storage. It goes when
-  you approve the teardown at the end of the gate.
-- `gonogo-budget` and two KMS keys pending deletion, as after Gate 3.
+`uv run python -m scripts.teardown` removed all five stacks (core, api with Neptune and the ingestion workflow, ui, eval,
+and the benchmark's Knowledge Base) and `still_billing` is empty. What remains:
+
+| Resource | Why | Cost |
+|---|---|---|
+| `gonogo-budget` stack and the `gonogo-monthly` budget | Emails at 50, 80, and 100 percent of $10 | Free |
+| Three KMS keys | Pending deletion until 2026-11-01 and 2026-11-02, the shortest wait KMS allows | Not billed |
+
+The live demo on Vercel does not depend on any of it.
 
 ### Open questions for you
 
-1. **Run the ingestion workflow on AWS?** It needs gonogo-core and gonogo-api with Neptune for about an hour (about
-   $1 to $2), then a full teardown. It would add a live execution record and Step Functions screenshots.
-2. **Tear down `gonogo-eval` now,** or keep it while you look at the Benchmark page?
-3. **The overview video** describes the loader as Neptune's only writer, which the ingestion step changed. Rebuild the
-   video with the corrected line and the new diagrams?
+1. **Measured AWS spend.** Cost Explorer lags a day. `uv run python -m scripts.aws_spend 2026-10-26 2026-10-28` gives the
+   measured figure tomorrow, to replace the estimate above.
+2. **The budget email address.** The alarm exists, but you have not told me which address should receive it.
+3. **The w3id pull request.** You said you would open it; until it merges, the ontology's permanent URL does not
+   resolve.
+4. **Beyond Gate 4.** Not built, and not in the spec: the Strands agent on Fargate (needs paid networking that breaks
+   the no-NAT rule), a live Snowflake account, and Guardrails around the agent.
 
 ## Gate 3: the two-person rule, the AWS deployment, the leakage and injection suites, Ontop, and releases
 
-**State:** complete and waiting for approval. Gate 4 has not started.
+**State:** approved. (The Textract and Step Functions ingestion path named below as not built was built in Gate 4.)
 **Date:** 2026-10-25
 **Live demo:** https://gonogo-livid.vercel.app/#/steward
 
