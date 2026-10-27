@@ -1,0 +1,161 @@
+WEBVTT
+
+1
+00:00:00.550 --> 00:00:15.318
+Go No Go answers one question for NASA technology transfer. Can this patent be licensed, to this company, for this use? A knowledge graph and seven fixed rules decide. The model never does.
+
+2
+00:00:19.040 --> 00:00:25.402
+This is the ontology, forty-eight classes. Each dot is a kind of thing. Watch the arrows.
+
+3
+00:00:26.075 --> 00:00:28.676
+A patent is what every license is about.
+
+4
+00:00:29.296 --> 00:00:34.358
+A grant points at a patent. It comes in two kinds: proposed, and executed.
+
+5
+00:00:34.977 --> 00:00:39.853
+A signed license adds a licensee, a term, and an exclusivity type.
+
+6
+00:00:40.462 --> 00:00:46.778
+Fields of use sit in a vocabulary hierarchy. A grant for a broad field covers the narrower ones.
+
+7
+00:00:47.394 --> 00:00:51.806
+Territories nest the same way. North America covers the United States.
+
+8
+00:00:52.429 --> 00:00:59.070
+Every fact records when it holds, and when the system learned it, so any past decision can be rerun.
+
+9
+00:00:59.677 --> 00:01:05.110
+A model can propose a field of use, but it stays a candidate until a person approves it.
+
+10
+00:01:05.726 --> 00:01:10.231
+A risky or conflicting approval waits for a second person, counsel.
+
+11
+00:01:10.843 --> 00:01:15.673
+A decision records the facts the rules read, the release, and a signature.
+
+12
+00:01:21.768 --> 00:01:26.087
+Now provenance. This is the trail behind one approved fact.
+
+13
+00:01:26.700 --> 00:01:31.808
+Here is the approved fact. Every fact carries its own provenance.
+
+14
+00:01:32.433 --> 00:01:35.776
+A named person approved it, not a standing policy.
+
+15
+00:01:36.399 --> 00:01:39.649
+The approval event records the time and the steward's reason.
+
+16
+00:01:40.266 --> 00:01:45.606
+The fact was derived from a proposal. The proposal stays, unchanged.
+
+17
+00:01:46.215 --> 00:01:49.605
+Someone proposed it. A proposer can never be the approver.
+
+18
+00:01:50.215 --> 00:01:54.441
+The proposal itself came from a generator run, labeled synthetic.
+
+19
+00:01:55.048 --> 00:02:00.899
+And the fact is about one patent. Nothing here was edited or deleted.
+
+20
+00:02:03.855 --> 00:02:09.428
+Here is how a question becomes a verdict. Fixed steps, and no model deciding.
+
+21
+00:02:10.107 --> 00:02:16.376
+The parser reads concepts out of the question with fixed patterns, and keeps the span each one came from.
+
+22
+00:02:17.071 --> 00:02:22.690
+Seven rules run on every request. Each fills a fixed query template and reads the graph.
+
+23
+00:02:23.373 --> 00:02:29.782
+Proposed facts wait in a candidate graph. No rule reads it, so a proposal cannot change a verdict.
+
+24
+00:02:30.454 --> 00:02:38.442
+A versioned combiner turns the rule results into one verdict: go, no go, hold, counsel, or no data.
+
+25
+00:02:39.122 --> 00:02:43.720
+Every decision is stored with its inputs and a signature, so it can be replayed.
+
+26
+00:02:44.334 --> 00:02:53.808
+A risky approval waits for a second person. A steward cannot approve their own proposal, and counsel must approve any change that would turn a verdict to go.
+
+27
+00:02:54.436 --> 00:02:59.498
+Each role may read only some graphs. Royalty terms never leave their own graph.
+
+28
+00:03:05.749 --> 00:03:10.440
+Now the same system on AWS, drawn from the stacks we deployed in Ohio.
+
+29
+00:03:11.047 --> 00:03:19.685
+A person reaches CloudFront over HTTPS. CloudFront serves the app from a private S3 bucket, and forwards API calls.
+
+30
+00:03:20.292 --> 00:03:27.583
+API Gateway checks the Cognito token on every call. Cognito holds six role groups, and a user can belong to only one.
+
+31
+00:03:28.193 --> 00:03:37.899
+The engine Lambda runs the rules and the approval loop. It asks Cedar who may do what, using the same policies that Verified Permissions holds.
+
+32
+00:03:38.505 --> 00:03:48.861
+Each decision goes to DynamoDB, and a tamper-evident copy goes to S3 under Object Lock. EventBridge carries action events, and one KMS key encrypts the data.
+
+33
+00:03:49.471 --> 00:04:03.496
+Inside a network with no internet route, a read-only query Lambda is the only path for reads. Only the loader and the step that applies an approved grant may write, and no outside caller can reach either.
+
+34
+00:04:04.120 --> 00:04:16.380
+New agreements arrive as PDFs. Step Functions has Textract read each one, fixed patterns extract the grant, SHACL checks it, and the workflow waits for a steward before anything reaches the graph.
+
+35
+00:04:17.000 --> 00:04:26.613
+A budget alarm watches the spend. When the review is done, one script tears everything down, and the public demo keeps running without AWS.
+
+36
+00:04:31.500 --> 00:04:39.024
+Does the ontology earn its place? Two hundred questions went to four answerers, scored against verdicts fixed by hand.
+
+37
+00:04:40.340 --> 00:04:50.186
+Go No Go was right ninety-seven and a half percent of the time. A graph agent with the same facts reached seventy-two, and vector search alone, twenty.
+
+38
+00:04:51.495 --> 00:05:01.666
+The error that matters is a false go: clearing a license that should be blocked. The graph agent made thirty-two. Go No Go made none.
+
+39
+00:05:02.974 --> 00:05:13.748
+The agent usually found the right agreement, and still misread the rule. That is the case for an ontology. The model reads, and the rules decide.
+
+40
+00:05:15.048 --> 00:05:23.175
+That is Go No Go. Every verdict has a source. The code, the diagrams, and the guide are on GitHub.

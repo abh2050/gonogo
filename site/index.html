@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GoNoGo: clear a patent license in seconds, with the proof</title>
+    <meta
+      name="description"
+      content="GoNoGo runs the five checks a technology-transfer office does by hand and answers GO, NO GO, HOLD, COUNSEL, or NO DATA. Every answer shows the rule that decided it and the source of each fact. Built on NASA patent data."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="GoNoGo: clear a patent license in seconds, with the proof" />
+    <meta
+      property="og:description"
+      content="Seven rules over a knowledge graph. 97.5% right on 200 test questions, with no false GOs. A language model given the same facts answered GO on 32 questions where the answer was not GO."
+    />
+    <meta property="og:image" content="https://abh2050.github.io/gonogo/assets/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#020b1f" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f5bff'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to the content</a>
+
+    <!-- ===== navigation ===== -->
+    <header class="nav" id="nav">
+      <div class="wrap">
+        <a class="brand" href="#top" aria-label="GoNoGo, back to the top">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#2f5bff" />
+            <path d="M9 16.5l4.5 4.5L23 11" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          GoNoGo
+        </a>
+        <nav aria-label="Sections">
+          <ul>
+            <li><a href="#problem">The problem</a></li>
+            <li><a href="#answer">The answer</a></li>
+            <li><a href="#proof">The proof</a></li>
+            <li><a href="#trust">Governance</a></li>
+            <li><a href="#ontology">Ontology</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+          </ul>
+        </nav>
+        <a class="btn btn-primary" href="https://gonogo-livid.vercel.app/#/ask">Try the demo</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ===== hero ===== -->
+      <section class="hero on-dark" id="top">
+        <video autoplay muted loop playsinline preload="auto" poster="assets/hero.jpg" aria-hidden="true">
+          <source src="assets/hero.mp4" type="video/mp4" />
+        </video>
+        <div class="wrap">
+          <p class="eyebrow reveal">Patent license clearance, with proof</p>
+          <h1 class="reveal d1">Clear a license in seconds. <em>Show your work.</em></h1>
+          <p class="lede reveal d2">
+            GoNoGo runs the five checks a technology-transfer office does by hand, then answers <b>GO, NO GO, HOLD, COUNSEL, or NO DATA</b>. Each answer shows the rule that decided it and the source of every fact that rule read.
+          </p>
+          <div class="cta reveal d3">
+            <a class="btn btn-primary" href="https://gonogo-livid.vercel.app/#/ask">Try the live demo</a>
+            <a class="btn btn-ghost" href="#watch">Watch the 5-minute tour</a>
+          </div>
+          <div class="stats reveal d4" aria-label="Key numbers">
+            <div class="stat"><b data-count="97.5" data-suffix="%">97.5%</b><span>right on 200 test questions</span></div>
+            <div class="stat"><b data-count="0">0</b><span>wrong GOs in those 200 tests</span></div>
+            <div class="stat"><b>7</b><span>fixed rules decide each verdict</span></div>
+            <div class="stat"><b>1.6 s</b><span>median time to an answer</span></div>
+          </div>
+        </div>
+        <span class="scroll-cue" aria-hidden="true"></span>
+      </section>
+
+      <!-- ===== the problem ===== -->
+      <section id="problem">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">The problem</p>
+            <h2 class="reveal d1">A clearance takes five checks by hand. A missed overlap can put two exclusive licenses on one invention.</h2>
+            <p class="lede reveal d2">
+              A company asks NASA for a license to a patent, for one use, in one place, for some years. Before anyone says yes, someone must confirm each of these:
+            </p>
+          </div>
+
+          <div class="checks">
+            <article class="check reveal">
+              <span class="n">1</span>
+              <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="20" cy="20" r="14" /><path d="M20 11v9l6 4" /></svg>
+              <h3>Is the patent still alive?</h3>
+              <p>Fees go unpaid and terms end. A snapshot can still say "in force" after the patent has lapsed.</p>
+            </article>
+            <article class="check reveal d1">
+              <span class="n">2</span>
+              <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="9" width="20" height="20" rx="4" /><rect x="14" y="13" width="20" height="20" rx="4" /></svg>
+              <h3>Is it already licensed for this?</h3>
+              <p>Same use, same territory, overlapping dates. A broader grant covers a narrower request.</p>
+            </article>
+            <article class="check reveal d2">
+              <span class="n">3</span>
+              <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 16v8l5 1 15 7V9L12 15z" /><path d="M31 15a6 6 0 010 10" /></svg>
+              <h3>Is a public notice still open?</h3>
+              <p>NASA must announce an exclusive license and wait for objections before it can sign.</p>
+            </article>
+            <article class="check reveal d3">
+              <span class="n">4</span>
+              <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="20" cy="20" r="14" /><path d="M6 20h28M20 6c-6 6-6 22 0 28M20 6c6 6 6 22 0 28" /></svg>
+              <h3>May this country receive it?</h3>
+              <p>Export control can forbid the technology from reaching the licensee's country.</p>
+            </article>
+            <article class="check reveal d4">
+              <span class="n">5</span>
+              <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15" cy="14" r="5" /><circle cx="27" cy="16" r="4" /><path d="M5 31c1-6 5-9 10-9s9 3 10 9M25 24c4 0 8 2 9 7" /></svg>
+              <h3>Have all co-owners agreed?</h3>
+              <p>When a university or company co-owns the patent, every co-owner must consent. A missing record is not a yes.</p>
+            </article>
+          </div>
+
+          <div class="pull reveal">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4l13 23H3z" /><path d="M16 13v7M16 24h.01" /></svg>
+            <p>By hand, these checks mean several lists, scanned PDFs, and memory. The error that costs most is clearing a license that should have been blocked, because nothing flags it.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== the answer ===== -->
+      <section id="answer" style="background: #fff">
+        <div class="wrap split">
+          <div>
+            <p class="eyebrow reveal">The answer</p>
+            <h2 class="reveal d1">Ask in plain words. Get one verdict and the evidence for it.</h2>
+            <p class="lede reveal d2">Write the request as a sentence that names the licensee, patent, license type, use, place, and dates. GoNoGo runs the seven checks and gives one of five answers.</p>
+            <div class="chips reveal d3">
+              <div class="chip"><b class="go">GO</b><span>Every check that applies passed.</span></div>
+              <div class="chip"><b class="nogo">NO GO</b><span>A check failed, such as an overlapping exclusive grant.</span></div>
+              <div class="chip"><b class="hold">HOLD</b><span>A notice window is still open. Wait.</span></div>
+              <div class="chip"><b class="counsel">COUNSEL</b><span>A person with legal judgment must decide.</span></div>
+              <div class="chip"><b class="nodata">NO DATA</b><span>A fact is missing, so GoNoGo does not guess.</span></div>
+            </div>
+            <p class="rule-note reveal d4"><b>A missing fact is not a yes.</b> If no ownership record exists, the answer is NO DATA, not GO.</p>
+          </div>
+          <div class="reveal d2">
+            <div class="frame tilt">
+              <div class="bar"><i></i><i></i><i></i><span>A verdict card: the rule that decided, the facts it read, and where each came from</span></div>
+              <img src="assets/verdict-card.png" alt="A verdict card reading COUNSEL, with the seven rule results and the co-owner consent finding that caused it" width="1400" height="790" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== how it works ===== -->
+      <section id="how" class="on-dark band">
+        <video muted loop playsinline preload="none" data-play poster="assets/docs-to-graph.jpg" aria-hidden="true">
+          <source src="assets/docs-to-graph.mp4" type="video/mp4" />
+        </video>
+        <div class="shade"></div>
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">How it works</p>
+            <h2 class="reveal d1">Source documents become a knowledge graph. Seven fixed rules read it, and no model decides a verdict.</h2>
+          </div>
+
+          <div class="flow reveal d1" role="img" aria-label="Question, parser, seven rules reading the knowledge graph, combiner, then a verdict with a decision record">
+            <div class="node"><b>Question</b>in plain words</div>
+            <div class="node"><b>Parser</b>patent, license type, use, place, dates</div>
+            <div class="node"><b>Seven rules</b>fixed queries over the graph</div>
+            <div class="node"><b>Combiner</b>versioned policy</div>
+            <div class="node"><b>Verdict</b>and a signed record</div>
+          </div>
+
+          <div class="steps">
+            <div class="step reveal">
+              <span class="num">1</span>
+              <h3>It reads the question</h3>
+              <p>The parser turns the words into a patent, a license type, a use, a place, and dates. It lists anything it cannot find as missing.</p>
+              <img src="assets/parsed-question.png" alt="A question with each part underlined: licensee, patent, license type, field, territory, and dates" width="1400" height="300" loading="lazy" />
+            </div>
+            <div class="step reveal d1">
+              <span class="num">2</span>
+              <h3>Seven rules decide</h3>
+              <p>Each rule asks the knowledge graph a fixed question. The same request on the same records gives the same answer, every time.</p>
+              <img src="assets/ontology-graph.png" alt="The ontology drawn as a graph of classes" width="1600" height="900" loading="lazy" />
+            </div>
+            <div class="step reveal d2">
+              <span class="num">3</span>
+              <h3>Every answer shows its proof</h3>
+              <p>Each fact records its source, who approved it, and when the system learned it. A past decision can be rerun exactly.</p>
+              <img src="assets/provenance-graph.png" alt="The provenance graph of one approved fact: the approval, its proposer, and the patent it concerns" width="1400" height="700" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== the proof / benchmark ===== -->
+      <section id="proof" class="on-dark band" style="background: #04102b">
+        <video muted loop playsinline preload="none" data-play poster="assets/trust-path.jpg" aria-hidden="true">
+          <source src="assets/trust-path.mp4" type="video/mp4" />
+        </video>
+        <div class="shade"></div>
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">The proof</p>
+            <h2 class="reveal d1">We tested it against a language model given the same facts. The model was wrong more than a quarter of the time.</h2>
+            <p class="lede reveal d2">
+              Two hundred clearance questions went to four ways of answering, scored against verdicts fixed by hand when each case was planted. All four had the same facts.
+            </p>
+          </div>
+
+          <div class="bars reveal" id="bars" aria-label="Verdict accuracy of four answerers">
+            <div class="bar-row us" data-key="C+" data-value="97.5">
+              <div class="who"><b>GoNoGo</b><span>a model reads the question, the rules decide</span></div>
+              <div class="track"><div class="fill"></div></div>
+              <div class="val">97.5%</div>
+            </div>
+            <div class="bar-row" data-key="B" data-value="72.5">
+              <div class="who"><b>Graph agent</b><span>a model with exact retrieval, applying the policy itself</span></div>
+              <div class="track"><div class="fill"></div></div>
+              <div class="val">72.5%</div>
+            </div>
+            <div class="bar-row weak" data-key="C" data-value="50.5">
+              <div class="who"><b>Rules only</b><span>safe, but reads only the formal wording</span></div>
+              <div class="track"><div class="fill"></div></div>
+              <div class="val">50.5%</div>
+            </div>
+            <div class="bar-row weak" data-key="A" data-value="20.5">
+              <div class="who"><b>Vector search</b><span>similar-sounding passages, then a model</span></div>
+              <div class="track"><div class="fill"></div></div>
+              <div class="val">20.5%</div>
+            </div>
+          </div>
+
+          <div class="falsego">
+            <div class="fg bad reveal"><b data-count="32">32</b><span>false GOs: graph agent</span><small>Answered GO on 32 questions where the right answer was not GO, even with the right records in hand.</small></div>
+            <div class="fg bad reveal d1"><b data-count="14">14</b><span>false GOs: vector search</span><small>It found the right patent records only 36% of the time.</small></div>
+            <div class="fg zero reveal d2"><b data-count="0">0</b><span>false GOs: GoNoGo</span><small>The build fails if it ever makes one.</small></div>
+          </div>
+
+          <p class="quote reveal">The agent cited the deciding agreement 91% of the time and still misapplied the rule. <em>The model reads. The rules decide.</em></p>
+          <p class="fine">
+            The questions are synthetic and few: 45 planted cases, each asked four ways, plus 20 that cannot be answered as asked. They test
+            every rule and its hard edges, but they were written by the same project that wrote the rules. One model (Claude Haiku 4.5) was used throughout.
+            <a href="https://github.com/abh2050/gonogo/blob/main/docs/benchmark.md">Read the method, the failures, and the limits</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===== governance ===== -->
+      <section id="trust">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">Built for the people who sign off</p>
+            <h2 class="reveal d1">Risky changes need a second person. Everything leaves a trail.</h2>
+            <p class="lede reveal d2">A model may propose a fact. Only people approve it, and the system requires a second approver when one is not enough.</p>
+          </div>
+
+          <div class="pair">
+            <figure class="reveal">
+              <div class="frame"><img src="assets/held-for-counsel.png" alt="A steward's approval held for counsel, with the reason shown" width="1400" height="900" loading="lazy" /></div>
+              <figcaption><b>1. A steward approves.</b> The fact conflicts with an approved record and would raise a verdict to GO, so the approval waits. Nothing changes yet.</figcaption>
+            </figure>
+            <figure class="reveal d1">
+              <div class="frame"><img src="assets/second-review.png" alt="Counsel's second review moves the verdict from COUNSEL to GO and highlights the rule that changed" width="1400" height="300" loading="lazy" /></div>
+              <figcaption><b>2. Counsel agrees.</b> Only now does the verdict move, and the rule that changed is highlighted. Nobody approves what they proposed.</figcaption>
+              <div class="frame" style="margin-top: 26px"><img src="assets/policy-grid.png" alt="A grid of who may do what: each of six roles against twenty-one actions, decided by Cedar policies" width="1400" height="700" loading="lazy" /></div>
+              <figcaption><b>Who may do what.</b> Twenty-one Cedar policies answer for six roles. "Approve a conflicting fact alone" is empty for every role on purpose.</figcaption>
+            </figure>
+          </div>
+
+          <div class="cols">
+            <article class="card reveal">
+              <span class="tag">Agreements in</span>
+              <h3>A PDF becomes a proposal, not a fact</h3>
+              <p>Textract reads it, fixed patterns extract the grant, SHACL checks it, and a workflow waits for a steward. A planted instruction inside an agreement changed no verdict.</p>
+            </article>
+            <article class="card reveal d1">
+              <span class="tag">Who sees what</span>
+              <h3>Six roles, four graphs</h3>
+              <p>Cedar policies decide which role may read which graph. Royalty terms never leave their own graph and are excluded from every export and demo.</p>
+            </article>
+            <article class="card reveal d2">
+              <span class="tag">Audit</span>
+              <h3>Signed and replayable</h3>
+              <p>Every decision stores its cutoff, release, facts, and a signature, with a locked copy. An auditor reruns it and gets the identical answer.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ontology ===== -->
+      <section id="ontology" class="on-dark" style="background: linear-gradient(180deg, #020b1f, #071a40)">
+        <div class="wrap split">
+          <div>
+            <p class="eyebrow reveal">For the practitioner</p>
+            <h2 class="reveal d1">The ontology holds the knowledge, so the rules stay short.</h2>
+            <p class="lede reveal d2">
+              The classes and properties are defined in the ontology file, and sixteen written modeling decisions explain the choices behind them. Fifteen competency questions, written before the model, check that it can answer what the rules ask.
+            </p>
+            <div class="numbers reveal d3">
+              <div><b>48</b><span>classes</span></div>
+              <div><b>27</b><span>object properties</span></div>
+              <div><b>59</b><span>data properties</span></div>
+            </div>
+            <div class="pills reveal d4">
+              <span class="pill">OWL 2</span><span class="pill">SKOS vocabularies</span><span class="pill">SHACL shapes</span><span class="pill">PROV-O provenance</span>
+              <span class="pill">SPARQL templates</span><span class="pill">Bitemporal facts</span><span class="pill">Named graphs</span><span class="pill">HermiT + ROBOT in CI</span>
+            </div>
+          </div>
+          <div class="reveal d2">
+            <div class="frame">
+              <div class="bar"><i></i><i></i><i></i><span>Select a class and its relationships flow along their arrows</span></div>
+              <video muted loop playsinline preload="none" data-play poster="assets/ontology.jpg" aria-label="A guided walk through the ontology graph">
+                <source src="assets/ontology.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="wrap">
+          <div class="reads">
+            <a href="https://github.com/abh2050/gonogo/blob/main/docs/ontology-from-scratch.md"><b>Ontology from zero to a full build</b><span>Triples, OWL, SKOS, SHACL, SPARQL, then the build in twelve steps. Assumes no background.</span></a>
+            <a href="https://github.com/abh2050/gonogo/blob/main/docs/modeling-decisions.md"><b>Sixteen modeling decisions</b><span>Each with the problem, the choice, the reason, the cost, and the evidence.</span></a>
+            <a href="https://github.com/abh2050/gonogo/blob/main/docs/adr/0003-rdf-versus-property-graph.md"><b>RDF or a property graph?</b><span>The same rule in SPARQL and Cypher, equal on 1,435 requests, and why RDF stays the record.</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== architecture ===== -->
+      <section id="architecture" style="background: #fff">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">Architecture</p>
+            <h2 class="reveal d1">One engine runs in two places: a public demo that needs no cloud account, and an AWS deployment.</h2>
+            <p class="lede reveal d2">
+              Seven views, drawn with the AWS icon set. The graph sits in a VPC with no route to the internet, and only two functions may write to it.
+              Click a diagram to enlarge it.
+            </p>
+          </div>
+
+          <div class="tabs reveal" role="tablist" aria-label="Architecture views">
+            <button class="tab" role="tab" aria-selected="true" aria-controls="p1" id="t1">The whole system</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p2" id="t2">Request path</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p3" id="t3">Ingestion</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p4" id="t4">Security</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p5" id="t5">Data access</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p6" id="t6">Benchmark</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p7" id="t7">Stacks and cost</button>
+          </div>
+
+          <div class="panel reveal" role="tabpanel" id="p1" aria-labelledby="t1">
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-1-overview.png" alt="The whole system on AWS: edge, identity and policy, decide, record, the graph in its VPC, ingestion, the benchmark, and the cost guard" width="2400" height="1470" loading="lazy" /></button>
+            <p>Numbers follow one clearance question from the browser to a stored, signed decision.</p>
+          </div>
+          <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-2-request.png" alt="A fifteen-step sequence from sign-in to the stored decision" width="2000" height="1230" loading="lazy" /></button>
+            <p>Fifteen steps from sign-in to a stored decision. The role comes from the token, never from the request.</p>
+          </div>
+          <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-3-ingestion.png" alt="The ingestion state machine with its approval loop" width="2200" height="1100" loading="lazy" /></button>
+            <p>A Step Functions state machine waits for a steward with a task token before anything reaches the graph.</p>
+          </div>
+          <div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" hidden>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-4-security.png" alt="The account, region, VPC, and security group, with who may read or write Neptune" width="2200" height="1350" loading="lazy" /></button>
+            <p>No NAT, no internet gateway, no interface endpoints. Eleven checks ran against the live stack and all passed.</p>
+          </div>
+          <div class="panel" role="tabpanel" id="p5" aria-labelledby="t5" hidden>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-5-access.png" alt="A grid of six roles against the release, approved, candidate, and royalty graphs" width="2000" height="1330" loading="lazy" /></button>
+            <p>Which role may query which graph, read from the Cedar policies when the diagram is built.</p>
+          </div>
+          <div class="panel" role="tabpanel" id="p6" aria-labelledby="t6" hidden>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-6-benchmark.png" alt="Four answerers side by side feeding one scorer" width="2000" height="1220" loading="lazy" /></button>
+            <p>The same questions and the same facts go to every answerer. Only the method differs.</p>
+          </div>
+          <div class="panel" role="tabpanel" id="p7" aria-labelledby="t7" hidden>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-7-stacks.png" alt="The five CDK stacks and what each costs while idle" width="2000" height="970" loading="lazy" /></button>
+            <p>Deployed for a session, checked, and torn down by one script. Only the graph database bills while idle.</p>
+          </div>
+        </div>
+      </section>
+
+      <dialog id="lightbox" aria-label="Enlarged diagram">
+        <button aria-label="Close">&times;</button>
+        <img alt="" />
+      </dialog>
+
+      <!-- ===== watch ===== -->
+      <section id="watch" class="on-dark" style="background: #020b1f">
+        <div class="wrap">
+          <div class="head center">
+            <p class="eyebrow reveal">Watch</p>
+            <h2 class="reveal d1">The five-minute tour</h2>
+            <p class="lede reveal d2">The ontology, the trail behind a fact, the path to a verdict, the AWS design, and the benchmark. Captions included.</p>
+          </div>
+          <div class="player reveal">
+            <video controls preload="none" poster="assets/overview.jpg" playsinline>
+              <source src="assets/overview.mp4" type="video/mp4" />
+              <track kind="captions" srclang="en" label="English" src="assets/overview.vtt" default />
+            </video>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== beyond patents ===== -->
+      <section id="beyond">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow reveal">Beyond patents</p>
+            <h2 class="reveal d1">The architecture carries over. The patent rules do not.</h2>
+            <p class="lede reveal d2">A studio clearing a film for streaming asks a question of the same shape: who holds which rights, where, and when, and does a new request collide with an existing grant?</p>
+          </div>
+          <div class="vs">
+            <div class="card yes reveal">
+              <h3>Carries over</h3>
+              <ul>
+                <li>An ontology written from the questions people ask</li>
+                <li>Vocabularies for territories and media, so a broad grant covers a narrow one</li>
+                <li>A missing fact is never a yes</li>
+                <li>Facts with two times and a source clause</li>
+                <li>Confidential terms in their own graph</li>
+                <li>Rules decide, a model only reads</li>
+                <li>Two people for risky approvals, and decisions that can be rerun</li>
+              </ul>
+            </div>
+            <div class="card no reveal d1">
+              <h3>Stays behind</h3>
+              <ul>
+                <li>Patent term and fee lapses become copyright term and chain of title</li>
+                <li>The co-exclusive cap becomes windows, holdbacks, and matching rights</li>
+                <li>The federal notice window has no private-deal equivalent</li>
+                <li>Export control becomes sanctions and geo-blocking</li>
+                <li>Co-owner consent becomes consent by territory and medium</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== explore ===== -->
+      <section id="explore" style="background: #fff">
+        <div class="wrap">
+          <div class="head center">
+            <p class="eyebrow reveal">Explore</p>
+            <h2 class="reveal d1">Try it, read the write-ups, or run it yourself.</h2>
+          </div>
+          <div class="links">
+            <a class="reveal" href="https://gonogo-livid.vercel.app/#/ask"><b>The live demo</b><span>Ask a question, approve a proposed fact, and watch a verdict move. No sign-in.</span></a>
+            <a class="reveal d1" href="https://gonogo-livid.vercel.app/#/benchmark"><b>The benchmark, charted</b><span>Accuracy, false GOs, and where each answerer fails.</span></a>
+            <a class="reveal d2" href="https://github.com/abh2050/gonogo"><b>The code</b><span>Python, React, the CDK stacks, 1,100 tests, and CI.</span></a>
+            <a class="reveal" href="https://github.com/abh2050/gonogo/blob/main/docs/benchmark.md"><b>Benchmark write-up</b><span>Method, results, why each answerer fails, and what it does not show.</span></a>
+            <a class="reveal d1" href="https://github.com/abh2050/gonogo/blob/main/docs/architecture/README.md"><b>All seven diagrams</b><span>Editable draw.io source and a PNG of each view.</span></a>
+            <a class="reveal d2" href="https://github.com/abh2050/gonogo#explore-the-graph-in-neo4j-browser"><b>Click through the graph</b><span>Load it into Neo4j Browser and explore it locally.</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          <b style="color: #fff">GoNoGo</b>, built by <a href="https://github.com/abh2050">Abhishek Shah</a>. Real data: NASA's patent list, USPTO legal status, and
+          Federal Register notices. NASA does not publish executed agreements, ownership records, or export classifications, so those are
+          synthetic, labeled as synthetic in the graph, and say so on the first page of every document.
+        </p>
+        <p><a href="https://github.com/abh2050/gonogo">github.com/abh2050/gonogo</a></p>
+      </div>
+    </footer>
+
+    <script src="main.js" defer></script>
+  </body>
+</html>

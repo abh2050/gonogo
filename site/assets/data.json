@@ -1,0 +1,56 @@
+{
+ "A": {
+  "accuracy": 20.5,
+  "false_go_rate": 9.0,
+  "missed_go_rate": 90.9,
+  "decisive_recall": 21.4,
+  "latency_p50_s": 3.374,
+  "model_cost_usd": 1.0395,
+  "questions": 200,
+  "false_go": 14
+ },
+ "B": {
+  "accuracy": 72.5,
+  "false_go_rate": 20.5,
+  "missed_go_rate": 11.4,
+  "decisive_recall": 91.1,
+  "latency_p50_s": 25.174,
+  "model_cost_usd": 4.3533,
+  "questions": 200,
+  "false_go": 32
+ },
+ "C+": {
+  "accuracy": 97.5,
+  "false_go_rate": 0.0,
+  "missed_go_rate": 2.3,
+  "decisive_recall": 100.0,
+  "latency_p50_s": 1.557,
+  "model_cost_usd": 0.1989,
+  "questions": 200,
+  "false_go": 0
+ },
+ "C": {
+  "accuracy": 50.5,
+  "false_go_rate": 0.0,
+  "missed_go_rate": 54.5,
+  "decisive_recall": 48.2,
+  "latency_p50_s": 0.006,
+  "model_cost_usd": 0.0,
+  "questions": 200,
+  "false_go": 0
+ },
+ "property_graph": {
+  "requests": 1435,
+  "with_a_conflict": 503,
+  "agree": 1435,
+  "differ": [],
+  "median_ms": {
+   "sparql_rdflib": 13.91,
+   "cypher_neo4j": 2.82
+  },
+  "query_lines": {
+   "sparql": 14,
+   "cypher": 13
+  }
+ }
+}
