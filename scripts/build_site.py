@@ -94,6 +94,38 @@ def image(name: str, source: Path, longest: int) -> None:
     print(f"{name}.png  {target.stat().st_size / 1e3:.0f} KB")
 
 
+def step_frame() -> None:
+    """A frame from the ontology walk with a class selected, cropped to the graph (no page header, no caption pill)."""
+    source = MEDIA / "ontology-walk.mp4"
+    target = OUT / "step-ontology.png"
+    run("ffmpeg", "-y", "-loglevel", "error", "-ss", "41", "-i", str(source), "-frames:v", "1", "-vf",
+        "crop=1280:810:0:70,scale=1200:-1", str(target))  # fmt: skip
+    print(f"step-ontology.png  {target.stat().st_size / 1e3:.0f} KB")
+
+
+def size_of(path: Path) -> tuple[int, int]:
+    out = subprocess.run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", str(path)], capture_output=True, text=True)
+    nums = dict(re.findall(r"(pixelWidth|pixelHeight): (\d+)", out.stdout))
+    return int(nums["pixelWidth"]), int(nums["pixelHeight"])
+
+
+def true_dimensions() -> None:
+    """Write each image's real width and height into index.html, so the browser reserves the right space and an
+    image can never be stretched to a size someone guessed."""
+    page = ROOT / "site" / "index.html"
+    html = page.read_text()
+
+    def fix(m: re.Match[str]) -> str:
+        tag, src = m.group(0), m.group(1)
+        w, h = size_of(ROOT / "site" / src)
+        tag = re.sub(r'\swidth="\d+"', "", tag)
+        tag = re.sub(r'\sheight="\d+"', "", tag)
+        return tag.replace(f'src="{src}"', f'src="{src}" width="{w}" height="{h}"', 1)
+
+    page.write_text(re.sub(r'<img\b[^>]*?src="(assets/[^"]+\.png)"[^>]*>', fix, html))
+    print("image dimensions written to index.html")
+
+
 def data() -> None:
     res = json.loads((ROOT / "eval" / "results.json").read_text())
     keep = (
@@ -119,6 +151,8 @@ def main() -> None:
     overview()
     for name, (source, longest) in IMAGES.items():
         image(name, source, longest)
+    step_frame()
+    true_dimensions()
     data()
     total = sum(f.stat().st_size for f in OUT.iterdir())
     print(f"\n{len(list(OUT.iterdir()))} files, {total / 1e6:.1f} MB in site/assets")

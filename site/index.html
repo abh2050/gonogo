@@ -131,7 +131,7 @@
 
       <!-- ===== the answer ===== -->
       <section id="answer" style="background: #fff">
-        <div class="wrap split">
+        <div class="wrap split wide-right">
           <div>
             <p class="eyebrow reveal">The answer</p>
             <h2 class="reveal d1">Ask in plain words. Get one verdict and the evidence for it.</h2>
@@ -148,7 +148,7 @@
           <div class="reveal d2">
             <div class="frame tilt">
               <div class="bar"><i></i><i></i><i></i><span>A verdict card: the rule that decided, the facts it read, and where each came from</span></div>
-              <img src="assets/verdict-card.png" alt="A verdict card reading COUNSEL, with the seven rule results and the co-owner consent finding that caused it" width="1400" height="790" loading="lazy" />
+              <img src="assets/verdict-card.png" width="1400" height="789" alt="A verdict card reading COUNSEL, with the seven rule results and the co-owner consent finding that caused it" loading="lazy" />
             </div>
           </div>
         </div>
@@ -176,22 +176,28 @@
 
           <div class="steps">
             <div class="step reveal">
-              <span class="num">1</span>
+              <div class="txt">
+                <span class="num">1</span>
               <h3>It reads the question</h3>
               <p>The parser turns the words into a patent, a license type, a use, a place, and dates. It lists anything it cannot find as missing.</p>
-              <img src="assets/parsed-question.png" alt="A question with each part underlined: licensee, patent, license type, field, territory, and dates" width="1400" height="300" loading="lazy" />
+              </div>
+              <img src="assets/parsed-question.png" width="1400" height="566" alt="A question with each part underlined: licensee, patent, license type, field, territory, and dates" loading="lazy" />
             </div>
             <div class="step reveal d1">
-              <span class="num">2</span>
+              <div class="txt">
+                <span class="num">2</span>
               <h3>Seven rules decide</h3>
               <p>Each rule asks the knowledge graph a fixed question. The same request on the same records gives the same answer, every time.</p>
-              <img src="assets/ontology-graph.png" alt="The ontology drawn as a graph of classes" width="1600" height="900" loading="lazy" />
+              </div>
+              <img src="assets/step-ontology.png" width="1200" height="759" alt="The ontology graph with one class selected: its definition, the rules that read it, and the relationships that light up" loading="lazy" />
             </div>
             <div class="step reveal d2">
-              <span class="num">3</span>
+              <div class="txt">
+                <span class="num">3</span>
               <h3>Every answer shows its proof</h3>
               <p>Each fact records its source, who approved it, and when the system learned it. A past decision can be rerun exactly.</p>
-              <img src="assets/provenance-graph.png" alt="The provenance graph of one approved fact: the approval, its proposer, and the patent it concerns" width="1400" height="700" loading="lazy" />
+              </div>
+              <img src="assets/provenance-graph.png" width="1400" height="721" alt="The provenance graph of one approved fact: the approval, its proposer, and the patent it concerns" loading="lazy" />
             </div>
           </div>
         </div>
@@ -261,13 +267,13 @@
 
           <div class="pair">
             <figure class="reveal">
-              <div class="frame"><img src="assets/held-for-counsel.png" alt="A steward's approval held for counsel, with the reason shown" width="1400" height="900" loading="lazy" /></div>
+              <div class="frame"><img src="assets/held-for-counsel.png" width="1400" height="1132" alt="A steward's approval held for counsel, with the reason shown" loading="lazy" /></div>
               <figcaption><b>1. A steward approves.</b> The fact conflicts with an approved record and would raise a verdict to GO, so the approval waits. Nothing changes yet.</figcaption>
             </figure>
             <figure class="reveal d1">
-              <div class="frame"><img src="assets/second-review.png" alt="Counsel's second review moves the verdict from COUNSEL to GO and highlights the rule that changed" width="1400" height="300" loading="lazy" /></div>
+              <div class="frame"><img src="assets/second-review.png" width="1400" height="363" alt="Counsel's second review moves the verdict from COUNSEL to GO and highlights the rule that changed" loading="lazy" /></div>
               <figcaption><b>2. Counsel agrees.</b> Only now does the verdict move, and the rule that changed is highlighted. Nobody approves what they proposed.</figcaption>
-              <div class="frame" style="margin-top: 26px"><img src="assets/policy-grid.png" alt="A grid of who may do what: each of six roles against twenty-one actions, decided by Cedar policies" width="1400" height="700" loading="lazy" /></div>
+              <div class="frame" style="margin-top: 26px"><img src="assets/policy-grid.png" width="1400" height="1038" alt="A grid of who may do what: each of six roles against twenty-one actions, decided by Cedar policies" loading="lazy" /></div>
               <figcaption><b>Who may do what.</b> Twenty-one Cedar policies answer for six roles. "Approve a conflicting fact alone" is empty for every role on purpose.</figcaption>
             </figure>
           </div>
@@ -352,31 +358,31 @@
           </div>
 
           <div class="panel reveal" role="tabpanel" id="p1" aria-labelledby="t1">
-            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-1-overview.png" alt="The whole system on AWS: edge, identity and policy, decide, record, the graph in its VPC, ingestion, the benchmark, and the cost guard" width="2400" height="1470" loading="lazy" /></button>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-1-overview.png" width="2400" height="1472" alt="The whole system on AWS: edge, identity and policy, decide, record, the graph in its VPC, ingestion, the benchmark, and the cost guard" loading="lazy" /></button>
             <p>Numbers follow one clearance question from the browser to a stored, signed decision.</p>
           </div>
           <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
-            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-2-request.png" alt="A fifteen-step sequence from sign-in to the stored decision" width="2000" height="1230" loading="lazy" /></button>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-2-request.png" width="2000" height="1442" alt="A fifteen-step sequence from sign-in to the stored decision" loading="lazy" /></button>
             <p>Fifteen steps from sign-in to a stored decision. The role comes from the token, never from the request.</p>
           </div>
           <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
-            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-3-ingestion.png" alt="The ingestion state machine with its approval loop" width="2200" height="1100" loading="lazy" /></button>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-3-ingestion.png" width="2200" height="1074" alt="The ingestion state machine with its approval loop" loading="lazy" /></button>
             <p>A Step Functions state machine waits for a steward with a task token before anything reaches the graph.</p>
           </div>
           <div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" hidden>
-            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-4-security.png" alt="The account, region, VPC, and security group, with who may read or write Neptune" width="2200" height="1350" loading="lazy" /></button>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-4-security.png" width="2200" height="1349" alt="The account, region, VPC, and security group, with who may read or write Neptune" loading="lazy" /></button>
             <p>No NAT, no internet gateway, no interface endpoints. Eleven checks ran against the live stack and all passed.</p>
           </div>
           <div class="panel" role="tabpanel" id="p5" aria-labelledby="t5" hidden>
-            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-5-access.png" alt="A grid of six roles against the release, approved, candidate, and royalty graphs" width="2000" height="1330" loading="lazy" /></button>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-5-access.png" width="2000" height="1178" alt="A grid of six roles against the release, approved, candidate, and royalty graphs" loading="lazy" /></button>
             <p>Which role may query which graph, read from the Cedar policies when the diagram is built.</p>
           </div>
           <div class="panel" role="tabpanel" id="p6" aria-labelledby="t6" hidden>
-            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-6-benchmark.png" alt="Four answerers side by side feeding one scorer" width="2000" height="1220" loading="lazy" /></button>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-6-benchmark.png" width="2000" height="1145" alt="Four answerers side by side feeding one scorer" loading="lazy" /></button>
             <p>The same questions and the same facts go to every answerer. Only the method differs.</p>
           </div>
           <div class="panel" role="tabpanel" id="p7" aria-labelledby="t7" hidden>
-            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-7-stacks.png" alt="The five CDK stacks and what each costs while idle" width="2000" height="970" loading="lazy" /></button>
+            <button class="zoom" aria-label="Enlarge the diagram"><img src="assets/arch-7-stacks.png" width="2000" height="969" alt="The five CDK stacks and what each costs while idle" loading="lazy" /></button>
             <p>Deployed for a session, checked, and torn down by one script. Only the graph database bills while idle.</p>
           </div>
         </div>
