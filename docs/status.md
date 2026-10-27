@@ -5,6 +5,7 @@
 **State:** complete. The ingestion workflow ran live on AWS, and everything is torn down.
 **Date:** 2026-10-26
 **Live demo:** https://gonogo-livid.vercel.app/#/benchmark
+**Site:** https://abh2050.github.io/gonogo/ (GitHub Pages, built from `site/`)
 
 Gate 4 answers the question the project exists to answer: does the ontology earn its place? On 200 clearance
 questions scored against hand-stated verdicts, GoNoGo was right 97.5% of the time and never cleared a license it
@@ -26,7 +27,8 @@ SHACL, a steward's approval, and the write to Neptune, and one booked request mo
 | Neo4j comparison and ADR 0003 | `pgraph/`, `docs/adr/0003-rdf-versus-property-graph.md` | Done. Same grants on 1,435 of 1,435 requests; a CI test repeats it. |
 | Ingestion workflow | `service/ingest.py`, the ingestion block of `ApiStack`, `docs/ingestion.md`, `docs/ingestion-run.json` | Done. Tested locally, then run live on AWS with both sample agreements. |
 | AWS diagrams | `docs/architecture/` (seven draw.io views) | Done. |
-| README, final form | `README.md`, `docs/media-rights.md` | Done: the business story, the verdict flow, the architecture, the benchmark table, and what carries over to media rights. |
+| README, final form | `README.md`, `docs/media-rights.md` | Done: the problem, the verdicts, the benchmark table, the architecture, and what carries over to media rights. |
+| GitHub Pages site | `site/`, `scripts/build_site.py`, `.github/workflows/pages.yml`, `tests/unit/test_site.py` | Done and live. Higgsfield clips behind the hero and two bands; the page's numbers are tested against `eval/results.json`. |
 
 ### Test results
 

@@ -1,30 +1,39 @@
 # GoNoGo
 
-A licensing manager at a NASA center gets a request: a company wants a license to a patent, for one field of use, in
-one territory, for some years. Before saying yes, the manager checks five places by hand: whether the patent is still
-in force, whether a signed license already covers the same field and territory, whether a public notice of intent is
-still open for objections, whether export control allows the company's country, and whether every co-owner has
-consented. Miss one, and NASA can grant two overlapping exclusive licenses to the same invention.
+**Can this company license this patent, for this use, in this place, for these years? GoNoGo answers in about a second and shows the proof.**
 
-GoNoGo answers that question in a second and shows its work. It returns **GO, NO GO, HOLD, COUNSEL, or NO DATA**,
-names the rule that decided, and links every fact that rule read to the clause it came from.
+[![GoNoGo: clear a license in seconds. Show your work.](site/assets/og.jpg)](https://abh2050.github.io/gonogo/)
 
-**Try it:** [gonogo-livid.vercel.app](https://gonogo-livid.vercel.app/#/ask). Pick "No export classification yet",
-approve the proposed classification on the Steward page, and watch the verdict move from NO DATA to GO, with R5
-named as the rule that changed.
+**[Open the site](https://abh2050.github.io/gonogo/)** for the story, the benchmark, and the architecture, or
+**[try the live demo](https://gonogo-livid.vercel.app/#/ask)** and ask a question yourself.
 
-![The ontology graph: select a class and its relationships flow along their arrows](docs/screenshots/ontology-walk.gif)
+## The problem
 
-A narrated five-minute tour of the ontology, provenance, the verdict path, the AWS architecture, and the benchmark:
-[docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4) (subtitles in
-[gonogo-overview.srt](docs/media/gonogo-overview.srt)).
+A licensing manager at a NASA center gets a request: a company wants a license to a patent, for one use, in one
+territory, for some years. A clearance means five checks by hand:
 
-## How a verdict is made
+1. Is the patent still in force?
+2. Does a signed license already cover the same use and territory?
+3. Is a public notice of intent still open for objections?
+4. Does export control allow the company's country?
+5. Has every co-owner consented?
 
-Seven deterministic rules decide every verdict by querying a W3C knowledge graph (OWL 2, SKOS, SHACL, PROV-O)
-through fixed SPARQL templates. A versioned combiner turns their results into one verdict. A missing fact gives NO
-DATA, never GO, and a proposed fact counts only after a person approves it. A language model may read a question or
-propose a fact, but it never decides a verdict and never writes a query that decides one.
+A missed overlap can put two exclusive licenses on one invention. The error that costs most is clearing a license
+that should have been blocked, because nothing flags it.
+
+## What GoNoGo does
+
+It runs the five checks (as seven rules) over a knowledge graph and answers with one of five verdicts:
+
+| Verdict | Meaning |
+|---|---|
+| **GO** | Every check that applies passed. |
+| **NO GO** | A check failed, such as an overlapping exclusive grant. |
+| **HOLD** | A notice window is still open. |
+| **COUNSEL** | A person with legal judgment must decide. |
+| **NO DATA** | A fact is missing, so GoNoGo does not guess. A missing fact is never a yes. |
+
+Each verdict names the rule that decided it and links every fact that rule read to its source.
 
 ```mermaid
 flowchart LR
@@ -37,12 +46,33 @@ flowchart LR
     V --> D[Decision record:<br/>cutoff, release, facts, signature]
 ```
 
-Risky approvals need two people: an approval that conflicts with the record, or that would raise a verdict to GO,
-waits for counsel, and Cedar policies decide who may do what ([ADR 0002](docs/adr/0002-separation-of-duties.md)).
+A language model may read a question or propose a fact. It never decides a verdict and never writes a query that
+decides one. A proposed fact counts only after a person approves it, and an approval that conflicts with the
+record, or that would raise a verdict to GO, waits for a second person
+([ADR 0002](docs/adr/0002-separation-of-duties.md)).
+
+![The ontology graph: select a class and its relationships flow along their arrows](docs/screenshots/ontology-walk.gif)
+
+## Does the ontology earn its place?
+
+Two hundred clearance questions went to four ways of answering, scored against verdicts that were fixed by hand when
+each case was planted. All four had the same facts ([docs/benchmark.md](docs/benchmark.md)).
+
+| | Vector RAG | Graph agent | Rules only | **GoNoGo** |
+|---|---:|---:|---:|---:|
+| Verdict accuracy | 20.5% | 72.5% | 50.5% | **97.5%** |
+| **False GO** (answered GO where the answer was not GO) | 14 | 32 | 0 | **0** |
+| Cited the agreement that decides the case | 21% | 91% | 48% | **100%** |
+| Model cost for 200 questions | $1.04 | $4.35 | $0 | **$0.20** |
+
+The graph agent cited the deciding agreement 91% of the time and still misapplied the rule. GoNoGo lets a model
+read the question and lets the rules decide, and the build fails if it ever gives a false GO. The questions are
+synthetic and few, and one model (Claude Haiku 4.5) was used throughout; the write-up says what that does and does
+not show.
 
 ## Architecture
 
-The same engine runs in two places: a public demo on Vercel that needs no AWS account, and an AWS deployment with
+The same engine runs in two places: a public demo on Vercel that needs no cloud account, and an AWS deployment with
 Neptune, Cognito, Verified Permissions, Lambda, Step Functions, and CloudFront, built with the AWS CDK in Python.
 
 ![GoNoGo on AWS: edge, identity and policy, decide, record, the graph in its VPC, ingestion, the benchmark, and the cost guard](docs/architecture/gonogo-aws-1-overview.png)
@@ -50,74 +80,63 @@ Neptune, Cognito, Verified Permissions, Lambda, Step Functions, and CloudFront, 
 Seven draw.io views cover the request path, ingestion, security and network, data access, the benchmark, and the
 stacks and their cost: [docs/architecture/README.md](docs/architecture/README.md).
 
-## Does the ontology earn its place?
-
-Two hundred clearance questions went to four answerers, scored against verdicts that were fixed by hand when each case
-was planted ([docs/benchmark.md](docs/benchmark.md)).
-
-| | Vector RAG | Graph agent | Rules only | **GoNoGo** |
-|---|---:|---:|---:|---:|
-| Verdict accuracy | 20.5% | 72.5% | 50.5% | **97.5%** |
-| **False GO** (cleared a license it should not) | 14 | 32 | 0 | **0** |
-| Cites the agreement that decides the case | 21% | 91% | 48% | **100%** |
-| Model cost for 200 questions | $1.04 | $4.35 | $0 | **$0.20** |
-
-The graph agent found the right agreement 91% of the time and still cleared 32 licenses it should not have, because
-the model misapplied the policy to facts it had in hand. GoNoGo lets a model read the question and lets the rules
-decide. The build fails if it ever gives a false GO.
-
-> **Status:** Gate 4 of 4 is built: the benchmark, the Neo4j comparison with
-> [ADR 0003](docs/adr/0003-rdf-versus-property-graph.md), the agreement ingestion workflow, and this README. See
-> [docs/status.md](docs/status.md).
+A narrated five-minute tour of the ontology, provenance, the verdict path, the AWS design, and the benchmark:
+[docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4), with subtitles in
+[gonogo-overview.srt](docs/media/gonogo-overview.srt).
 
 ## Read next
 
 | Read | What it gives you |
 |---|---|
 | [docs/benchmark.md](docs/benchmark.md) | The benchmark: method, results, why each answerer fails, and what it does not show |
-| [docs/ingestion.md](docs/ingestion.md) | How an agreement PDF becomes a proposed grant, waits for a steward, and reaches the graph |
-| [docs/adr/0003-rdf-versus-property-graph.md](docs/adr/0003-rdf-versus-property-graph.md) | R2 in SPARQL and in Cypher on 1,435 requests, and why RDF stays the system of record |
-| [docs/tour.md](docs/tour.md) | The app in pictures: the ontology in motion, a question, a held approval, the policy grid, and the provenance graph |
-| [docs/architecture.md](docs/architecture.md) | Six diagrams: the path to a verdict, the two places it runs, the AWS deployment, the two-person rule, the data and who reads it, and the release process. The demo has the same pictures on its Architecture page. |
-| [docs/aws-resources.md](docs/aws-resources.md) | All 106 AWS resources, generated from the CDK templates, with what each is for and what it costs while idle |
-| [docs/rules.md](docs/rules.md) | The seven rules, the combiner, the decision record, the steward loop, and when one person is not enough |
-| [docs/adr/0002-separation-of-duties.md](docs/adr/0002-separation-of-duties.md) | Why a conflicting or verdict-changing approval needs counsel, and how Cedar enforces it |
-| [docs/security-tests.md](docs/security-tests.md) | What the leakage and prompt-injection suites attack, what they found, and what they do not prove |
-| [docs/aws.md](docs/aws.md) | What ran on AWS, eleven checks against it, what is not built, and what went wrong |
-| [docs/release-process.md](docs/release-process.md) | How a change to the rules becomes a release, with an impact report and counsel's approval |
-
-## The ontology, in four places
-
-| Read | What it gives you |
-|---|---|
 | [docs/ontology-from-scratch.md](docs/ontology-from-scratch.md) | Start here if you have never heard of an ontology: triples, OWL, SKOS, SHACL, SPARQL, then the build in twelve steps |
-| [docs/ontology-guide.md](docs/ontology-guide.md) | The model on one page, each ontology construct with the test that proves it, and one real patent followed through the graph |
-| [docs/modeling-decisions.md](docs/modeling-decisions.md) | Thirteen modeling decisions, each with the problem, the choice, the reason, the cost, and the evidence |
-| [ontology/competency_questions.md](ontology/competency_questions.md) | Fifteen competency questions, each an executable SPARQL template with hand-worked answers |
-| [docs/adr/0001-upper-ontology-alignment.md](docs/adr/0001-upper-ontology-alignment.md) | Why GoNoGo reuses PROV-O, SKOS, Dublin Core, and schema.org, and imports neither BFO, CCO, nor FIBO |
+| [docs/ontology-guide.md](docs/ontology-guide.md) | The model on one page, each construct with the test that proves it, and one patent followed through the graph |
+| [docs/modeling-decisions.md](docs/modeling-decisions.md) | Sixteen modeling decisions, each with the problem, the choice, the reason, the cost, and the evidence |
+| [docs/rules.md](docs/rules.md) | The seven rules, the combiner, the decision record, the steward loop, and when one person is not enough |
+| [docs/ingestion.md](docs/ingestion.md) | How an agreement PDF becomes a proposed grant, waits for a steward, and reaches the graph |
+| [docs/adr/](docs/adr/README.md) | Three decisions: upper-ontology alignment, separation of duties, and RDF versus a property graph |
+| [docs/security-tests.md](docs/security-tests.md) | What the leakage and prompt-injection suites attack, what they found, and what they do not prove |
+| [docs/aws.md](docs/aws.md) and [docs/aws-resources.md](docs/aws-resources.md) | What ran on AWS, the checks against it, and all 106 resources with their idle cost |
+| [docs/media-rights.md](docs/media-rights.md) | Which parts of the architecture carry over to media rights clearance, and which patent rules do not |
+| [docs/status.md](docs/status.md) | What each gate delivered, what it cost, and what is still open |
 
-The machine-readable files live in [ontology/](ontology/) (OWL 2 and SKOS) and [shapes/](shapes/) (SHACL).
-Generated reference documentation is in [docs/ontology/](docs/ontology/).
+The machine-readable ontology is in [ontology/](ontology/) (OWL 2 and SKOS), and the shapes are in
+[shapes/](shapes/) (SHACL). Generated reference documentation is in [docs/ontology/](docs/ontology/).
 
-## See it
-
-The [ui/](ui/) folder holds a React app that draws the ontology as a graph, shows how a grant for a broader
-field covers the narrower ones, charts what the real data showed, and lets you drag a recording cutoff
-through the bitemporal model. Its Ask, Steward, and History views call the API in [api/](api/), which runs
-the real rule engine over a snapshot of the graph.
+## Run it
 
 ```bash
-uv run uvicorn api.index:app --port 8000   # the API
-cd ui && npm install && npm run dev         # the app, with /api forwarded to port 8000
+uv sync
+uv run uvicorn api.index:app --port 8000      # the API, over a snapshot of the graph
+cd ui && npm install && npm run dev            # the app, with /api forwarded to port 8000
 ```
 
-[docs/public-demo.md](docs/public-demo.md) explains how the interactive demo keeps working after the AWS
-stack is torn down.
+The app draws the ontology as a graph, shows how a grant for a broader field covers narrower ones, charts what the
+real data showed, lets you drag a recording cutoff through the bitemporal model, and runs the Ask, Steward, History,
+and Benchmark pages against the real rule engine. [docs/public-demo.md](docs/public-demo.md) explains how the demo
+keeps working with no AWS account.
+
+To rebuild everything from the public sources:
+
+```bash
+cp .env.example .env              # add USPTO_API_KEY from data.uspto.gov > My ODP
+uv run python -m ingest all       # fetches and caches public data under data/raw/
+uv run python -m synth --seed 42  # writes data/synthetic/
+docker compose up -d --wait       # Fuseki on :3030, Neo4j on :7474 and :7687
+uv run python -m kg all           # build the graph, materialize inference, run SHACL, load into Fuseki
+uv run pytest                     # the offline suite: shapes, competency questions, graph build, rules, and more
+uv run pytest -m docker           # competency questions on a real Fuseki server, Neo4j, and Ontop
+uv run pytest -m robot            # HermiT consistency checks (needs Java)
+```
+
+Local work costs nothing. The AWS stacks deploy only when you ask for them, Neptune sits behind `deployNeptune`,
+`scripts/teardown.py` removes everything after a session, and a $10 budget watches the services they use. See
+[infra/README.md](infra/README.md).
 
 ### Explore the graph in Neo4j Browser
 
 The same approved grants, vocabularies, and provenance also load into Neo4j as a property graph, so you can click
-through them in Neo4j Browser. This copy is for exploring and for the comparison in
+through them. This copy is for exploring and for the comparison in
 [ADR 0003](docs/adr/0003-rdf-versus-property-graph.md); the rules never read it.
 
 ```bash
@@ -151,41 +170,22 @@ RETURN g, gf, rf
 Click a node for its properties, and double-click it to expand its neighbors. The full rule is
 [pgraph/r2.cypher](pgraph/r2.cypher), and `uv run python -m pgraph.compare` checks it against the SPARQL version.
 
-## Data
+## The data
 
-GoNoGo uses real public data from five NASA and federal sources, including USPTO legal status, and labels
-every synthetic fact as synthetic. [docs/data-sources.md](docs/data-sources.md) lists each source, the
-endpoint that worked, and the record counts.
+GoNoGo uses real public data: NASA's patent list, USPTO legal status, NASA technology portal records, Federal
+Register notices of intent to license, and NASA technical reports. [docs/data-sources.md](docs/data-sources.md)
+lists each source, the endpoint that worked, and the record counts.
 
-NASA does not publish executed license agreements, ownership records, or export classifications. The
-generator in `synth/` creates them with a fixed seed. Every synthetic agreement names a fictional licensee
-and carries the line "SYNTHETIC DOCUMENT" on its first page. In the graph, every synthetic fact carries
-`prov:wasGeneratedBy` the generator run.
-
-## Run it locally
-
-```bash
-uv sync
-cp .env.example .env             # add USPTO_API_KEY from data.uspto.gov > My ODP
-uv run python -m ingest all      # fetches and caches public data under data/raw/
-uv run python -m synth --seed 42 # writes data/synthetic/
-docker compose up -d --wait      # Fuseki on :3030, Neo4j on :7474 and :7687
-uv run python -m kg all          # build the graph, materialize inference, run SHACL, load into Fuseki
-uv run pytest                    # offline suite: shapes, competency questions, graph build
-uv run pytest -m docker          # competency questions on a real Fuseki server
-uv run pytest -m robot           # HermiT consistency checks (needs Java)
-uv run pytest -m network         # live calls to the public sources
-```
-
-Local work costs nothing. The AWS stack deploys only when you ask for it. Neptune sits behind `deployNeptune`,
-`scripts/teardown.py` removes everything after a session, and a $10 budget watches the services it uses. See
-[infra/README.md](infra/README.md).
+NASA does not publish executed license agreements, ownership records, or export classifications. The generator in
+`synth/` creates them with a fixed seed. Every synthetic agreement names a fictional licensee and carries the line
+"SYNTHETIC DOCUMENT" on its first page. In the graph, every synthetic fact carries `prov:wasGeneratedBy` the
+generator run.
 
 ## What carries over to media rights
 
 The architecture carries over to media rights clearance: an ontology written from the questions, vocabularies for
 territories and media, an open world where a missing fact is not a yes, facts with two times and a source,
-confidential terms in their own graph, rules that decide and a model that only reads, two people for risky approvals,
-and decisions that can be rerun. The patent rules do not: patent terms and fee lapses, the co-exclusive cap, the
+confidential terms in their own graph, rules that decide while a model only reads, two people for risky approvals,
+and decisions that can be rerun. The patent rules do not. Patent terms and fee lapses, the co-exclusive cap, the
 federal notice window, export control, and statutory review give way to chain of title, windows and holdbacks, and
 rights split by territory and medium. [docs/media-rights.md](docs/media-rights.md) goes through each.
