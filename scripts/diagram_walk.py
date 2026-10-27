@@ -14,8 +14,9 @@ from pathlib import Path
 from playwright.sync_api import Page
 from walkkit import ROOT, encode, record, step
 
-IMG = ROOT / "docs" / "architecture" / "gonogo-aws-1-overview.png"
-# (step key, caption, focus x, focus y as fractions of the picture, zoom)
+DIAGRAMS = ROOT / "docs" / "architecture"
+IMG = DIAGRAMS / "gonogo-aws-1-overview.png"
+# (step key, caption, focus x, focus y as fractions of the picture, zoom[, another page of the diagrams])
 STEPS = [
     ("dia-overview", "GoNoGo on AWS (us-east-2)", 0.5, 0.5, 1.0),
     ("dia-edge", "CloudFront in front of a private S3 bucket", 0.15, 0.28, 2.4),
@@ -23,7 +24,22 @@ STEPS = [
     ("dia-engine", "The engine Lambda asks Cedar who may do what", 0.53, 0.28, 2.4),
     ("dia-data", "Decisions: DynamoDB, S3 Object Lock, EventBridge, KMS", 0.71, 0.28, 2.4),
     ("dia-vpc", "A VPC with no internet route. One reader, two writers", 0.42, 0.64, 1.9),
-    ("dia-cost", "A $10 budget alarm, and one script to tear it all down", 0.13, 0.86, 2.6),
+    (
+        "dia-ingest",
+        "Ingestion: Textract, extraction, SHACL, then a steward",
+        0.5,
+        0.5,
+        1.0,
+        "gonogo-aws-3-ingestion.png",
+    ),
+    (
+        "dia-cost",
+        "A $10 budget alarm, and one script to tear it all down",
+        0.13,
+        0.86,
+        2.6,
+        "gonogo-aws-1-overview.png",
+    ),
 ]
 PAGE = """<!doctype html><body style="margin:0;background:#fff;overflow:hidden">
 <div id="w" style="position:absolute;left:0;top:0;transform-origin:0 0;transition:transform 1.4s ease-in-out">
@@ -41,12 +57,20 @@ MOVE = """
 """
 
 
+SWAP = """
+(src) => { const img = document.getElementById('i'); img.style.width = ''; img.style.height = ''; img.src = src; }
+"""
+
+
 def walk(page: Page) -> None:
     html = Path(tempfile.mkdtemp()) / "diagram.html"
     html.write_text(PAGE.format(src=IMG.as_uri()))
     page.goto(html.as_uri())
     page.wait_for_function("document.getElementById('i').complete")
-    for key, text, fx, fy, zoom in STEPS:
+    for key, text, fx, fy, zoom, *other in STEPS:
+        if other:
+            page.evaluate(SWAP, (DIAGRAMS / other[0]).as_uri())
+            page.wait_for_function("document.getElementById('i').complete")
         page.evaluate(MOVE, [fx, fy, zoom])
         step(page, key, text, 4.0)
 

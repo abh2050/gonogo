@@ -1,0 +1,75 @@
+{
+ "at": "2026-10-26T23:31:33+00:00",
+ "runs": [
+  {
+   "file": "AGR-0901.pdf",
+   "execution": "AGR-0901-pdf-27291D1F",
+   "steps": [
+    "ReadWithTextract",
+    "ExtractGrant",
+    "CheckShapes",
+    "Conforms",
+    "AwaitApproval",
+    "WriteToGraph",
+    "RerunRequests"
+   ],
+   "decisions": [
+    {
+     "who": "ann-steward",
+     "status": 200,
+     "body": {
+      "status": "approved"
+     }
+    }
+   ],
+   "status": "SUCCEEDED",
+   "output": {
+    "agreement": "AGR-0901",
+    "approved_at": "2026-11-01T00:00:02Z",
+    "requests": [
+     {
+      "request": "REQ-0001",
+      "before": "GO",
+      "after": "NO GO",
+      "changed": true
+     }
+    ]
+   }
+  },
+  {
+   "file": "AGR-0902.pdf",
+   "execution": "AGR-0902-pdf-0842F1B7",
+   "steps": [
+    "ReadWithTextract",
+    "ExtractGrant",
+    "CheckShapes",
+    "Conforms",
+    "AwaitApproval",
+    "WriteToGraph",
+    "RerunRequests"
+   ],
+   "decisions": [
+    {
+     "who": "ann-steward",
+     "status": 200,
+     "body": {
+      "status": "approved"
+     }
+    }
+   ],
+   "status": "SUCCEEDED",
+   "output": {
+    "agreement": "AGR-0902",
+    "approved_at": "2026-11-01T00:00:02Z",
+    "requests": [
+     {
+      "request": "REQ-0034",
+      "before": "GO",
+      "after": "GO",
+      "changed": false
+     }
+    ]
+   }
+  }
+ ]
+}

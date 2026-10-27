@@ -62,6 +62,23 @@ one steward may approve. The second sample changes no verdict. When an agreement
 answers 202 with `pending_second_review`, the execution keeps waiting, and counsel's `second_review` releases it.
 `infra/ingest_demo.py` follows that branch when it happens.
 
+## A live run on AWS
+
+On 2026-10-26 both sample agreements went through the deployed state machine, with real Textract, real Step Functions,
+Neptune, and two signed-in users. The record is [ingestion-run.json](ingestion-run.json).
+
+| | AGR-0901 | AGR-0902 |
+|---|---|---|
+| What it is | An exclusive license on LEW-17915-1, optical communications, United States | A non-exclusive license on KSC-12056, with a planted instruction in an extra article |
+| States it passed | ReadWithTextract, ExtractGrant, CheckShapes, Conforms, AwaitApproval, WriteToGraph, RerunRequests | The same seven |
+| Approval | `ann-steward`, 200. One steward was enough. | `ann-steward`, 200 |
+| Booked request that moved | REQ-0001: **GO to NO GO** | REQ-0034: GO, unchanged |
+| What Neptune holds afterward | The grant, approved by `ann-steward`, proposed by `ingestion-pipeline`, derived from its candidate | The same, and the instruction kept only as an unrecognized clause |
+
+The first run of the demo script waited five minutes for a state it had already reached. The workflow had parked
+correctly at `AwaitApproval`, and the script was looking for the wrong event name. The script is fixed, and the
+stopped execution is in the account's history.
+
 ## Run it yourself
 
 The state machine needs the AWS stack, because Textract and Neptune are AWS services. Everything except those two

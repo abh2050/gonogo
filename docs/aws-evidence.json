@@ -1,11 +1,11 @@
 {
-  "ran_at": "2026-10-26T16:44:34Z",
+  "ran_at": "2026-10-26T23:32:26Z",
   "region": "us-east-2",
   "account": "\u20266600",
   "neptune": true,
   "engine_decide_ms": {
-    "p50": 1130,
-    "p95": 1698,
+    "p50": 1164,
+    "p95": 1700,
     "n": 20
   },
   "passed": 11,
@@ -14,7 +14,7 @@
     {
       "check": "Neptune holds every triple of the four graphs",
       "passed": true,
-      "detail": "46,276 triples loaded in 32 s",
+      "detail": "46,276 triples loaded in 31 s",
       "triples": {
         "https://w3id.org/gonogo/graph/release/0.1.0": 1972,
         "https://w3id.org/gonogo/graph/approved": 41315,
@@ -53,12 +53,12 @@
       "detail": "43 of 43 signatures match",
       "mismatched": [],
       "neptune_ms": {
-        "p50": 824,
-        "p95": 1491
+        "p50": 767,
+        "p95": 1309
       },
       "in_memory_ms": {
-        "p50": 150,
-        "p95": 372
+        "p50": 156,
+        "p95": 369
       }
     },
     {

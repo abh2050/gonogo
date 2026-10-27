@@ -1,4 +1,4 @@
-"""Join the intro, the four walks, and an outro into docs/media/gonogo-overview.mp4, with each spoken line placed at
+"""Join the intro, the five walks, and an outro into docs/media/gonogo-overview.mp4, with each spoken line placed at
 the moment its step appears.
 
     uv run python scripts/narrate.py                       # the spoken lines and their lengths
@@ -31,6 +31,7 @@ SEGMENTS = [
     ("provenance-walk", MEDIA / "provenance-walk.mp4", "0xf7f6f2"),
     ("architecture-walk", MEDIA / "architecture-walk.mp4", "0xf7f6f2"),
     ("diagram-walk", MEDIA / "diagram-walk.mp4", "0xffffff"),
+    ("benchmark-walk", MEDIA / "benchmark-walk.mp4", "0xf7f6f2"),
     ("outro", None, "0x0f1722"),
 ]
 CARD = """<body style="margin:0;width:{w}px;height:{h}px;background:{bg};display:flex;flex-direction:column;

@@ -1,9 +1,10 @@
 {
- "dia-overview": 0.038,
- "dia-edge": 5.341,
- "dia-auth": 14.585,
- "dia-engine": 22.484,
- "dia-data": 32.803,
- "dia-vpc": 43.771,
- "dia-cost": 57.061
+ "dia-overview": 0.073,
+ "dia-edge": 5.371,
+ "dia-auth": 14.616,
+ "dia-engine": 22.517,
+ "dia-data": 32.829,
+ "dia-vpc": 43.795,
+ "dia-ingest": 58.444,
+ "dia-cost": 71.324
 }

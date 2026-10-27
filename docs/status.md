@@ -2,7 +2,7 @@
 
 ## Gate 4: the benchmark, the Neo4j comparison, ingestion, and the README
 
-**State:** built and checked; one AWS run waits for your go-ahead (see "Open questions").
+**State:** complete. The ingestion workflow ran live on AWS, and everything is torn down.
 **Date:** 2026-10-26
 **Live demo:** https://gonogo-livid.vercel.app/#/benchmark
 
@@ -10,8 +10,8 @@ Gate 4 answers the question the project exists to answer: does the ontology earn
 questions scored against hand-stated verdicts, GoNoGo was right 97.5% of the time and never cleared a license it
 should not have. A graph agent with the same facts was right 72.5% of the time and cleared 32 it should not have; a
 vector RAG baseline was right 20.5% of the time. The Neo4j comparison, the agreement ingestion workflow, seven draw.io
-AWS diagrams, and the final README are done. The ingestion workflow is built and tested locally but has not yet run
-on AWS, because that needs Neptune for about an hour.
+AWS diagrams, and the final README are done. The ingestion workflow also ran live on AWS: an agreement PDF went through Textract, extraction,
+SHACL, a steward's approval, and the write to Neptune, and one booked request moved from GO to NO GO.
 
 ### Deliverables
 
@@ -24,7 +24,7 @@ on AWS, because that needs Neptune for about an hour.
 | Answerers C and C+ | `eval/answer.py` | Done. C+ is the deployed pipeline with the optional model reader on. |
 | Results and report | `eval/results.md`, `docs/benchmark.md`, the Benchmark page | Done. CI fails on any false GO by C or C+ and on drift between runs and report. |
 | Neo4j comparison and ADR 0003 | `pgraph/`, `docs/adr/0003-rdf-versus-property-graph.md` | Done. Same grants on 1,435 of 1,435 requests; a CI test repeats it. |
-| Ingestion workflow | `service/ingest.py`, `IngestStack` in `infra/stacks.py`, `docs/ingestion.md` | Built and tested locally. The AWS run is waiting for your go-ahead. |
+| Ingestion workflow | `service/ingest.py`, the ingestion block of `ApiStack`, `docs/ingestion.md`, `docs/ingestion-run.json` | Done. Tested locally, then run live on AWS with both sample agreements. |
 | AWS diagrams | `docs/architecture/` (seven draw.io views) | Done. |
 | README, final form | `README.md`, `docs/media-rights.md` | Done: the business story, the verdict flow, the architecture, the benchmark table, and what carries over to media rights. |
 

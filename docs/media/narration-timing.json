@@ -31,7 +31,12 @@
  "dia-auth": 7.891,
  "dia-engine": 10.306,
  "dia-data": 10.956,
- "dia-vpc": 13.278,
+ "dia-vpc": 14.625,
+ "dia-ingest": 12.86,
  "dia-cost": 10.213,
+ "bench-open": 8.123,
+ "bench-accuracy": 10.445,
+ "bench-falsego": 10.77,
+ "bench-why": 11.374,
  "outro": 8.727
 }

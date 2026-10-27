@@ -62,7 +62,7 @@ def wait_for(sfn: Any, arn: str, states: tuple[str, ...], seconds: int = 300) ->
             return dict(run)
         events = sfn.get_execution_history(executionArn=arn, reverseOrder=True, maxResults=20)["events"]
         for e in events:
-            if e["type"] == "TaskScheduled" and "AwaitApproval" in json.dumps(e, default=str):
+            if e["type"] == "TaskStateEntered" and e.get("stateEnteredEventDetails", {}).get("name") == "AwaitApproval":
                 return {"status": "WAITING", "executionArn": arn}
         time.sleep(4)
     raise TimeoutError(f"{arn} did not reach {states} in {seconds} s")

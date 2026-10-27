@@ -15,7 +15,7 @@ named as the rule that changed.
 
 ![The ontology graph: select a class and its relationships flow along their arrows](docs/screenshots/ontology-walk.gif)
 
-A narrated four-minute tour of the ontology, provenance, the verdict path, and the AWS architecture:
+A narrated five-minute tour of the ontology, provenance, the verdict path, the AWS architecture, and the benchmark:
 [docs/media/gonogo-overview.mp4](docs/media/gonogo-overview.mp4) (subtitles in
 [gonogo-overview.srt](docs/media/gonogo-overview.srt)).
 

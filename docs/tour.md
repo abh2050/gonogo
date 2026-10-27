@@ -22,7 +22,7 @@ review that a risky approval needs. Find it in the app under **Ontology**, or op
 Start at a decision and follow its edges back: the fact it used, the event that approved it, the person who proposed
 it, and the second reviewer. Every node is a real record in the graph.
 
-A narrated four-minute video joins the ontology walk, this provenance walk, the Architecture page, and the AWS diagram: [media/gonogo-overview.mp4](media/gonogo-overview.mp4), with subtitles in
+A narrated five-minute video joins the ontology walk, this provenance walk, the Architecture page, the AWS diagrams, and the benchmark: [media/gonogo-overview.mp4](media/gonogo-overview.mp4), with subtitles in
 [media/gonogo-overview.srt](media/gonogo-overview.srt). The title clip was generated with Higgsfield from a text
 prompt with no words in it, and the title was added afterward. The voice is ElevenLabs text-to-speech reading
 [media/narration.json](media/narration.json). Each walk holds a step for exactly as long as its line, and
